@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="GB2312"?>
+<project default="main" basedir="." name="appframev31">
+  <property  name="version" value="2.2.7" />
+  <target name="main">
+    <delete dir="ScheduleConsole"/>
+    <copy todir="ScheduleConsole">
+	<fileset dir="./src/WebRoot">
+	  <exclude name=".svn"/>
+	</fileset>
+    </copy>
+    <copy todir="ScheduleConsole/WEB-INF/lib">
+	<fileset dir="./target">
+	  <include name="tbschedule*.jar"/>
+	</fileset>
+    </copy>
+    <copy todir="ScheduleConsole/WEB-INF/lib">
+	<fileset dir="./console/depend-lib">
+	  <include name="*.jar"/>
+	</fileset>
+    </copy>
+    <jar basedir="ScheduleConsole" jarfile="console/ScheduleConsole.war" compress="false"/>
+    <delete dir="ScheduleConsole"/>
+  </target>
+</project>

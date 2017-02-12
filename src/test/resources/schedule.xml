@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+	<bean id="demoTaskBean" class="com.taobao.pamirs.schedule.test.DemoTaskBean"/>
+	<bean id="scheduleManagerFactory" class="com.taobao.pamirs.schedule.strategy.TBScheduleManagerFactory"
+		init-method="init">
+		<property name="zkConfig">
+           <map>
+              <entry key="zkConnectString" value="localhost:2181" />
+              <entry key="rootPath" value="/taobao-pamirs-schedule/xuannan" />
+              <entry key="zkSessionTimeout" value="60000" />
+              <entry key="userName" value="ScheduleAdmin" />
+              <entry key="password" value="password" />
+              <entry key="isCheckParentPath" value="true" />
+           </map>
+       </property>	
+	</bean>
+</beans>
