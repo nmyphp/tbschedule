@@ -1,25 +1,29 @@
 package com.taobao.pamirs.schedule.taskmanager;
 
 interface IScheduleProcessor {
-	 /**
-	  * ÊÇ·ñÒÑ¾­´¦ÀíÍêÄÚ´æÖĞËùÓĞµÄÊı¾İ£¬ÔÚ½øĞĞ¶ÓÁĞÇĞ»»µÄÊ±ºò£¬
-	  * ±ØĞë±£Ö¤ËùÓĞÄÚ´æµÄÊı¾İ´¦ÀíÍê±Ï
-	  * @return
-	  */
-	 public boolean isDealFinishAllData();
-	 /**
-	  * ÅĞ¶Ï½ø³ÌÊÇ·ñ´¦ÓÚĞİÃß×´Ì¬
-	  * @return
-	  */
-	 public boolean isSleeping();
-	 /**
-	  * Í£Ö¹ÈÎÎñ´¦ÀíÆ÷
-	  * @throws Exception
-	  */
-	 public void stopSchedule() throws Exception;
-	 
-	 /**
-	  * Çå³ıËùÓĞÒÑ¾­È¡µ½ÄÚ´æÖĞµÄÊı¾İ£¬ÔÚĞÄÌøÏß³ÌÊ§°ÜµÄÊ±ºòµ÷ÓÃ£¬±ÜÃâÊı¾İÖØ¸´
-	  */
-	 public void clearAllHasFetchData();
+    /**
+     * æ˜¯å¦å·²ç»å¤„ç†å®Œå†…å­˜ä¸­æ‰€æœ‰çš„æ•°æ®ï¼Œåœ¨è¿›è¡Œé˜Ÿåˆ—åˆ‡æ¢çš„æ—¶å€™ï¼Œ å¿…é¡»ä¿è¯æ‰€æœ‰å†…å­˜çš„æ•°æ®å¤„ç†å®Œæ¯•
+     * 
+     * @return
+     */
+    public boolean isDealFinishAllData();
+
+    /**
+     * åˆ¤æ–­è¿›ç¨‹æ˜¯å¦å¤„äºä¼‘çœ çŠ¶æ€
+     * 
+     * @return
+     */
+    public boolean isSleeping();
+
+    /**
+     * åœæ­¢ä»»åŠ¡å¤„ç†å™¨
+     * 
+     * @throws Exception
+     */
+    public void stopSchedule() throws Exception;
+
+    /**
+     * æ¸…é™¤æ‰€æœ‰å·²ç»å–åˆ°å†…å­˜ä¸­çš„æ•°æ®ï¼Œåœ¨å¿ƒè·³çº¿ç¨‹å¤±è´¥çš„æ—¶å€™è°ƒç”¨ï¼Œé¿å…æ•°æ®é‡å¤
+     */
+    public void clearAllHasFetchData();
 }

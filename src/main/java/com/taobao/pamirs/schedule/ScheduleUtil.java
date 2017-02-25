@@ -6,135 +6,149 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 /**
- * µ÷¶È´¦Àí¹¤¾ßÀà
+ * è°ƒåº¦å¤„ç†å·¥å…·ç±»
+ * 
  * @author xuannan
  *
  */
 public class ScheduleUtil {
-	public static String OWN_SIGN_BASE ="BASE";
+    public static String OWN_SIGN_BASE = "BASE";
 
-	public static String getLocalHostName() {
-		try {
-			return InetAddress.getLocalHost().getHostName();
-		} catch (Exception e) {
-			return "";
-		}
-	}
+    public static String getLocalHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-	public static int getFreeSocketPort() {
-		try {
-			ServerSocket ss = new ServerSocket(0);
-			int freePort = ss.getLocalPort();
-			ss.close();
-			return freePort;
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    public static int getFreeSocketPort() {
+        try {
+            ServerSocket ss = new ServerSocket(0);
+            int freePort = ss.getLocalPort();
+            ss.close();
+            return freePort;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	public static String getLocalIP() {
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (Exception e) {
-			return "";
-		}
-	}
+    public static String getLocalIP() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-	public static String transferDataToString(Date d){
-		SimpleDateFormat DATA_FORMAT_yyyyMMddHHmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String transferDataToString(Date d) {
+        SimpleDateFormat DATA_FORMAT_yyyyMMddHHmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return DATA_FORMAT_yyyyMMddHHmmss.format(d);
-	}
-	public static Date transferStringToDate(String d) throws ParseException{
-		SimpleDateFormat DATA_FORMAT_yyyyMMddHHmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public static Date transferStringToDate(String d) throws ParseException {
+        SimpleDateFormat DATA_FORMAT_yyyyMMddHHmmss = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return DATA_FORMAT_yyyyMMddHHmmss.parse(d);
-	}
-	public static Date transferStringToDate(String d,String formate) throws ParseException{
-		SimpleDateFormat FORMAT = new SimpleDateFormat(formate);
+    }
+
+    public static Date transferStringToDate(String d, String formate) throws ParseException {
+        SimpleDateFormat FORMAT = new SimpleDateFormat(formate);
         return FORMAT.parse(d);
-	}
-	public static String getTaskTypeByBaseAndOwnSign(String baseType,String ownSign){
-		if(ownSign.equals(OWN_SIGN_BASE) == true){
-			return baseType;
-		}
-		return baseType+"$" + ownSign;
-	}
-	public static String splitBaseTaskTypeFromTaskType(String taskType){
-		 if(taskType.indexOf("$") >=0){
-			 return taskType.substring(0,taskType.indexOf("$"));
-		 }else{
-			 return taskType;
-		 }
-		 
-	}
-	public static String splitOwnsignFromTaskType(String taskType){
-		 if(taskType.indexOf("$") >=0){
-			 return taskType.substring(taskType.indexOf("$")+1);
-		 }else{
-			 return OWN_SIGN_BASE;
-		 }
-	}	
-	
-	/**
-	 * ·ÖÅäÈÎÎñÊıÁ¿
-	 * @param serverNum ×ÜµÄ·şÎñÆ÷ÊıÁ¿
-	 * @param taskItemNum ÈÎÎñÏîÊıÁ¿
-	 * @param maxNumOfOneServer Ã¿¸öserver×î´óÈÎÎñÏîÊıÄ¿
-	 * @param maxNum ×ÜµÄÈÎÎñÊıÁ¿
-	 * @return
-	 */
-	public static int[] assignTaskNumber(int serverNum,int taskItemNum,int maxNumOfOneServer){
-		int[] taskNums = new int[serverNum];
-		int numOfSingle = taskItemNum / serverNum;
-		int otherNum = taskItemNum % serverNum;
-		//20150323 É¾³ı, ÈÎÎñ·ÖÆ¬±£Ö¤·ÖÅäµ½ËùÓĞµÄÏß³Ì×éÊıÉÏ¡£ ¿ªÊ¼
-//		if (maxNumOfOneServer >0 && numOfSingle >= maxNumOfOneServer) {
-//			numOfSingle = maxNumOfOneServer;
-//			otherNum = 0;
-//		}
-		//20150323 É¾³ı, ÈÎÎñ·ÖÆ¬±£Ö¤·ÖÅäµ½ËùÓĞµÄÏß³Ì×éÊıÉÏ¡£ ½áÊø
-		for (int i = 0; i < taskNums.length; i++) {
-			if (i < otherNum) {
-				taskNums[i] = numOfSingle + 1;
-			} else {
-				taskNums[i] = numOfSingle;
-			}
-		}
-		return taskNums;
-	}
-	private static String printArray(int[] items){
-		String s="";
-		for(int i=0;i<items.length;i++){
-			if(i >0){s = s +",";}
-			s = s + items[i];
-		}
-		return s;
-	}
-	public static void main(String[] args) {
-		System.out.println(printArray(assignTaskNumber(1,10,0)));
-		System.out.println(printArray(assignTaskNumber(2,10,0)));
-		System.out.println(printArray(assignTaskNumber(3,10,0)));
-		System.out.println(printArray(assignTaskNumber(4,10,0)));
-		System.out.println(printArray(assignTaskNumber(5,10,0)));
-		System.out.println(printArray(assignTaskNumber(6,10,0)));
-		System.out.println(printArray(assignTaskNumber(7,10,0)));
-		System.out.println(printArray(assignTaskNumber(8,10,0)));		
-		System.out.println(printArray(assignTaskNumber(9,10,0)));
-		System.out.println(printArray(assignTaskNumber(10,10,0)));
-		
-		System.out.println("-----------------");
-		
-		System.out.println(printArray(assignTaskNumber(1,10,3)));
-		System.out.println(printArray(assignTaskNumber(2,10,3)));
-		System.out.println(printArray(assignTaskNumber(3,10,3)));
-		System.out.println(printArray(assignTaskNumber(4,10,3)));
-		System.out.println(printArray(assignTaskNumber(5,10,3)));
-		System.out.println(printArray(assignTaskNumber(6,10,3)));
-		System.out.println(printArray(assignTaskNumber(7,10,3)));
-		System.out.println(printArray(assignTaskNumber(8,10,3)));		
-		System.out.println(printArray(assignTaskNumber(9,10,3)));
-		System.out.println(printArray(assignTaskNumber(10,10,3)));
-		
-	}
+    }
+
+    public static String getTaskTypeByBaseAndOwnSign(String baseType, String ownSign) {
+        if (ownSign.equals(OWN_SIGN_BASE) == true) {
+            return baseType;
+        }
+        return baseType + "$" + ownSign;
+    }
+
+    public static String splitBaseTaskTypeFromTaskType(String taskType) {
+        if (taskType.indexOf("$") >= 0) {
+            return taskType.substring(0, taskType.indexOf("$"));
+        } else {
+            return taskType;
+        }
+
+    }
+
+    public static String splitOwnsignFromTaskType(String taskType) {
+        if (taskType.indexOf("$") >= 0) {
+            return taskType.substring(taskType.indexOf("$") + 1);
+        } else {
+            return OWN_SIGN_BASE;
+        }
+    }
+
+    /**
+     * åˆ†é…ä»»åŠ¡æ•°é‡
+     * 
+     * @param serverNum
+     *            æ€»çš„æœåŠ¡å™¨æ•°é‡
+     * @param taskItemNum
+     *            ä»»åŠ¡é¡¹æ•°é‡
+     * @param maxNumOfOneServer
+     *            æ¯ä¸ªserveræœ€å¤§ä»»åŠ¡é¡¹æ•°ç›®
+     * @param maxNum
+     *            æ€»çš„ä»»åŠ¡æ•°é‡
+     * @return
+     */
+    public static int[] assignTaskNumber(int serverNum, int taskItemNum, int maxNumOfOneServer) {
+        int[] taskNums = new int[serverNum];
+        int numOfSingle = taskItemNum / serverNum;
+        int otherNum = taskItemNum % serverNum;
+        // 20150323 åˆ é™¤, ä»»åŠ¡åˆ†ç‰‡ä¿è¯åˆ†é…åˆ°æ‰€æœ‰çš„çº¿ç¨‹ç»„æ•°ä¸Šã€‚ å¼€å§‹
+        // if (maxNumOfOneServer >0 && numOfSingle >= maxNumOfOneServer) {
+        // numOfSingle = maxNumOfOneServer;
+        // otherNum = 0;
+        // }
+        // 20150323 åˆ é™¤, ä»»åŠ¡åˆ†ç‰‡ä¿è¯åˆ†é…åˆ°æ‰€æœ‰çš„çº¿ç¨‹ç»„æ•°ä¸Šã€‚ ç»“æŸ
+        for (int i = 0; i < taskNums.length; i++) {
+            if (i < otherNum) {
+                taskNums[i] = numOfSingle + 1;
+            } else {
+                taskNums[i] = numOfSingle;
+            }
+        }
+        return taskNums;
+    }
+
+    private static String printArray(int[] items) {
+        String s = "";
+        for (int i = 0; i < items.length; i++) {
+            if (i > 0) {
+                s = s + ",";
+            }
+            s = s + items[i];
+        }
+        return s;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(printArray(assignTaskNumber(1, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(2, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(3, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(4, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(5, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(6, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(7, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(8, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(9, 10, 0)));
+        System.out.println(printArray(assignTaskNumber(10, 10, 0)));
+
+        System.out.println("-----------------");
+
+        System.out.println(printArray(assignTaskNumber(1, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(2, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(3, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(4, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(5, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(6, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(7, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(8, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(9, 10, 3)));
+        System.out.println(printArray(assignTaskNumber(10, 10, 3)));
+
+    }
 }

@@ -1,37 +1,40 @@
 package com.taobao.pamirs.schedule;
 
 /**
- * ÈÎÎñ¶¨Òå£¬Ìá¹©¹Ø¼üĞÅÏ¢¸øÊ¹ÓÃÕß
+ * ä»»åŠ¡å®šä¹‰ï¼Œæä¾›å…³é”®ä¿¡æ¯ç»™ä½¿ç”¨è€…
+ * 
  * @author xuannan
  *
  */
 public class TaskItemDefine {
-	/**
-	 * ÈÎÎñÏîID
-	 */
-	private String taskItemId;
-	/**
-	 * ÈÎÎñÏî×Ô¶¨Òå²ÎÊı
-	 */
-	private String parameter;
-	
-	public void setParameter(String parameter) {
-		this.parameter = parameter;
-	}
-	public String getParameter() {
-		return parameter;
-	}
-	public void setTaskItemId(String taskItemId) {
-		this.taskItemId = taskItemId;
-	}
-	public String getTaskItemId() {
-		return taskItemId;
-	}
-	@Override
-	public String toString() {
-		return "(t=" + taskItemId + ",p="
-				+ parameter + ")";
-	}
-	
+    /**
+     * ä»»åŠ¡é¡¹ID
+     */
+    private String taskItemId;
+    /**
+     * ä»»åŠ¡é¡¹è‡ªå®šä¹‰å‚æ•°
+     */
+    private String parameter;
+
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public void setTaskItemId(String taskItemId) {
+        this.taskItemId = taskItemId;
+    }
+
+    public String getTaskItemId() {
+        return taskItemId;
+    }
+
+    @Override
+    public String toString() {
+        return "(t=" + taskItemId + ",p=" + parameter + ")";
+    }
 
 }

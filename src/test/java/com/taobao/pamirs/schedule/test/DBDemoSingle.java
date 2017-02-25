@@ -17,111 +17,106 @@ import com.taobao.pamirs.schedule.IScheduleTaskDealSingle;
 import com.taobao.pamirs.schedule.TaskItemDefine;
 
 /**
- * µ•∏ˆ»ŒŒÒ¥¶¿Ì µœ÷
+ * Âçï‰∏™‰ªªÂä°Â§ÑÁêÜÂÆûÁé∞
  * 
  * @author xuannan
  * 
  */
-public class DBDemoSingle implements	IScheduleTaskDealSingle<Long> {
-	
-	private static transient Logger log = LoggerFactory.getLogger(DBDemoSingle.class);
+public class DBDemoSingle implements IScheduleTaskDealSingle<Long> {
 
-	protected DataSource dataSource;
+    private static transient Logger log = LoggerFactory.getLogger(DBDemoSingle.class);
 
-	public Comparator<Long> getComparator() {
-		return new Comparator<Long>() {
-			public int compare(Long o1, Long o2) {
-				return o1.compareTo(o2);
-			}
+    protected DataSource dataSource;
 
-			public boolean equals(Object obj) {
-				return this == obj;
-			}
-		};
-	}
+    public Comparator<Long> getComparator() {
+        return new Comparator<Long>() {
+            public int compare(Long o1, Long o2) {
+                return o1.compareTo(o2);
+            }
 
-	public List<Long> selectTasks(String taskParameter, String ownSign, int taskItemNum,
-			List<TaskItemDefine> queryCondition, int fetchNum) throws Exception {
-		List<Long> result = new ArrayList<Long>();
-		if (queryCondition.size() == 0) {
-			return result;
-		}
+            public boolean equals(Object obj) {
+                return this == obj;
+            }
+        };
+    }
 
-		StringBuffer condition = new StringBuffer();
-		for (int i = 0; i < queryCondition.size(); i++) {
-			if (i > 0) {
-				condition.append(",");
-			}
-			condition.append(queryCondition.get(i).getTaskItemId());
-		}
+    public List<Long> selectTasks(String taskParameter, String ownSign, int taskItemNum, List<TaskItemDefine> queryCondition, int fetchNum) throws Exception {
+        List<Long> result = new ArrayList<Long>();
+        if (queryCondition.size() == 0) {
+            return result;
+        }
 
-		Connection conn = null;
-		try {
-			conn = dataSource.getConnection();
-			String dbType = this.getDataBaseType(conn);
-			String sql = null;
-			if ("oracle".equalsIgnoreCase(dbType)) {
-				sql = "select ID from SCHEDULE_TEST where OWN_SIGN = '"
-						+ ownSign + "' and mod(id," + taskItemNum + ") in ("
-						+ condition.toString()
-						+ ") and sts ='N' and rownum <= " + fetchNum;
-			} else if ("mysql".equalsIgnoreCase(dbType)) {
-				sql = "select ID from SCHEDULE_TEST where OWN_SIGN = '"
-						+ ownSign + "'  and mod(id," + taskItemNum + ") in ("
-						+ condition.toString() + ") and sts ='N' LIMIT "
-						+ fetchNum;
-			} else {
-				throw new Exception("≤ª÷ß≥÷µƒ ˝æ›ø‚¿‡–Õ£∫" + dbType);
-			}
-			PreparedStatement statement = conn.prepareStatement(sql);
-			ResultSet set = statement.executeQuery();
-			while (set.next()) {
-				result.add(set.getLong("ID"));
-			}
-			set.close();
-			statement.close();
-			return result;
-		} finally {
-			if (conn != null)
-				conn.close();
-		}
-	}
+        StringBuffer condition = new StringBuffer();
+        for (int i = 0; i < queryCondition.size(); i++) {
+            if (i > 0) {
+                condition.append(",");
+            }
+            condition.append(queryCondition.get(i).getTaskItemId());
+        }
 
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            String dbType = this.getDataBaseType(conn);
+            String sql = null;
+            if ("oracle".equalsIgnoreCase(dbType)) {
+                sql = "select ID from SCHEDULE_TEST where OWN_SIGN = '" + ownSign + "' and mod(id," + taskItemNum + ") in (" + condition.toString()
+                        + ") and sts ='N' and rownum <= " + fetchNum;
+            } else if ("mysql".equalsIgnoreCase(dbType)) {
+                sql = "select ID from SCHEDULE_TEST where OWN_SIGN = '" + ownSign + "'  and mod(id," + taskItemNum + ") in (" + condition.toString() + ") and sts ='N' LIMIT "
+                        + fetchNum;
+            } else {
+                throw new Exception("‰∏çÊîØÊåÅÁöÑÊï∞ÊçÆÂ∫ìÁ±ªÂûãÔºö" + dbType);
+            }
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                result.add(set.getLong("ID"));
+            }
+            set.close();
+            statement.close();
+            return result;
+        } finally {
+            if (conn != null)
+                conn.close();
+        }
+    }
 
-	public boolean execute(Long task, String ownSign) throws Exception {
-		Connection conn = null;
-		Long id = (Long) task;
-		try {
-			conn = dataSource.getConnection();
-			String sql = "update SCHEDULE_TEST SET STS ='Y' ,DEAL_COUNT = DEAL_COUNT + 1 WHERE ID = ? and STS ='N' ";
-			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setLong(1, id);
-			statement.executeUpdate();
-			statement.close();
-			conn.commit();
-			log.debug("¥¶¿Ì»ŒŒÒ£∫" + id + " ≥…π¶£°");
-			return true;
-		} catch (Exception e) {
-			log.error("÷¥––»ŒŒÒ£∫" + task + " ß∞‹£∫" + e.getMessage(), e);
-			if (conn != null) {
-				conn.rollback();
-			}
-			return false;
-		} finally {
-			if (conn != null) {
-				conn.close();
-			}
-		}
-	}
+    public boolean execute(Long task, String ownSign) throws Exception {
+        Connection conn = null;
+        Long id = (Long) task;
+        try {
+            conn = dataSource.getConnection();
+            String sql = "update SCHEDULE_TEST SET STS ='Y' ,DEAL_COUNT = DEAL_COUNT + 1 WHERE ID = ? and STS ='N' ";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            statement.close();
+            conn.commit();
+            log.debug("Â§ÑÁêÜ‰ªªÂä°Ôºö" + id + " ÊàêÂäüÔºÅ");
+            return true;
+        } catch (Exception e) {
+            log.error("ÊâßË°å‰ªªÂä°Ôºö" + task + "Â§±Ë¥•Ôºö" + e.getMessage(), e);
+            if (conn != null) {
+                conn.rollback();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-	public String getDataBaseType(Connection conn) throws SQLException {
-		return conn.getMetaData().getDatabaseProductName();
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public String getDataBaseType(Connection conn) throws SQLException {
+        return conn.getMetaData().getDatabaseProductName();
+    }
 }

@@ -1,7 +1,7 @@
 package com.taobao.pamirs.schedule.zk;
 
 /**
- * ≈‰÷√–≈œ¢
+ * ÈÖçÁΩÆ‰ø°ÊÅØ
  * 
  * @author gjavac@gmail.com
  * @since 2012-2-12
@@ -9,62 +9,62 @@ package com.taobao.pamirs.schedule.zk;
  */
 public class ConfigNode {
 
-	private String rootPath;
+    private String rootPath;
 
-	private String configType;
+    private String configType;
 
-	private String name;
+    private String name;
 
-	private String value;
+    private String value;
 
-	public ConfigNode() {
+    public ConfigNode() {
 
-	}
+    }
 
-	public ConfigNode(String rootPath, String configType, String name) {
-		this.rootPath = rootPath;
-		this.configType = configType;
-		this.name = name;
-	}
+    public ConfigNode(String rootPath, String configType, String name) {
+        this.rootPath = rootPath;
+        this.configType = configType;
+        this.name = name;
+    }
 
-	public String getRootPath() {
-		return rootPath;
-	}
+    public String getRootPath() {
+        return rootPath;
+    }
 
-	public void setRootPath(String rootPath) {
-		this.rootPath = rootPath;
-	}
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
 
-	public String getConfigType() {
-		return configType;
-	}
+    public String getConfigType() {
+        return configType;
+    }
 
-	public void setConfigType(String configType) {
-		this.configType = configType;
-	}
+    public void setConfigType(String configType) {
+        this.configType = configType;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("≈‰÷√∏˘ƒø¬º£∫").append(rootPath).append("\n");
-		buffer.append("≈‰÷√¿‡–Õ£∫").append(configType).append("\n");
-		buffer.append("»ŒŒÒ√˚≥∆£∫").append(name).append("\n");
-		buffer.append("≈‰÷√µƒ÷µ£∫").append(value).append("\n");
-		return buffer.toString();
-	}
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("ÈÖçÁΩÆÊ†πÁõÆÂΩïÔºö").append(rootPath).append("\n");
+        buffer.append("ÈÖçÁΩÆÁ±ªÂûãÔºö").append(configType).append("\n");
+        buffer.append("‰ªªÂä°ÂêçÁß∞Ôºö").append(name).append("\n");
+        buffer.append("ÈÖçÁΩÆÁöÑÂÄºÔºö").append(value).append("\n");
+        return buffer.toString();
+    }
 }

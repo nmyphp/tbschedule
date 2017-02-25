@@ -10,69 +10,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScheduleWatcher implements Watcher {
-	private static transient Logger log = LoggerFactory.getLogger(ScheduleWatcher.class);
-	private Map<String,Watcher> route = new ConcurrentHashMap<String,Watcher>();
-	private ZKManager manager;
-	public ScheduleWatcher(ZKManager aManager){
-		this.manager = aManager;
-	}
-	public void registerChildrenChanged(String path,Watcher watcher) throws Exception{
-		manager.getZooKeeper().getChildren(path, true);
-		route.put(path,watcher);
-	}
-	public void process(WatchedEvent event) {
-		if(log.isInfoEnabled()){
-			log.info("ÒÑ¾­´¥·¢ÁË" + event.getType() + ":"+ event.getState() + "ÊÂ¼ş£¡" + event.getPath());
-		}
-		if(event.getType() == Event.EventType.NodeChildrenChanged){
-			String path = event.getPath();
-			Watcher watcher = route.get(path);
-			  if( watcher != null ){
-				  try{
-					  watcher.process(event);
-				  }finally{
-					  try{
-						  if(manager.getZooKeeper().exists(path,null) != null){
-							  manager.getZooKeeper().getChildren(path, true);
-						  }
-					  }catch(Exception e){
-						  log.error(path +":" + e.getMessage(),e);
-					  }
-				  }
-			  }else{
-				  log.info("ÒÑ¾­´¥·¢ÁË" + event.getType() + ":"+ event.getState() + "ÊÂ¼ş£¡" + event.getPath());
-			  }
-		}else if(event.getState()== KeeperState.AuthFailed){
-			log.info("tb_hj_schedule zk status =KeeperState.AuthFailed£¡");
-		}else if(event.getState()== KeeperState.ConnectedReadOnly){
-			log.info("tb_hj_schedule zk status =KeeperState.ConnectedReadOnly£¡");
-		}else if(event.getState()== KeeperState.Disconnected){
-			log.info("tb_hj_schedule zk status =KeeperState.Disconnected£¡");
-			try {
-				manager.reConnection();
-			} catch (Exception e) {
-				log.error(e.getMessage(),e);
-			}
-		}else if(event.getState()== KeeperState.NoSyncConnected){
-			log.info("tb_hj_schedule zk status =KeeperState.NoSyncConnected£¡µÈ´ıÖØĞÂ½¨Á¢ZKÁ¬½Ó.. ");
-			try {
-				manager.reConnection();
-			} catch (Exception e) {
-				log.error(e.getMessage(),e);
-			}
-		}else if (event.getState()== KeeperState.SaslAuthenticated){
-			log.info("tb_hj_schedule zk status =KeeperState.SaslAuthenticated£¡");
-		}else if(event.getState() == KeeperState.Unknown){
-			log.info("tb_hj_schedule zk status =KeeperState.Unknown£¡");
-		}else if (event.getState() == KeeperState.SyncConnected) {
-			log.info("ÊÕµ½ZKÁ¬½Ó³É¹¦ÊÂ¼ş£¡");
-		} else if (event.getState() == KeeperState.Expired) {
-			log.error("»á»°³¬Ê±£¬µÈ´ıÖØĞÂ½¨Á¢ZKÁ¬½Ó...");
-			try {
-				manager.reConnection();
-			} catch (Exception e) {
-				log.error(e.getMessage(),e);
-			}
-		}
-	}
+    private static transient Logger log = LoggerFactory.getLogger(ScheduleWatcher.class);
+    private Map<String, Watcher> route = new ConcurrentHashMap<String, Watcher>();
+    private ZKManager manager;
+
+    public ScheduleWatcher(ZKManager aManager) {
+        this.manager = aManager;
+    }
+
+    public void registerChildrenChanged(String path, Watcher watcher) throws Exception {
+        manager.getZooKeeper().getChildren(path, true);
+        route.put(path, watcher);
+    }
+
+    public void process(WatchedEvent event) {
+        if (log.isInfoEnabled()) {
+            log.info("å·²ç»è§¦å‘äº†" + event.getType() + ":" + event.getState() + "äº‹ä»¶ï¼" + event.getPath());
+        }
+        if (event.getType() == Event.EventType.NodeChildrenChanged) {
+            String path = event.getPath();
+            Watcher watcher = route.get(path);
+            if (watcher != null) {
+                try {
+                    watcher.process(event);
+                } finally {
+                    try {
+                        if (manager.getZooKeeper().exists(path, null) != null) {
+                            manager.getZooKeeper().getChildren(path, true);
+                        }
+                    } catch (Exception e) {
+                        log.error(path + ":" + e.getMessage(), e);
+                    }
+                }
+            } else {
+                log.info("å·²ç»è§¦å‘äº†" + event.getType() + ":" + event.getState() + "äº‹ä»¶ï¼" + event.getPath());
+            }
+        } else if (event.getState() == KeeperState.AuthFailed) {
+            log.info("tb_hj_schedule zk status =KeeperState.AuthFailedï¼");
+        } else if (event.getState() == KeeperState.ConnectedReadOnly) {
+            log.info("tb_hj_schedule zk status =KeeperState.ConnectedReadOnlyï¼");
+        } else if (event.getState() == KeeperState.Disconnected) {
+            log.info("tb_hj_schedule zk status =KeeperState.Disconnectedï¼");
+            try {
+                manager.reConnection();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        } else if (event.getState() == KeeperState.NoSyncConnected) {
+            log.info("tb_hj_schedule zk status =KeeperState.NoSyncConnectedï¼ç­‰å¾…é‡æ–°å»ºç«‹ZKè¿æ¥.. ");
+            try {
+                manager.reConnection();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        } else if (event.getState() == KeeperState.SaslAuthenticated) {
+            log.info("tb_hj_schedule zk status =KeeperState.SaslAuthenticatedï¼");
+        } else if (event.getState() == KeeperState.Unknown) {
+            log.info("tb_hj_schedule zk status =KeeperState.Unknownï¼");
+        } else if (event.getState() == KeeperState.SyncConnected) {
+            log.info("æ”¶åˆ°ZKè¿æ¥æˆåŠŸäº‹ä»¶ï¼");
+        } else if (event.getState() == KeeperState.Expired) {
+            log.error("ä¼šè¯è¶…æ—¶ï¼Œç­‰å¾…é‡æ–°å»ºç«‹ZKè¿æ¥...");
+            try {
+                manager.reConnection();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
 }

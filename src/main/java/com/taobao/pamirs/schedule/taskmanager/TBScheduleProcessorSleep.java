@@ -16,305 +16,293 @@ import com.taobao.pamirs.schedule.IScheduleTaskDealSingle;
 import com.taobao.pamirs.schedule.TaskItemDefine;
 
 /**
- * ÈÎÎñµ÷¶ÈÆ÷£¬ÔÚTBScheduleManagerµÄ¹ÜÀíÏÂÊµÏÖ¶àÏß³ÌÊı¾İ´¦Àí
+ * ä»»åŠ¡è°ƒåº¦å™¨ï¼Œåœ¨TBScheduleManagerçš„ç®¡ç†ä¸‹å®ç°å¤šçº¿ç¨‹æ•°æ®å¤„ç†
+ * 
  * @author xuannan
  *
  * @param <T>
  */
-class TBScheduleProcessorSleep<T> implements IScheduleProcessor,Runnable {
-	
-	private static transient Logger logger = LoggerFactory.getLogger(TBScheduleProcessorSleep.class);
-	final  LockObject   m_lockObject = new LockObject();
-	List<Thread> threadList =  new CopyOnWriteArrayList<Thread>();
-	/**
-	 * ÈÎÎñ¹ÜÀíÆ÷
-	 */
-	protected TBScheduleManager scheduleManager;
-	/**
-	 * ÈÎÎñÀàĞÍ
-	 */
-	ScheduleTaskType taskTypeInfo;
-	
-	/**
-	 * ÈÎÎñ´¦ÀíµÄ½Ó¿ÚÀà
-	 */
-	protected IScheduleTaskDeal<T> taskDealBean;
-		
-	/**
-	 * µ±Ç°ÈÎÎñ¶ÓÁĞµÄ°æ±¾ºÅ
-	 */
-	protected long taskListVersion = 0;
-	final Object lockVersionObject = new Object();
-	final Object lockRunningList = new Object();
+class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
 
-	protected List<T> taskList = new CopyOnWriteArrayList<T>();
+    private static transient Logger logger = LoggerFactory.getLogger(TBScheduleProcessorSleep.class);
+    final LockObject m_lockObject = new LockObject();
+    List<Thread> threadList = new CopyOnWriteArrayList<Thread>();
+    /**
+     * ä»»åŠ¡ç®¡ç†å™¨
+     */
+    protected TBScheduleManager scheduleManager;
+    /**
+     * ä»»åŠ¡ç±»å‹
+     */
+    ScheduleTaskType taskTypeInfo;
 
-	/**
-	 * ÊÇ·ñ¿ÉÒÔÅú´¦Àí
-	 */
-	boolean isMutilTask = false;
-	
-	/**
-	 * ÊÇ·ñÒÑ¾­»ñµÃÖÕÖ¹µ÷¶ÈĞÅºÅ
-	 */
-	boolean isStopSchedule = false;// ÓÃ»§Í£Ö¹¶ÓÁĞµ÷¶È
-	boolean isSleeping = false;
-	
-	StatisticsInfo statisticsInfo;
-	/**
-	 * ´´½¨Ò»¸öµ÷¶È´¦ÀíÆ÷ 
-	 * @param aManager
-	 * @param aTaskDealBean
-	 * @param aStatisticsInfo
-	 * @throws Exception
-	 */
-	public TBScheduleProcessorSleep(TBScheduleManager aManager,
-			IScheduleTaskDeal<T> aTaskDealBean,	StatisticsInfo aStatisticsInfo) throws Exception {
-		this.scheduleManager = aManager;
-		this.statisticsInfo = aStatisticsInfo;
-		this.taskTypeInfo = this.scheduleManager.getTaskTypeInfo();
-		this.taskDealBean = aTaskDealBean;
-		if (this.taskDealBean instanceof IScheduleTaskDealSingle<?>) {
-			if (taskTypeInfo.getExecuteNumber() > 1) {
-				taskTypeInfo.setExecuteNumber(1);
-			}
-			isMutilTask = false;
-		} else {
-			isMutilTask = true;
-		}
-		if (taskTypeInfo.getFetchDataNumber() < taskTypeInfo.getThreadNumber() * 10) {
-			logger.warn("²ÎÊıÉèÖÃ²»ºÏÀí£¬ÏµÍ³ĞÔÄÜ²»¼Ñ¡£¡¾Ã¿´Î´ÓÊı¾İ¿â»ñÈ¡µÄÊıÁ¿fetchnum¡¿ >= ¡¾Ïß³ÌÊıÁ¿threadnum¡¿ *¡¾×îÉÙÑ­»·´ÎÊı10¡¿ ");
-		}
-		for (int i = 0; i < taskTypeInfo.getThreadNumber(); i++) {
-			this.startThread(i);
-		}
-	}
+    /**
+     * ä»»åŠ¡å¤„ç†çš„æ¥å£ç±»
+     */
+    protected IScheduleTaskDeal<T> taskDealBean;
 
-	/**
-	 * ĞèÒª×¢ÒâµÄÊÇ£¬µ÷¶È·şÎñÆ÷´ÓÅäÖÃÖĞĞÄ×¢ÏúµÄ¹¤×÷£¬±ØĞëÔÚËùÓĞÏß³ÌÍË³öµÄÇé¿öÏÂ²ÅÄÜ×ö
-	 * @throws Exception
-	 */
-	public void stopSchedule() throws Exception {
-		// ÉèÖÃÍ£Ö¹µ÷¶ÈµÄ±êÖ¾,µ÷¶ÈÏß³Ì·¢ÏÖÕâ¸ö±êÖ¾£¬Ö´ĞĞÍêµ±Ç°ÈÎÎñºó£¬¾ÍÍË³öµ÷¶È
-		this.isStopSchedule = true;
-		//Çå³ıËùÓĞÎ´´¦ÀíÈÎÎñ,µ«ÒÑ¾­½øÈë´¦Àí¶ÓÁĞµÄ£¬ĞèÒª´¦ÀíÍê±Ï
-		this.taskList.clear();
-	}
+    /**
+     * å½“å‰ä»»åŠ¡é˜Ÿåˆ—çš„ç‰ˆæœ¬å·
+     */
+    protected long taskListVersion = 0;
+    final Object lockVersionObject = new Object();
+    final Object lockRunningList = new Object();
 
-	private void startThread(int index) {
-		Thread thread = new Thread(this);
-		threadList.add(thread);
-		String threadName = this.scheduleManager.getScheduleServer().getTaskType()+"-" 
-				+ this.scheduleManager.getCurrentSerialNumber() + "-exe"
-				+ index;
-		thread.setName(threadName);
-		thread.start();
-	}
+    protected List<T> taskList = new CopyOnWriteArrayList<T>();
 
-	   public synchronized Object getScheduleTaskId() {
-		     if (this.taskList.size() > 0)
-		    	 return this.taskList.remove(0);  // °´ÕıĞò´¦Àí
-		     return null;
-		   }
+    /**
+     * æ˜¯å¦å¯ä»¥æ‰¹å¤„ç†
+     */
+    boolean isMutilTask = false;
 
-		   public synchronized Object[] getScheduleTaskIdMulti() {
-		       if (this.taskList.size() == 0){
-		         return null;
-		       }
-		       int size = taskList.size() > taskTypeInfo.getExecuteNumber() ? taskTypeInfo.getExecuteNumber()
-						: taskList.size();
-		       
-		       Object[] result = null;
-		       if(size >0){
-		    	   result =(Object[])Array.newInstance(this.taskList.get(0).getClass(),size);
-		       }
-		       for(int i=0;i<size;i++){
-		      	 result[i] = this.taskList.remove(0);  // °´ÕıĞò´¦Àí
-		       }
-		       return result;
-		   }
+    /**
+     * æ˜¯å¦å·²ç»è·å¾—ç»ˆæ­¢è°ƒåº¦ä¿¡å·
+     */
+    boolean isStopSchedule = false;// ç”¨æˆ·åœæ­¢é˜Ÿåˆ—è°ƒåº¦
+    boolean isSleeping = false;
 
-	public void clearAllHasFetchData() {
-		this.taskList.clear();
-	}
-	public boolean isDealFinishAllData() {
-		return this.taskList.size() == 0 ;
-	}
-	
-	public boolean isSleeping(){
-    	return this.isSleeping;
+    StatisticsInfo statisticsInfo;
+
+    /**
+     * åˆ›å»ºä¸€ä¸ªè°ƒåº¦å¤„ç†å™¨
+     * 
+     * @param aManager
+     * @param aTaskDealBean
+     * @param aStatisticsInfo
+     * @throws Exception
+     */
+    public TBScheduleProcessorSleep(TBScheduleManager aManager, IScheduleTaskDeal<T> aTaskDealBean, StatisticsInfo aStatisticsInfo) throws Exception {
+        this.scheduleManager = aManager;
+        this.statisticsInfo = aStatisticsInfo;
+        this.taskTypeInfo = this.scheduleManager.getTaskTypeInfo();
+        this.taskDealBean = aTaskDealBean;
+        if (this.taskDealBean instanceof IScheduleTaskDealSingle<?>) {
+            if (taskTypeInfo.getExecuteNumber() > 1) {
+                taskTypeInfo.setExecuteNumber(1);
+            }
+            isMutilTask = false;
+        } else {
+            isMutilTask = true;
+        }
+        if (taskTypeInfo.getFetchDataNumber() < taskTypeInfo.getThreadNumber() * 10) {
+            logger.warn("å‚æ•°è®¾ç½®ä¸åˆç†ï¼Œç³»ç»Ÿæ€§èƒ½ä¸ä½³ã€‚ã€æ¯æ¬¡ä»æ•°æ®åº“è·å–çš„æ•°é‡fetchnumã€‘ >= ã€çº¿ç¨‹æ•°é‡threadnumã€‘ *ã€æœ€å°‘å¾ªç¯æ¬¡æ•°10ã€‘ ");
+        }
+        for (int i = 0; i < taskTypeInfo.getThreadNumber(); i++) {
+            this.startThread(i);
+        }
     }
-	protected int loadScheduleData() {
-		try {
-           //ÔÚÃ¿´ÎÊı¾İ´¦ÀíÍê±ÏºóĞİÃß¹Ì¶¨µÄÊ±¼ä
-			if (this.taskTypeInfo.getSleepTimeInterval() > 0) {
-				if(logger.isTraceEnabled()){
-					logger.trace("´¦ÀíÍêÒ»ÅúÊı¾İºóĞİÃß£º" + this.taskTypeInfo.getSleepTimeInterval());
-				}
-				this.isSleeping = true;
-			    Thread.sleep(taskTypeInfo.getSleepTimeInterval());
-			    this.isSleeping = false;
-			    
-				if(logger.isTraceEnabled()){
-					logger.trace("´¦ÀíÍêÒ»ÅúÊı¾İºóĞİÃßºó»Ö¸´");
-				}
-			}
-			
-			List<TaskItemDefine> taskItems = this.scheduleManager.getCurrentScheduleTaskItemList();
-			// ¸ù¾İ¶ÓÁĞĞÅÏ¢²éÑ¯ĞèÒªµ÷¶ÈµÄÊı¾İ£¬È»ºóÔö¼Óµ½ÈÎÎñÁĞ±íÖĞ
-			if (taskItems.size() > 0) {
-				List<TaskItemDefine> tmpTaskList= new ArrayList<TaskItemDefine>();
-				synchronized(taskItems){
-					for (TaskItemDefine taskItemDefine : taskItems) {
-						tmpTaskList.add(taskItemDefine);
-					}
-				}
-				List<T> tmpList = this.taskDealBean.selectTasks(
-						taskTypeInfo.getTaskParameter(),
-						scheduleManager.getScheduleServer().getOwnSign(),
-						this.scheduleManager.getTaskItemCount(), tmpTaskList,
-						taskTypeInfo.getFetchDataNumber());
-				scheduleManager.getScheduleServer().setLastFetchDataTime(new Timestamp(scheduleManager.scheduleCenter.getSystemTime()));
-				if(tmpList != null){
-				   this.taskList.addAll(tmpList);
-				}
-			} else {
-				if(logger.isTraceEnabled()){
-					   logger.trace("Ã»ÓĞ»ñÈ¡µ½ĞèÒª´¦ÀíµÄÊı¾İ¶ÓÁĞ");
-				}
-			}
-			addFetchNum(taskList.size(),"TBScheduleProcessor.loadScheduleData");
-			return this.taskList.size();
-		} catch (Throwable ex) {
-			logger.error("Get tasks error.", ex);
-		}
-		return 0;
-	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked", "static-access" })
-	public void run(){
-	      try {
-	        long startTime =0;
-	        while(true){
-	          this.m_lockObject.addThread();
-	          Object executeTask;
-	          while (true) {
-	            if(this.isStopSchedule == true){//Í£Ö¹¶ÓÁĞµ÷¶È
-	              this.m_lockObject.realseThread();
-	              this.m_lockObject.notifyOtherThread();//Í¨ÖªËùÓĞµÄĞİÃßÏß³Ì
-				  synchronized (this.threadList) {			
-					  this.threadList.remove(Thread.currentThread());
-					  if(this.threadList.size()==0){
-							this.scheduleManager.unRegisterScheduleServer();
-					  }
-				  }
-				  return;
-	            }
-	            
-	            //¼ÓÔØµ÷¶ÈÈÎÎñ
-	            if(this.isMutilTask == false){
-	              executeTask = this.getScheduleTaskId();
-	            }else{
-	              executeTask = this.getScheduleTaskIdMulti();
-	            }
-	            
-	            if(executeTask == null){
-	              break;
-	            }
-	            
-	            try {//ÔËĞĞÏà¹ØµÄ³ÌĞò
-	              startTime =scheduleManager.scheduleCenter.getSystemTime();
-	              if (this.isMutilTask == false) {
-						if (((IScheduleTaskDealSingle) this.taskDealBean).execute(executeTask,scheduleManager.getScheduleServer().getOwnSign()) == true) {
-							addSuccessNum(1, scheduleManager.scheduleCenter.getSystemTime()
-									- startTime,
-									"com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
-						} else {
-							addFailNum(1, scheduleManager.scheduleCenter.getSystemTime()
-									- startTime,
-									"com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
-						}
-					} else {
-						if (((IScheduleTaskDealMulti) this.taskDealBean)
-								.execute((Object[]) executeTask,scheduleManager.getScheduleServer().getOwnSign()) == true) {
-							addSuccessNum(((Object[]) executeTask).length,scheduleManager.scheduleCenter.getSystemTime()
-									- startTime,
-									"com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
-						} else {
-							addFailNum(((Object[]) executeTask).length,scheduleManager.scheduleCenter.getSystemTime()
-									- startTime,
-									"com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
-						}
-					} 
-	            }catch (Throwable ex) {
-					if (this.isMutilTask == false) {
-						addFailNum(1,scheduleManager.scheduleCenter.getSystemTime()- startTime,
-								"TBScheduleProcessor.run");
-					} else {
-						addFailNum(((Object[]) executeTask).length, scheduleManager.scheduleCenter.getSystemTime()
-								- startTime,
-								"TBScheduleProcessor.run");
-					}
-					logger.warn("Task :" + executeTask + " ´¦ÀíÊ§°Ü", ex);				
-	            }
-	          }
-	          //µ±Ç°¶ÓÁĞÖĞËùÓĞµÄÈÎÎñ¶¼ÒÑ¾­Íê³ÉÁË¡£
-	            if(logger.isTraceEnabled()){
-				   logger.trace(Thread.currentThread().getName() +"£ºµ±Ç°ÔËĞĞÏß³ÌÊıÁ¿:" +this.m_lockObject.count());
-			    }
-				if (this.m_lockObject.realseThreadButNotLast() == false) {
-					int size = 0;
-					Thread.currentThread().sleep(100);
-					startTime =scheduleManager.scheduleCenter.getSystemTime();
-					// ×°ÔØÊı¾İ
-					size = this.loadScheduleData();
-					if (size > 0) {
-						this.m_lockObject.notifyOtherThread();
-					} else {
-						//ÅĞ¶Ïµ±Ã»ÓĞÊı¾İµÄÊÇ·ñ£¬ÊÇ·ñĞèÒªÍË³öµ÷¶È
-						if (this.isStopSchedule == false && this.scheduleManager.isContinueWhenData()== true ){						 
-							if(logger.isTraceEnabled()){
-								   logger.trace("Ã»ÓĞ×°ÔØµ½Êı¾İ£¬start sleep");
-							}
-							this.isSleeping = true;
-						    Thread.currentThread().sleep(this.scheduleManager.getTaskTypeInfo().getSleepTimeNoData());
-						    this.isSleeping = false;
-						    
-						    if(logger.isTraceEnabled()){
-								   logger.trace("Sleep end");
-							}
-						}else{
-							//Ã»ÓĞÊı¾İ£¬ÍË³öµ÷¶È£¬»½ĞÑËùÓĞ³ÁË¯Ïß³Ì
-							this.m_lockObject.notifyOtherThread();
-						}
-					}
-					this.m_lockObject.realseThread();
-				} else {// ½«µ±Ç°Ïß³Ì·ÅÖÃµ½µÈ´ı¶ÓÁĞÖĞ¡£Ö±µ½ÓĞÏß³Ì×°ÔØµ½ÁËĞÂµÄÈÎÎñÊı¾İ
-					if(logger.isTraceEnabled()){
-						   logger.trace("²»ÊÇ×îºóÒ»¸öÏß³Ì£¬sleep");
-					}
-					this.m_lockObject.waitCurrentThread();
-				}
-	        }
-	      }
-	      catch (Throwable e) {
-	    	  logger.error(e.getMessage(), e);
-	      }
-	    }
+    /**
+     * éœ€è¦æ³¨æ„çš„æ˜¯ï¼Œè°ƒåº¦æœåŠ¡å™¨ä»é…ç½®ä¸­å¿ƒæ³¨é”€çš„å·¥ä½œï¼Œå¿…é¡»åœ¨æ‰€æœ‰çº¿ç¨‹é€€å‡ºçš„æƒ…å†µä¸‹æ‰èƒ½åš
+     * 
+     * @throws Exception
+     */
+    public void stopSchedule() throws Exception {
+        // è®¾ç½®åœæ­¢è°ƒåº¦çš„æ ‡å¿—,è°ƒåº¦çº¿ç¨‹å‘ç°è¿™ä¸ªæ ‡å¿—ï¼Œæ‰§è¡Œå®Œå½“å‰ä»»åŠ¡åï¼Œå°±é€€å‡ºè°ƒåº¦
+        this.isStopSchedule = true;
+        // æ¸…é™¤æ‰€æœ‰æœªå¤„ç†ä»»åŠ¡,ä½†å·²ç»è¿›å…¥å¤„ç†é˜Ÿåˆ—çš„ï¼Œéœ€è¦å¤„ç†å®Œæ¯•
+        this.taskList.clear();
+    }
 
-	public void addFetchNum(long num, String addr) {
-		
+    private void startThread(int index) {
+        Thread thread = new Thread(this);
+        threadList.add(thread);
+        String threadName = this.scheduleManager.getScheduleServer().getTaskType() + "-" + this.scheduleManager.getCurrentSerialNumber() + "-exe" + index;
+        thread.setName(threadName);
+        thread.start();
+    }
+
+    public synchronized Object getScheduleTaskId() {
+        if (this.taskList.size() > 0)
+            return this.taskList.remove(0); // æŒ‰æ­£åºå¤„ç†
+        return null;
+    }
+
+    public synchronized Object[] getScheduleTaskIdMulti() {
+        if (this.taskList.size() == 0) {
+            return null;
+        }
+        int size = taskList.size() > taskTypeInfo.getExecuteNumber() ? taskTypeInfo.getExecuteNumber() : taskList.size();
+
+        Object[] result = null;
+        if (size > 0) {
+            result = (Object[]) Array.newInstance(this.taskList.get(0).getClass(), size);
+        }
+        for (int i = 0; i < size; i++) {
+            result[i] = this.taskList.remove(0); // æŒ‰æ­£åºå¤„ç†
+        }
+        return result;
+    }
+
+    public void clearAllHasFetchData() {
+        this.taskList.clear();
+    }
+
+    public boolean isDealFinishAllData() {
+        return this.taskList.size() == 0;
+    }
+
+    public boolean isSleeping() {
+        return this.isSleeping;
+    }
+
+    protected int loadScheduleData() {
+        try {
+            // åœ¨æ¯æ¬¡æ•°æ®å¤„ç†å®Œæ¯•åä¼‘çœ å›ºå®šçš„æ—¶é—´
+            if (this.taskTypeInfo.getSleepTimeInterval() > 0) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("å¤„ç†å®Œä¸€æ‰¹æ•°æ®åä¼‘çœ ï¼š" + this.taskTypeInfo.getSleepTimeInterval());
+                }
+                this.isSleeping = true;
+                Thread.sleep(taskTypeInfo.getSleepTimeInterval());
+                this.isSleeping = false;
+
+                if (logger.isTraceEnabled()) {
+                    logger.trace("å¤„ç†å®Œä¸€æ‰¹æ•°æ®åä¼‘çœ åæ¢å¤");
+                }
+            }
+
+            List<TaskItemDefine> taskItems = this.scheduleManager.getCurrentScheduleTaskItemList();
+            // æ ¹æ®é˜Ÿåˆ—ä¿¡æ¯æŸ¥è¯¢éœ€è¦è°ƒåº¦çš„æ•°æ®ï¼Œç„¶åå¢åŠ åˆ°ä»»åŠ¡åˆ—è¡¨ä¸­
+            if (taskItems.size() > 0) {
+                List<TaskItemDefine> tmpTaskList = new ArrayList<TaskItemDefine>();
+                synchronized (taskItems) {
+                    for (TaskItemDefine taskItemDefine : taskItems) {
+                        tmpTaskList.add(taskItemDefine);
+                    }
+                }
+                List<T> tmpList = this.taskDealBean.selectTasks(taskTypeInfo.getTaskParameter(), scheduleManager.getScheduleServer().getOwnSign(),
+                        this.scheduleManager.getTaskItemCount(), tmpTaskList, taskTypeInfo.getFetchDataNumber());
+                scheduleManager.getScheduleServer().setLastFetchDataTime(new Timestamp(scheduleManager.scheduleCenter.getSystemTime()));
+                if (tmpList != null) {
+                    this.taskList.addAll(tmpList);
+                }
+            } else {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("æ²¡æœ‰è·å–åˆ°éœ€è¦å¤„ç†çš„æ•°æ®é˜Ÿåˆ—");
+                }
+            }
+            addFetchNum(taskList.size(), "TBScheduleProcessor.loadScheduleData");
+            return this.taskList.size();
+        } catch (Throwable ex) {
+            logger.error("Get tasks error.", ex);
+        }
+        return 0;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked", "static-access" })
+    public void run() {
+        try {
+            long startTime = 0;
+            while (true) {
+                this.m_lockObject.addThread();
+                Object executeTask;
+                while (true) {
+                    if (this.isStopSchedule == true) {// åœæ­¢é˜Ÿåˆ—è°ƒåº¦
+                        this.m_lockObject.realseThread();
+                        this.m_lockObject.notifyOtherThread();// é€šçŸ¥æ‰€æœ‰çš„ä¼‘çœ çº¿ç¨‹
+                        synchronized (this.threadList) {
+                            this.threadList.remove(Thread.currentThread());
+                            if (this.threadList.size() == 0) {
+                                this.scheduleManager.unRegisterScheduleServer();
+                            }
+                        }
+                        return;
+                    }
+
+                    // åŠ è½½è°ƒåº¦ä»»åŠ¡
+                    if (this.isMutilTask == false) {
+                        executeTask = this.getScheduleTaskId();
+                    } else {
+                        executeTask = this.getScheduleTaskIdMulti();
+                    }
+
+                    if (executeTask == null) {
+                        break;
+                    }
+
+                    try {// è¿è¡Œç›¸å…³çš„ç¨‹åº
+                        startTime = scheduleManager.scheduleCenter.getSystemTime();
+                        if (this.isMutilTask == false) {
+                            if (((IScheduleTaskDealSingle) this.taskDealBean).execute(executeTask, scheduleManager.getScheduleServer().getOwnSign()) == true) {
+                                addSuccessNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime, "com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
+                            } else {
+                                addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime, "com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
+                            }
+                        } else {
+                            if (((IScheduleTaskDealMulti) this.taskDealBean).execute((Object[]) executeTask, scheduleManager.getScheduleServer().getOwnSign()) == true) {
+                                addSuccessNum(((Object[]) executeTask).length, scheduleManager.scheduleCenter.getSystemTime() - startTime,
+                                        "com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
+                            } else {
+                                addFailNum(((Object[]) executeTask).length, scheduleManager.scheduleCenter.getSystemTime() - startTime,
+                                        "com.taobao.pamirs.schedule.TBScheduleProcessorSleep.run");
+                            }
+                        }
+                    } catch (Throwable ex) {
+                        if (this.isMutilTask == false) {
+                            addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime, "TBScheduleProcessor.run");
+                        } else {
+                            addFailNum(((Object[]) executeTask).length, scheduleManager.scheduleCenter.getSystemTime() - startTime, "TBScheduleProcessor.run");
+                        }
+                        logger.warn("Task :" + executeTask + " å¤„ç†å¤±è´¥", ex);
+                    }
+                }
+                // å½“å‰é˜Ÿåˆ—ä¸­æ‰€æœ‰çš„ä»»åŠ¡éƒ½å·²ç»å®Œæˆäº†ã€‚
+                if (logger.isTraceEnabled()) {
+                    logger.trace(Thread.currentThread().getName() + "ï¼šå½“å‰è¿è¡Œçº¿ç¨‹æ•°é‡:" + this.m_lockObject.count());
+                }
+                if (this.m_lockObject.realseThreadButNotLast() == false) {
+                    int size = 0;
+                    Thread.currentThread().sleep(100);
+                    startTime = scheduleManager.scheduleCenter.getSystemTime();
+                    // è£…è½½æ•°æ®
+                    size = this.loadScheduleData();
+                    if (size > 0) {
+                        this.m_lockObject.notifyOtherThread();
+                    } else {
+                        // åˆ¤æ–­å½“æ²¡æœ‰æ•°æ®çš„æ˜¯å¦ï¼Œæ˜¯å¦éœ€è¦é€€å‡ºè°ƒåº¦
+                        if (this.isStopSchedule == false && this.scheduleManager.isContinueWhenData() == true) {
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("æ²¡æœ‰è£…è½½åˆ°æ•°æ®ï¼Œstart sleep");
+                            }
+                            this.isSleeping = true;
+                            Thread.currentThread().sleep(this.scheduleManager.getTaskTypeInfo().getSleepTimeNoData());
+                            this.isSleeping = false;
+
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("Sleep end");
+                            }
+                        } else {
+                            // æ²¡æœ‰æ•°æ®ï¼Œé€€å‡ºè°ƒåº¦ï¼Œå”¤é†’æ‰€æœ‰æ²‰ç¡çº¿ç¨‹
+                            this.m_lockObject.notifyOtherThread();
+                        }
+                    }
+                    this.m_lockObject.realseThread();
+                } else {// å°†å½“å‰çº¿ç¨‹æ”¾ç½®åˆ°ç­‰å¾…é˜Ÿåˆ—ä¸­ã€‚ç›´åˆ°æœ‰çº¿ç¨‹è£…è½½åˆ°äº†æ–°çš„ä»»åŠ¡æ•°æ®
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("ä¸æ˜¯æœ€åä¸€ä¸ªçº¿ç¨‹ï¼Œsleep");
+                    }
+                    this.m_lockObject.waitCurrentThread();
+                }
+            }
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void addFetchNum(long num, String addr) {
+
         this.statisticsInfo.addFetchDataCount(1);
         this.statisticsInfo.addFetchDataNum(num);
-	}
+    }
 
-	public void addSuccessNum(long num, long spendTime, String addr) {
+    public void addSuccessNum(long num, long spendTime, String addr) {
         this.statisticsInfo.addDealDataSucess(num);
         this.statisticsInfo.addDealSpendTime(spendTime);
-	}
+    }
 
-	public void addFailNum(long num, long spendTime, String addr) {
-      this.statisticsInfo.addDealDataFail(num);
-      this.statisticsInfo.addDealSpendTime(spendTime);
-	}
+    public void addFailNum(long num, long spendTime, String addr) {
+        this.statisticsInfo.addDealDataFail(num);
+        this.statisticsInfo.addDealSpendTime(spendTime);
+    }
 }

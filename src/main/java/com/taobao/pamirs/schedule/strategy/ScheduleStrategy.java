@@ -3,99 +3,105 @@ package com.taobao.pamirs.schedule.strategy;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class ScheduleStrategy {
-	public enum Kind{Schedule,Java,Bean}
-	/**
-	 * ÈÎÎñÀàĞÍ
-	 */
-	private String strategyName;
+    public enum Kind {
+        Schedule, Java, Bean
+    }
 
-	private String[] IPList;
-
-	private int numOfSingleServer;
-	/**
-	 * Ö¸¶¨ĞèÒªÖ´ĞĞµ÷¶ÈµÄ»úÆ÷ÊıÁ¿
-	 */
-	private int assignNum;
-	
-	private Kind kind; 
-	
-	/**
-	 * Schedule Name,Class Name¡¢Bean Name
-	 */
-	private String taskName; 
-	
-	private String taskParameter;
-	
     /**
-     * ·şÎñ×´Ì¬: pause,resume
+     * ä»»åŠ¡ç±»å‹
+     */
+    private String strategyName;
+
+    private String[] IPList;
+
+    private int numOfSingleServer;
+    /**
+     * æŒ‡å®šéœ€è¦æ‰§è¡Œè°ƒåº¦çš„æœºå™¨æ•°é‡
+     */
+    private int assignNum;
+
+    private Kind kind;
+
+    /**
+     * Schedule Name,Class Nameã€Bean Name
+     */
+    private String taskName;
+
+    private String taskParameter;
+
+    /**
+     * æœåŠ¡çŠ¶æ€: pause,resume
      */
     private String sts = STS_RESUME;
-	
-    public static String STS_PAUSE="pause";
-    public static String STS_RESUME="resume";
 
-	
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
-	
-	public String getStrategyName() {
-		return strategyName;
-	}
+    public static String STS_PAUSE = "pause";
+    public static String STS_RESUME = "resume";
 
-	public void setStrategyName(String strategyName) {
-		this.strategyName = strategyName;
-	}
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
-	public int getAssignNum() {
-		return assignNum;
-	}
+    public String getStrategyName() {
+        return strategyName;
+    }
 
-	public void setAssignNum(int assignNum) {
-		this.assignNum = assignNum;
-	}
+    public void setStrategyName(String strategyName) {
+        this.strategyName = strategyName;
+    }
 
-	public String[] getIPList() {
-		return IPList;
-	}
+    public int getAssignNum() {
+        return assignNum;
+    }
 
-	public void setIPList(String[] iPList) {
-		IPList = iPList;
-	}
+    public void setAssignNum(int assignNum) {
+        this.assignNum = assignNum;
+    }
 
-	public void setNumOfSingleServer(int numOfSingleServer) {
-		this.numOfSingleServer = numOfSingleServer;
-	}
+    public String[] getIPList() {
+        return IPList;
+    }
 
-	public int getNumOfSingleServer() {
-		return numOfSingleServer;
-	}
-	public Kind getKind() {
-		return kind;
-	}
-	public void setKind(Kind kind) {
-		this.kind = kind;
-	}
-	public String getTaskName() {
-		return taskName;
-	}
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
+    public void setIPList(String[] iPList) {
+        IPList = iPList;
+    }
 
-	public String getTaskParameter() {
-		return taskParameter;
-	}
+    public void setNumOfSingleServer(int numOfSingleServer) {
+        this.numOfSingleServer = numOfSingleServer;
+    }
 
-	public void setTaskParameter(String taskParameter) {
-		this.taskParameter = taskParameter;
-	}
+    public int getNumOfSingleServer() {
+        return numOfSingleServer;
+    }
 
-	public String getSts() {
-		return sts;
-	}
+    public Kind getKind() {
+        return kind;
+    }
 
-	public void setSts(String sts) {
-		this.sts = sts;
-	}	
+    public void setKind(Kind kind) {
+        this.kind = kind;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getTaskParameter() {
+        return taskParameter;
+    }
+
+    public void setTaskParameter(String taskParameter) {
+        this.taskParameter = taskParameter;
+    }
+
+    public String getSts() {
+        return sts;
+    }
+
+    public void setSts(String sts) {
+        this.sts = sts;
+    }
 }

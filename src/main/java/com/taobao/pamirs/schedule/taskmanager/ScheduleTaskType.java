@@ -6,294 +6,308 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * µ÷¶ÈÈÎÎñÀàĞÍ
+ * è°ƒåº¦ä»»åŠ¡ç±»å‹
+ * 
  * @author xuannan
  *
  */
 public class ScheduleTaskType implements java.io.Serializable {
-	
-	/**
+
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	/**
-	 * ÈÎÎñÀàĞÍ
-	 */
-	private String baseTaskType;
+    private static final long serialVersionUID = 1L;
     /**
-     * ÏòÅäÖÃÖĞĞÄ¸üĞÂĞÄÌøĞÅÏ¢µÄÆµÂÊ
+     * ä»»åŠ¡ç±»å‹
      */
-    private long heartBeatRate = 5*1000;//1·ÖÖÓ
-    
+    private String baseTaskType;
     /**
-     * ÅĞ¶ÏÒ»¸ö·şÎñÆ÷ËÀÍöµÄÖÜÆÚ¡£ÎªÁË°²È«£¬ÖÁÉÙÊÇĞÄÌøÖÜÆÚµÄÁ½±¶ÒÔÉÏ
+     * å‘é…ç½®ä¸­å¿ƒæ›´æ–°å¿ƒè·³ä¿¡æ¯çš„é¢‘ç‡
      */
-    private long judgeDeadInterval = 1*60*1000;//2·ÖÖÓ
-    
+    private long heartBeatRate = 5 * 1000;// 1åˆ†é’Ÿ
+
     /**
-     * µ±Ã»ÓĞÊı¾İµÄÊ±ºò£¬ĞİÃßµÄÊ±¼ä
+     * åˆ¤æ–­ä¸€ä¸ªæœåŠ¡å™¨æ­»äº¡çš„å‘¨æœŸã€‚ä¸ºäº†å®‰å…¨ï¼Œè‡³å°‘æ˜¯å¿ƒè·³å‘¨æœŸçš„ä¸¤å€ä»¥ä¸Š
+     */
+    private long judgeDeadInterval = 1 * 60 * 1000;// 2åˆ†é’Ÿ
+
+    /**
+     * å½“æ²¡æœ‰æ•°æ®çš„æ—¶å€™ï¼Œä¼‘çœ çš„æ—¶é—´
      * 
      */
     private int sleepTimeNoData = 500;
-    
+
     /**
-     * ÔÚÃ¿´ÎÊı¾İ´¦ÀíÍíºóĞİÃßµÄÊ±¼ä
+     * åœ¨æ¯æ¬¡æ•°æ®å¤„ç†æ™šåä¼‘çœ çš„æ—¶é—´
      */
     private int sleepTimeInterval = 0;
-    
+
     /**
-     * Ã¿´Î»ñÈ¡Êı¾İµÄÊıÁ¿
+     * æ¯æ¬¡è·å–æ•°æ®çš„æ•°é‡
      */
     private int fetchDataNumber = 500;
-    
+
     /**
-     * ÔÚÅú´¦ÀíµÄÊ±ºò£¬Ã¿´Î´¦ÀíµÄÊı¾İÁ¿
+     * åœ¨æ‰¹å¤„ç†çš„æ—¶å€™ï¼Œæ¯æ¬¡å¤„ç†çš„æ•°æ®é‡
      */
-    private int executeNumber =1;
-    
+    private int executeNumber = 1;
+
     private int threadNumber = 5;
-    
+
     /**
-     * µ÷¶ÈÆ÷ÀàĞÍ
+     * è°ƒåº¦å™¨ç±»å‹
      */
-    private String processorType="SLEEP" ;
+    private String processorType = "SLEEP";
     /**
-     * ÔÊĞíÖ´ĞĞµÄ¿ªÊ¼Ê±¼ä
+     * å…è®¸æ‰§è¡Œçš„å¼€å§‹æ—¶é—´
      */
     private String permitRunStartTime;
     /**
-     * ÔÊĞíÖ´ĞĞµÄ¿ªÊ¼Ê±¼ä
+     * å…è®¸æ‰§è¡Œçš„å¼€å§‹æ—¶é—´
      */
     private String permitRunEndTime;
-    
+
     /**
-     * Çå³ı¹ıÆÚ»·¾³ĞÅÏ¢µÄÊ±¼ä¼ä¸ô,ÒÔÌìÎªµ¥Î»
+     * æ¸…é™¤è¿‡æœŸç¯å¢ƒä¿¡æ¯çš„æ—¶é—´é—´éš”,ä»¥å¤©ä¸ºå•ä½
      */
     private double expireOwnSignInterval = 1;
-    
+
     /**
-     * ´¦ÀíÈÎÎñµÄBeanName
+     * å¤„ç†ä»»åŠ¡çš„BeanName
      */
     private String dealBeanName;
     /**
-     * ÈÎÎñbeanµÄ²ÎÊı£¬ÓÉÓÃ»§×Ô¶¨Òå¸ñÊ½µÄ×Ö·û´®
+     * ä»»åŠ¡beançš„å‚æ•°ï¼Œç”±ç”¨æˆ·è‡ªå®šä¹‰æ ¼å¼çš„å­—ç¬¦ä¸²
      */
     private String taskParameter;
-    
-    //ÈÎÎñÀàĞÍ£º¾²Ì¬static,¶¯Ì¬dynamic
+
+    // ä»»åŠ¡ç±»å‹ï¼šé™æ€static,åŠ¨æ€dynamic
     private String taskKind = TASKKIND_STATIC;
-    
-    public static String TASKKIND_STATIC="static";
-    public static String TASKKIND_DYNAMIC="dynamic";
- 
-    
+
+    public static String TASKKIND_STATIC = "static";
+    public static String TASKKIND_DYNAMIC = "dynamic";
+
     /**
-     * ÈÎÎñÏîÊı×é
+     * ä»»åŠ¡é¡¹æ•°ç»„
      */
     private String[] taskItems;
-    
+
     /**
-     * Ã¿¸öÏß³Ì×éÄÜ´¦ÀíµÄ×î´óÈÎÎñÏîÄ¿ÊéÄ¿
+     * æ¯ä¸ªçº¿ç¨‹ç»„èƒ½å¤„ç†çš„æœ€å¤§ä»»åŠ¡é¡¹ç›®ä¹¦ç›®
      */
     private int maxTaskItemsOfOneThreadGroup = 0;
     /**
-     * °æ±¾ºÅ
+     * ç‰ˆæœ¬å·
      */
     private long version;
-    
+
     /**
-     * ·şÎñ×´Ì¬: pause,resume
+     * æœåŠ¡çŠ¶æ€: pause,resume
      */
     private String sts = STS_RESUME;
-	
-    public static String STS_PAUSE="pause";
-    public static String STS_RESUME="resume";
-    
-    public static String[] splitTaskItem(String str){
-    	List<String> list = new ArrayList<String>();
-		int start = 0;
-		int index = 0;
-    	while(index < str.length()){
-    		if(str.charAt(index)==':'){
-    			index = str.indexOf('}', index) + 1;
-    			list.add(str.substring(start,index).trim());
-    			while(index <str.length()){
-    				if(str.charAt(index) ==' '){
-    					index = index +1;
-    				}else{
-    					break;
-    				}
-    			}
-    			index = index + 1; //Ìø¹ı¶ººÅ
-    			start = index;
-    		}else if(str.charAt(index)==','){
-    			list.add(str.substring(start,index).trim());
-    			while(index <str.length()){
-    				if(str.charAt(index) ==' '){
-    					index = index +1;
-    				}else{
-    					break;
-    				}
-    			}
-    			index = index + 1; //Ìø¹ı¶ººÅ
-    			start = index;
-    		}else{
-    			index = index + 1;
-    		}
-    	}
-    	if(start < str.length()){
-    		list.add(str.substring(start).trim());
-    	}
-    	return (String[]) list.toArray(new String[0]);
-     }
-    
-	public long getVersion() {
-		return version;
-	}
-	public void setVersion(long version) {
-		this.version = version;
-	}
-	
-	public String getBaseTaskType() {
-		return baseTaskType;
-	}
-	public void setBaseTaskType(String baseTaskType) {
-		this.baseTaskType = baseTaskType;
-	}
-	public long getHeartBeatRate() {
-		return heartBeatRate;
-	}
-	public void setHeartBeatRate(long heartBeatRate) {
-		this.heartBeatRate = heartBeatRate;
-	}
 
-	public long getJudgeDeadInterval() {
-		return judgeDeadInterval;
-	}
+    public static String STS_PAUSE = "pause";
+    public static String STS_RESUME = "resume";
 
-	public void setJudgeDeadInterval(long judgeDeadInterval) {
-		this.judgeDeadInterval = judgeDeadInterval;
-	}
+    public static String[] splitTaskItem(String str) {
+        List<String> list = new ArrayList<String>();
+        int start = 0;
+        int index = 0;
+        while (index < str.length()) {
+            if (str.charAt(index) == ':') {
+                index = str.indexOf('}', index) + 1;
+                list.add(str.substring(start, index).trim());
+                while (index < str.length()) {
+                    if (str.charAt(index) == ' ') {
+                        index = index + 1;
+                    } else {
+                        break;
+                    }
+                }
+                index = index + 1; // è·³è¿‡é€—å·
+                start = index;
+            } else if (str.charAt(index) == ',') {
+                list.add(str.substring(start, index).trim());
+                while (index < str.length()) {
+                    if (str.charAt(index) == ' ') {
+                        index = index + 1;
+                    } else {
+                        break;
+                    }
+                }
+                index = index + 1; // è·³è¿‡é€—å·
+                start = index;
+            } else {
+                index = index + 1;
+            }
+        }
+        if (start < str.length()) {
+            list.add(str.substring(start).trim());
+        }
+        return (String[]) list.toArray(new String[0]);
+    }
 
-	public int getFetchDataNumber() {
-		return fetchDataNumber;
-	}
+    public long getVersion() {
+        return version;
+    }
 
-	public void setFetchDataNumber(int fetchDataNumber) {
-		this.fetchDataNumber = fetchDataNumber;
-	}
+    public void setVersion(long version) {
+        this.version = version;
+    }
 
-	public int getExecuteNumber() {
-		return executeNumber;
-	}
+    public String getBaseTaskType() {
+        return baseTaskType;
+    }
 
-	public void setExecuteNumber(int executeNumber) {
-		this.executeNumber = executeNumber;
-	}
+    public void setBaseTaskType(String baseTaskType) {
+        this.baseTaskType = baseTaskType;
+    }
 
-	public int getSleepTimeNoData() {
-		return sleepTimeNoData;
-	}
+    public long getHeartBeatRate() {
+        return heartBeatRate;
+    }
 
-	public void setSleepTimeNoData(int sleepTimeNoData) {
-		this.sleepTimeNoData = sleepTimeNoData;
-	}
+    public void setHeartBeatRate(long heartBeatRate) {
+        this.heartBeatRate = heartBeatRate;
+    }
 
-	public int getSleepTimeInterval() {
-		return sleepTimeInterval;
-	}
+    public long getJudgeDeadInterval() {
+        return judgeDeadInterval;
+    }
 
-	public void setSleepTimeInterval(int sleepTimeInterval) {
-		this.sleepTimeInterval = sleepTimeInterval;
-	}
+    public void setJudgeDeadInterval(long judgeDeadInterval) {
+        this.judgeDeadInterval = judgeDeadInterval;
+    }
 
-	public int getThreadNumber() {
-		return threadNumber;
-	}
+    public int getFetchDataNumber() {
+        return fetchDataNumber;
+    }
 
-	public void setThreadNumber(int threadNumber) {
-		this.threadNumber = threadNumber;
-	}
+    public void setFetchDataNumber(int fetchDataNumber) {
+        this.fetchDataNumber = fetchDataNumber;
+    }
 
-	public String getPermitRunStartTime() {
-		return permitRunStartTime;
-	}
+    public int getExecuteNumber() {
+        return executeNumber;
+    }
 
-	public String getProcessorType() {
-		return processorType;
-	}
+    public void setExecuteNumber(int executeNumber) {
+        this.executeNumber = executeNumber;
+    }
 
-	public void setProcessorType(String processorType) {
-		this.processorType = processorType;
-	}
+    public int getSleepTimeNoData() {
+        return sleepTimeNoData;
+    }
 
-	public void setPermitRunStartTime(String permitRunStartTime) {
-		this.permitRunStartTime = permitRunStartTime;
-		if(this.permitRunStartTime != null && this.permitRunStartTime.trim().length() ==0){
-			this.permitRunStartTime = null;
-		}	
-	}
+    public void setSleepTimeNoData(int sleepTimeNoData) {
+        this.sleepTimeNoData = sleepTimeNoData;
+    }
 
-	public String getPermitRunEndTime() {
-		return permitRunEndTime;
-	}
+    public int getSleepTimeInterval() {
+        return sleepTimeInterval;
+    }
 
-	public double getExpireOwnSignInterval() {
-		return expireOwnSignInterval;
-	}
-	public void setExpireOwnSignInterval(double expireOwnSignInterval) {
-		this.expireOwnSignInterval = expireOwnSignInterval;
-	}
-	
-	public String getDealBeanName() {
-		return dealBeanName;
-	}
-	public void setDealBeanName(String dealBeanName) {
-		this.dealBeanName = dealBeanName;
-	}
-	public void setPermitRunEndTime(String permitRunEndTime) {
-		this.permitRunEndTime = permitRunEndTime;
-		if(this.permitRunEndTime != null && this.permitRunEndTime.trim().length() ==0){
-			this.permitRunEndTime = null;
-		}	
+    public void setSleepTimeInterval(int sleepTimeInterval) {
+        this.sleepTimeInterval = sleepTimeInterval;
+    }
 
-	}
+    public int getThreadNumber() {
+        return threadNumber;
+    }
 
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
-	public void setTaskItems(String[] aTaskItems) {
-		this.taskItems = aTaskItems;
-	}
-	public String[] getTaskItems() {
-		return taskItems;
-	}
-	public void setSts(String sts) {
-		this.sts = sts;
-	}
-	public String getSts() {
-		return sts;
-	}
-	public void setTaskKind(String taskKind) {
-		this.taskKind = taskKind;
-	}
-	public String getTaskKind() {
-		return taskKind;
-	}
-	public void setTaskParameter(String taskParameter) {
-		this.taskParameter = taskParameter;
-	}
-	public String getTaskParameter() {
-		return taskParameter;
-	}
+    public void setThreadNumber(int threadNumber) {
+        this.threadNumber = threadNumber;
+    }
 
-	public int getMaxTaskItemsOfOneThreadGroup() {
-		return maxTaskItemsOfOneThreadGroup;
-	}
+    public String getPermitRunStartTime() {
+        return permitRunStartTime;
+    }
 
-	public void setMaxTaskItemsOfOneThreadGroup(int maxTaskItemsOfOneThreadGroup) {
-		this.maxTaskItemsOfOneThreadGroup = maxTaskItemsOfOneThreadGroup;
-	}
-	
-	
+    public String getProcessorType() {
+        return processorType;
+    }
+
+    public void setProcessorType(String processorType) {
+        this.processorType = processorType;
+    }
+
+    public void setPermitRunStartTime(String permitRunStartTime) {
+        this.permitRunStartTime = permitRunStartTime;
+        if (this.permitRunStartTime != null && this.permitRunStartTime.trim().length() == 0) {
+            this.permitRunStartTime = null;
+        }
+    }
+
+    public String getPermitRunEndTime() {
+        return permitRunEndTime;
+    }
+
+    public double getExpireOwnSignInterval() {
+        return expireOwnSignInterval;
+    }
+
+    public void setExpireOwnSignInterval(double expireOwnSignInterval) {
+        this.expireOwnSignInterval = expireOwnSignInterval;
+    }
+
+    public String getDealBeanName() {
+        return dealBeanName;
+    }
+
+    public void setDealBeanName(String dealBeanName) {
+        this.dealBeanName = dealBeanName;
+    }
+
+    public void setPermitRunEndTime(String permitRunEndTime) {
+        this.permitRunEndTime = permitRunEndTime;
+        if (this.permitRunEndTime != null && this.permitRunEndTime.trim().length() == 0) {
+            this.permitRunEndTime = null;
+        }
+
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    public void setTaskItems(String[] aTaskItems) {
+        this.taskItems = aTaskItems;
+    }
+
+    public String[] getTaskItems() {
+        return taskItems;
+    }
+
+    public void setSts(String sts) {
+        this.sts = sts;
+    }
+
+    public String getSts() {
+        return sts;
+    }
+
+    public void setTaskKind(String taskKind) {
+        this.taskKind = taskKind;
+    }
+
+    public String getTaskKind() {
+        return taskKind;
+    }
+
+    public void setTaskParameter(String taskParameter) {
+        this.taskParameter = taskParameter;
+    }
+
+    public String getTaskParameter() {
+        return taskParameter;
+    }
+
+    public int getMaxTaskItemsOfOneThreadGroup() {
+        return maxTaskItemsOfOneThreadGroup;
+    }
+
+    public void setMaxTaskItemsOfOneThreadGroup(int maxTaskItemsOfOneThreadGroup) {
+        this.maxTaskItemsOfOneThreadGroup = maxTaskItemsOfOneThreadGroup;
+    }
+
 }

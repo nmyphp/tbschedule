@@ -1,19 +1,23 @@
 package com.taobao.pamirs.schedule;
 
 /**
- * ¿ÉÅú´¦ÀíµÄÈÎÎñ½Ó¿Ú
+ * å¯æ‰¹å¤„ç†çš„ä»»åŠ¡æ¥å£
+ * 
  * @author xuannan
  *
- * @param <T>ÈÎÎñÀàĞÍ
+ * @param <T>ä»»åŠ¡ç±»å‹
  */
-public interface IScheduleTaskDealMulti<T>  extends IScheduleTaskDeal<T> {
- 
-/**
- * 	Ö´ĞĞ¸ø¶¨µÄÈÎÎñÊı×é¡£ÒòÎª·ºĞÍ²»Ö§³Önew Êı×é£¬Ö»ÄÜ´«µİOBJECT[]
- * @param tasks ÈÎÎñÊı×é
- * @param ownSign µ±Ç°»·¾³Ãû³Æ
- * @return
- * @throws Exception
- */
-  public boolean execute(T[] tasks,String ownSign) throws Exception;
+public interface IScheduleTaskDealMulti<T> extends IScheduleTaskDeal<T> {
+
+    /**
+     * æ‰§è¡Œç»™å®šçš„ä»»åŠ¡æ•°ç»„ã€‚å› ä¸ºæ³›å‹ä¸æ”¯æŒnew æ•°ç»„ï¼Œåªèƒ½ä¼ é€’OBJECT[]
+     * 
+     * @param tasks
+     *            ä»»åŠ¡æ•°ç»„
+     * @param ownSign
+     *            å½“å‰ç¯å¢ƒåç§°
+     * @return
+     * @throws Exception
+     */
+    public boolean execute(T[] tasks, String ownSign) throws Exception;
 }

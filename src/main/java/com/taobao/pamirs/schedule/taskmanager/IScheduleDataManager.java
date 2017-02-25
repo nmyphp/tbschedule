@@ -7,233 +7,261 @@ import org.apache.zookeeper.data.Stat;
 
 import com.taobao.pamirs.schedule.TaskItemDefine;
 
-
 /**
- * µ÷¶ÈÅäÖÃÖĞĞÄ¿Í»§¶Ë½Ó¿Ú£¬¿ÉÒÔÓĞ»ùÓÚÊı¾İ¿âµÄÊµÏÖ£¬¿ÉÒÔÓĞ»ùÓÚConfigServerµÄÊµÏÖ
+ * è°ƒåº¦é…ç½®ä¸­å¿ƒå®¢æˆ·ç«¯æ¥å£ï¼Œå¯ä»¥æœ‰åŸºäºæ•°æ®åº“çš„å®ç°ï¼Œå¯ä»¥æœ‰åŸºäºConfigServerçš„å®ç°
  * 
  * @author xuannan
  * 
  */
-public interface IScheduleDataManager{
-	public long getSystemTime();
-	/**
-	 * ÖØĞÂ×°ÔØµ±Ç°serverĞèÒª´¦ÀíµÄÊı¾İ¶ÓÁĞ
-	 * 
-	 * @param taskType
-	 *            ÈÎÎñÀàĞÍ
-	 * @param uuid
-	 *            µ±Ç°serverµÄUUID
-	 * @return
-	 * @throws Exception
-	 */
-	public List<TaskItemDefine> reloadDealTaskItem(String taskType,String uuid) throws Exception;
+public interface IScheduleDataManager {
+    public long getSystemTime();
 
-	/**
-	 * ×°ÔØËùÓĞµÄÈÎÎñ¶ÓÁĞĞÅÏ¢
-	 * @param taskType
-	 * @return
-	 * @throws Exception
-	 */
-	public List<ScheduleTaskItem> loadAllTaskItem(String taskType) throws Exception;
-	
-	/**
-	 * ÊÍ·Å×Ô¼º°Ñ³Ö£¬±ğÈËÉêÇëµÄ¶ÓÁĞ
-	 * 
-	 * @param taskType
-	 * @param uuid
-	 * @return
-	 * @throws Exception
-	 */
-	public void releaseDealTaskItem(String taskType,String uuid) throws Exception;
-
-	/**
-	 * »ñÈ¡Ò»¹²ÈÎÎñÀàĞÍµÄ´¦Àí¶ÓÁĞÊıÁ¿
-	 * 
-	 * @param taskType
-	 * @return
-	 * @throws Exception
-	 */
-	public int queryTaskItemCount(String taskType) throws Exception;
-
-	/**
-	 * ×°ÔØÈÎÎñÀàĞÍÏà¹ØĞÅÏ¢
-	 * 
-	 * @param taskType
-	 * @throws Exception
-	 */
-	public ScheduleTaskType loadTaskTypeBaseInfo(String taskType) throws Exception;
-	
-	/**
-	 * Çå³ıÒÑ¾­¹ıÆÚµÄµ÷¶È·şÎñÆ÷ĞÅÏ¢
-	 * 
-	 * @param taskInfo
-	 * @throws Exception
-	 */
-	public int clearExpireScheduleServer(String taskType,long expireTime) throws Exception;
-
-	/**
-	 * Çå³ıÈÎÎñĞÅÏ¢£¬·şÎñÆ÷ÒÑ¾­²»´æÔÚµÄÊ±ºò
-	 * 
-	 * @param taskInfo
-	 * @throws Exception
-	 */
-	public int clearTaskItem(String taskType, List<String> serverList) throws Exception;
-
-	/**
-	 * »ñÈ¡ËùÓĞµÄÓĞĞ§·şÎñÆ÷ĞÅÏ¢
-	 * 
-	 * @param taskInfo
-	 * @return
-	 * @throws Exception
-	 */
-	public List<ScheduleServer> selectAllValidScheduleServer(String taskType) throws Exception;
-	public List<String> loadScheduleServerNames(String taskType)throws Exception;
-	/**
-	 * ÖØĞÂ·ÖÅäÈÎÎñItem
-	 * 
-	 * @param taskType
-	 * @param serverList
-	 * @throws Exception
-	 */
-	public void assignTaskItem(String taskType,String currentUuid, int maxNumOfOneServer,List<String> serverList) throws Exception;
-
-	/**
-	 * ·¢ËÍĞÄÌøĞÅÏ¢
-	 * 
-	 * @param server
-	 * @throws Exception
-	 */
-	public boolean refreshScheduleServer(ScheduleServer server) throws Exception;
-
-	/**
-	 * ×¢²á·şÎñÆ÷
-	 * 
-	 * @param server
-	 * @throws Exception
-	 */
-	public void registerScheduleServer(ScheduleServer server) throws Exception;
-
-	/**
-	 * ×¢Ïú·şÎñÆ÷
-	 * @param serverUUID
-	 * @throws Exception
-	 */
-	public void unRegisterScheduleServer(String taskType,String serverUUID) throws Exception;
-	/**
-	 * Çå³ıÒÑ¾­¹ıÆÚµÄOWN_SIGNµÄ×Ô¶¯Éú³ÉµÄÊı¾İ
-	 * @param taskType ÈÎÎñÀàĞÍ
-	 * @param serverUUID ·şÎñÆ÷
-	 * @param expireDateInternal ¹ıÆÚÊ±¼ä£¬ÒÔÌìÎªµ¥Î»
-	 * @throws Exception
-	 */
-	public void clearExpireTaskTypeRunningInfo(String baseTaskType,String serverUUID,double expireDateInternal)throws Exception;
-	
-	public boolean isLeader(String uuid,List<String> serverList);
-	
-	public void pauseAllServer(String baseTaskType)throws Exception;
-	public void resumeAllServer(String baseTaskType)throws Exception;
-
-	public List<ScheduleTaskType> getAllTaskTypeBaseInfo()throws Exception ;
-	
-	/**
-	 * Çå³ıÒ»¸öÈÎÎñÀàĞÍµÄÔËĞĞÆÚĞÅÏ¢
-	 * @param baseTaskType
-	 * @throws Exception
-	 */
-	public void clearTaskType(String baseTaskType) throws Exception;
-	/**
-	 *  ´´½¨Ò»¸öĞÂµÄÈÎÎñÀàĞÍ
-	 * @param baseTaskType
-	 * @throws Exception
-	 */
-    public void createBaseTaskType(ScheduleTaskType baseTaskType) throws Exception ;
-    public void updateBaseTaskType(ScheduleTaskType baseTaskType) throws Exception ;
-    public List<ScheduleTaskTypeRunningInfo> getAllTaskTypeRunningInfo(String baseTaskType) throws Exception;
-    
     /**
-     * É¾³ıÒ»¸öÈÎÎñÀàĞÍ
+     * é‡æ–°è£…è½½å½“å‰serveréœ€è¦å¤„ç†çš„æ•°æ®é˜Ÿåˆ—
+     * 
+     * @param taskType
+     *            ä»»åŠ¡ç±»å‹
+     * @param uuid
+     *            å½“å‰serverçš„UUID
+     * @return
+     * @throws Exception
+     */
+    public List<TaskItemDefine> reloadDealTaskItem(String taskType, String uuid) throws Exception;
+
+    /**
+     * è£…è½½æ‰€æœ‰çš„ä»»åŠ¡é˜Ÿåˆ—ä¿¡æ¯
+     * 
+     * @param taskType
+     * @return
+     * @throws Exception
+     */
+    public List<ScheduleTaskItem> loadAllTaskItem(String taskType) throws Exception;
+
+    /**
+     * é‡Šæ”¾è‡ªå·±æŠŠæŒï¼Œåˆ«äººç”³è¯·çš„é˜Ÿåˆ—
+     * 
+     * @param taskType
+     * @param uuid
+     * @return
+     * @throws Exception
+     */
+    public void releaseDealTaskItem(String taskType, String uuid) throws Exception;
+
+    /**
+     * è·å–ä¸€å…±ä»»åŠ¡ç±»å‹çš„å¤„ç†é˜Ÿåˆ—æ•°é‡
+     * 
+     * @param taskType
+     * @return
+     * @throws Exception
+     */
+    public int queryTaskItemCount(String taskType) throws Exception;
+
+    /**
+     * è£…è½½ä»»åŠ¡ç±»å‹ç›¸å…³ä¿¡æ¯
+     * 
+     * @param taskType
+     * @throws Exception
+     */
+    public ScheduleTaskType loadTaskTypeBaseInfo(String taskType) throws Exception;
+
+    /**
+     * æ¸…é™¤å·²ç»è¿‡æœŸçš„è°ƒåº¦æœåŠ¡å™¨ä¿¡æ¯
+     * 
+     * @param taskInfo
+     * @throws Exception
+     */
+    public int clearExpireScheduleServer(String taskType, long expireTime) throws Exception;
+
+    /**
+     * æ¸…é™¤ä»»åŠ¡ä¿¡æ¯ï¼ŒæœåŠ¡å™¨å·²ç»ä¸å­˜åœ¨çš„æ—¶å€™
+     * 
+     * @param taskInfo
+     * @throws Exception
+     */
+    public int clearTaskItem(String taskType, List<String> serverList) throws Exception;
+
+    /**
+     * è·å–æ‰€æœ‰çš„æœ‰æ•ˆæœåŠ¡å™¨ä¿¡æ¯
+     * 
+     * @param taskInfo
+     * @return
+     * @throws Exception
+     */
+    public List<ScheduleServer> selectAllValidScheduleServer(String taskType) throws Exception;
+
+    public List<String> loadScheduleServerNames(String taskType) throws Exception;
+
+    /**
+     * é‡æ–°åˆ†é…ä»»åŠ¡Item
+     * 
+     * @param taskType
+     * @param serverList
+     * @throws Exception
+     */
+    public void assignTaskItem(String taskType, String currentUuid, int maxNumOfOneServer, List<String> serverList) throws Exception;
+
+    /**
+     * å‘é€å¿ƒè·³ä¿¡æ¯
+     * 
+     * @param server
+     * @throws Exception
+     */
+    public boolean refreshScheduleServer(ScheduleServer server) throws Exception;
+
+    /**
+     * æ³¨å†ŒæœåŠ¡å™¨
+     * 
+     * @param server
+     * @throws Exception
+     */
+    public void registerScheduleServer(ScheduleServer server) throws Exception;
+
+    /**
+     * æ³¨é”€æœåŠ¡å™¨
+     * 
+     * @param serverUUID
+     * @throws Exception
+     */
+    public void unRegisterScheduleServer(String taskType, String serverUUID) throws Exception;
+
+    /**
+     * æ¸…é™¤å·²ç»è¿‡æœŸçš„OWN_SIGNçš„è‡ªåŠ¨ç”Ÿæˆçš„æ•°æ®
+     * 
+     * @param taskType
+     *            ä»»åŠ¡ç±»å‹
+     * @param serverUUID
+     *            æœåŠ¡å™¨
+     * @param expireDateInternal
+     *            è¿‡æœŸæ—¶é—´ï¼Œä»¥å¤©ä¸ºå•ä½
+     * @throws Exception
+     */
+    public void clearExpireTaskTypeRunningInfo(String baseTaskType, String serverUUID, double expireDateInternal) throws Exception;
+
+    public boolean isLeader(String uuid, List<String> serverList);
+
+    public void pauseAllServer(String baseTaskType) throws Exception;
+
+    public void resumeAllServer(String baseTaskType) throws Exception;
+
+    public List<ScheduleTaskType> getAllTaskTypeBaseInfo() throws Exception;
+
+    /**
+     * æ¸…é™¤ä¸€ä¸ªä»»åŠ¡ç±»å‹çš„è¿è¡ŒæœŸä¿¡æ¯
+     * 
+     * @param baseTaskType
+     * @throws Exception
+     */
+    public void clearTaskType(String baseTaskType) throws Exception;
+
+    /**
+     * åˆ›å»ºä¸€ä¸ªæ–°çš„ä»»åŠ¡ç±»å‹
+     * 
+     * @param baseTaskType
+     * @throws Exception
+     */
+    public void createBaseTaskType(ScheduleTaskType baseTaskType) throws Exception;
+
+    public void updateBaseTaskType(ScheduleTaskType baseTaskType) throws Exception;
+
+    public List<ScheduleTaskTypeRunningInfo> getAllTaskTypeRunningInfo(String baseTaskType) throws Exception;
+
+    /**
+     * åˆ é™¤ä¸€ä¸ªä»»åŠ¡ç±»å‹
+     * 
      * @param baseTaskType
      * @throws Exception
      */
     public void deleteTaskType(String baseTaskType) throws Exception;
-	
-	/**
-	 * ¸ù¾İÌõ¼ş²éÑ¯µ±Ç°µ÷¶È·şÎñ
-	 * @param baseTaskType
-	 * @param ownSign
-	 * @param ip
-	 * @param orderStr
-	 * @return
-	 * @throws Exception
-	 */
-	public List<ScheduleServer> selectScheduleServer(String baseTaskType, String ownSign, String ip, String orderStr)
-			throws Exception;
 
-	/**
-	 * ²éÑ¯µ÷¶È·şÎñµÄÀúÊ·¼ÇÂ¼
-	 * @param baseTaskType
-	 * @param ownSign
-	 * @param ip
-	 * @param orderStr
-	 * @return
-	 * @throws Exception
-	 */
-	public List<ScheduleServer> selectHistoryScheduleServer(String baseTaskType, String ownSign, String ip, String orderStr)
-			throws Exception;
+    /**
+     * æ ¹æ®æ¡ä»¶æŸ¥è¯¢å½“å‰è°ƒåº¦æœåŠ¡
+     * 
+     * @param baseTaskType
+     * @param ownSign
+     * @param ip
+     * @param orderStr
+     * @return
+     * @throws Exception
+     */
+    public List<ScheduleServer> selectScheduleServer(String baseTaskType, String ownSign, String ip, String orderStr) throws Exception;
 
-	public List<ScheduleServer> selectScheduleServerByManagerFactoryUUID(String factoryUUID) throws Exception;
+    /**
+     * æŸ¥è¯¢è°ƒåº¦æœåŠ¡çš„å†å²è®°å½•
+     * 
+     * @param baseTaskType
+     * @param ownSign
+     * @param ip
+     * @param orderStr
+     * @return
+     * @throws Exception
+     */
+    public List<ScheduleServer> selectHistoryScheduleServer(String baseTaskType, String ownSign, String ip, String orderStr) throws Exception;
 
-	/**
-	 * ´´½¨ÈÎÎñÏî¡£×¢ÒâÆäÖĞµÄ CurrentSeverºÍRequestServer²»»áÆğ×÷ÓÃ
-	 * @param taskItems
-	 * @throws Exception
-	 */
-	public void createScheduleTaskItem(ScheduleTaskItem[] taskItems) throws Exception;
-	
-	/**
-	 * ¸üĞÂÈÎÎñµÄ×´Ì¬ºÍ´¦ÀíĞÅÏ¢
-	 * @param taskType
-	 * @param sts
-	 * @param message
-	 */
-	public void updateScheduleTaskItemStatus(String taskType,String taskItem,ScheduleTaskItem.TaskItemSts sts,String message)throws Exception;
+    public List<ScheduleServer> selectScheduleServerByManagerFactoryUUID(String factoryUUID) throws Exception;
 
-	/**
-	 * É¾³ıÈÎÎñÏî
-	 * @param taskType
-	 * @param taskItem
-	 */
-	public void deleteScheduleTaskItem(String taskType,String taskItem) throws Exception;
-	/**
-	 * ³õÊ¼»¯ÈÎÎñµ÷¶ÈµÄÓòĞÅÏ¢ºÍ¾²Ì¬ÈÎÎñĞÅÏ¢
-	 * @param baseTaskType
-	 * @param ownSign
-	 * @param serverUUID
-	 * @throws Exception
-	 */
-	public void initialRunningInfo4Static(String baseTaskType, String ownSign,String uuid)throws Exception;
-	public void initialRunningInfo4Dynamic(String baseTaskType, String ownSign)throws Exception;
-	/**
-	 * ÔËĞĞÆÚĞÅÏ¢ÊÇ·ñ³õÊ¼»¯³É¹¦
-	 * @param baseTaskType
-	 * @param ownSign
-	 * @param serverUUID
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean isInitialRunningInfoSucuss(String baseTaskType, String ownSign) throws Exception;
-	public void setInitialRunningInfoSucuss(String baseTaskType, String taskType,String uuid) throws Exception;
-	public String getLeader(List<String> serverList);
-	
-	public long updateReloadTaskItemFlag(String taskType) throws Exception;
-	public long getReloadTaskItemFlag(String taskType) throws Exception;
-	
-	/**
-	 * Í¨¹ıtaskType»ñÈ¡µ±Ç°ÔËĞĞµÄserverListĞÅÏ¢¡£
-	 * @param taskType
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String ,Stat> getCurrentServerStatList(String taskType) throws Exception;
-	 
+    /**
+     * åˆ›å»ºä»»åŠ¡é¡¹ã€‚æ³¨æ„å…¶ä¸­çš„ CurrentSeverå’ŒRequestServerä¸ä¼šèµ·ä½œç”¨
+     * 
+     * @param taskItems
+     * @throws Exception
+     */
+    public void createScheduleTaskItem(ScheduleTaskItem[] taskItems) throws Exception;
+
+    /**
+     * æ›´æ–°ä»»åŠ¡çš„çŠ¶æ€å’Œå¤„ç†ä¿¡æ¯
+     * 
+     * @param taskType
+     * @param sts
+     * @param message
+     */
+    public void updateScheduleTaskItemStatus(String taskType, String taskItem, ScheduleTaskItem.TaskItemSts sts, String message) throws Exception;
+
+    /**
+     * åˆ é™¤ä»»åŠ¡é¡¹
+     * 
+     * @param taskType
+     * @param taskItem
+     */
+    public void deleteScheduleTaskItem(String taskType, String taskItem) throws Exception;
+
+    /**
+     * åˆå§‹åŒ–ä»»åŠ¡è°ƒåº¦çš„åŸŸä¿¡æ¯å’Œé™æ€ä»»åŠ¡ä¿¡æ¯
+     * 
+     * @param baseTaskType
+     * @param ownSign
+     * @param serverUUID
+     * @throws Exception
+     */
+    public void initialRunningInfo4Static(String baseTaskType, String ownSign, String uuid) throws Exception;
+
+    public void initialRunningInfo4Dynamic(String baseTaskType, String ownSign) throws Exception;
+
+    /**
+     * è¿è¡ŒæœŸä¿¡æ¯æ˜¯å¦åˆå§‹åŒ–æˆåŠŸ
+     * 
+     * @param baseTaskType
+     * @param ownSign
+     * @param serverUUID
+     * @return
+     * @throws Exception
+     */
+    public boolean isInitialRunningInfoSucuss(String baseTaskType, String ownSign) throws Exception;
+
+    public void setInitialRunningInfoSucuss(String baseTaskType, String taskType, String uuid) throws Exception;
+
+    public String getLeader(List<String> serverList);
+
+    public long updateReloadTaskItemFlag(String taskType) throws Exception;
+
+    public long getReloadTaskItemFlag(String taskType) throws Exception;
+
+    /**
+     * é€šè¿‡taskTypeè·å–å½“å‰è¿è¡Œçš„serverListä¿¡æ¯ã€‚
+     * 
+     * @param taskType
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Stat> getCurrentServerStatList(String taskType) throws Exception;
+
 }

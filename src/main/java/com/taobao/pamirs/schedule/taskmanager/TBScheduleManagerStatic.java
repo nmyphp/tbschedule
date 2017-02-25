@@ -12,281 +12,279 @@ import com.taobao.pamirs.schedule.TaskItemDefine;
 import com.taobao.pamirs.schedule.strategy.TBScheduleManagerFactory;
 
 public class TBScheduleManagerStatic extends TBScheduleManager {
-	private static transient Logger log = LoggerFactory.getLogger(TBScheduleManagerStatic.class);
+    private static transient Logger log = LoggerFactory.getLogger(TBScheduleManagerStatic.class);
     /**
-	 * ×ÜµÄÈÎÎñÊıÁ¿
-	 */
-    protected int taskItemCount =0;
+     * æ€»çš„ä»»åŠ¡æ•°é‡
+     */
+    protected int taskItemCount = 0;
 
     protected long lastFetchVersion = -1;
-    
+
     private final Object NeedReloadTaskItemLock = new Object();
 
-	public TBScheduleManagerStatic(TBScheduleManagerFactory aFactory,
-			String baseTaskType, String ownSign,IScheduleDataManager aScheduleCenter) throws Exception {
-		super(aFactory, baseTaskType, ownSign, aScheduleCenter);
-	}
-	public void initialRunningInfo() throws Exception{
-		scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(),this.taskTypeInfo.getJudgeDeadInterval());
-		List<String> list = scheduleCenter.loadScheduleServerNames(this.currenScheduleServer.getTaskType());
-		if(scheduleCenter.isLeader(this.currenScheduleServer.getUuid(),list)){
-	    	//ÊÇµÚÒ»´ÎÆô¶¯£¬ÏÈÇå³şËùÓĞµÄÀ¬»øÊı¾İ
-			log.debug(this.currenScheduleServer.getUuid() + ":" + list.size());
-	    	this.scheduleCenter.initialRunningInfo4Static(this.currenScheduleServer.getBaseTaskType(), this.currenScheduleServer.getOwnSign(),this.currenScheduleServer.getUuid());
-	    }
-	 }
-	public void initial() throws Exception{
-    	new Thread(this.currenScheduleServer.getTaskType()  +"-" + this.currentSerialNumber +"-StartProcess"){
-    		@SuppressWarnings("static-access")
-			public void run(){
-    			try{
-    			   log.info("¿ªÊ¼»ñÈ¡µ÷¶ÈÈÎÎñ¶ÓÁĞ...... of " + currenScheduleServer.getUuid());
-    			   while (isRuntimeInfoInitial == false) {
- 				      if(isStopSchedule == true){
-				    	  log.debug("Íâ²¿ÃüÁîÖÕÖ¹µ÷¶È,ÍË³öµ÷¶È¶ÓÁĞ»ñÈ¡£º" + currenScheduleServer.getUuid());
-				    	  return;
-				      }
- 				      //log.error("isRuntimeInfoInitial = " + isRuntimeInfoInitial);
- 				      try{
-					  initialRunningInfo();
-					  isRuntimeInfoInitial = scheduleCenter.isInitialRunningInfoSucuss(
-										currenScheduleServer.getBaseTaskType(),
-										currenScheduleServer.getOwnSign());
- 				      }catch(Throwable e){
- 				    	  //ºöÂÔ³õÊ¼»¯µÄÒì³£
- 				    	  log.error(e.getMessage(),e);
- 				      }
-					  if(isRuntimeInfoInitial == false){
-    				      Thread.currentThread().sleep(1000);
-					  }
-					}
-    			   int count =0;
-    			   lastReloadTaskItemListTime = scheduleCenter.getSystemTime();
-				   while(getCurrentScheduleTaskItemListNow().size() <= 0){
-    				      if(isStopSchedule == true){
-    				    	  log.debug("Íâ²¿ÃüÁîÖÕÖ¹µ÷¶È,ÍË³öµ÷¶È¶ÓÁĞ»ñÈ¡£º" + currenScheduleServer.getUuid());
-    				    	  return;
-    				      }
-    				      Thread.currentThread().sleep(1000);
-        			      count = count + 1;
-        			     // log.error("³¢ÊÔ»ñÈ¡µ÷¶È¶ÓÁĞ£¬µÚ" + count + "´Î ") ;
-    			   }
-    			   String tmpStr ="TaskItemDefine:";
-    			   for(int i=0;i< currentTaskItemList.size();i++){
-    				   if(i>0){
-    					   tmpStr = tmpStr +",";    					   
-    				   }
-    				   tmpStr = tmpStr + currentTaskItemList.get(i);
-    			   }
-    			   log.info("»ñÈ¡µ½ÈÎÎñ´¦Àí¶ÓÁĞ£¬¿ªÊ¼µ÷¶È£º" + tmpStr +"  of  "+ currenScheduleServer.getUuid());
-    			   
-    		    	//ÈÎÎñ×ÜÁ¿
-    		    	taskItemCount = scheduleCenter.loadAllTaskItem(currenScheduleServer.getTaskType()).size();
-    		    	//Ö»ÓĞÔÚÒÑ¾­»ñÈ¡µ½ÈÎÎñ´¦Àí¶ÓÁĞºó²Å¿ªÊ¼Æô¶¯ÈÎÎñ´¦ÀíÆ÷    			   
-    			   computerStart();
-    			}catch(Exception e){
-    				log.error(e.getMessage(),e);
-    				String str = e.getMessage();
-    				if(str.length() > 300){
-    					str = str.substring(0,300);
-    				}
-    				startErrorInfo = "Æô¶¯´¦ÀíÒì³££º" + str;
-    			}
-    		}
-    	}.start();
+    public TBScheduleManagerStatic(TBScheduleManagerFactory aFactory, String baseTaskType, String ownSign, IScheduleDataManager aScheduleCenter) throws Exception {
+        super(aFactory, baseTaskType, ownSign, aScheduleCenter);
     }
-	/**
-	 * ¶¨Ê±ÏòÊı¾İÅäÖÃÖĞĞÄ¸üĞÂµ±Ç°·şÎñÆ÷µÄĞÄÌøĞÅÏ¢¡£
-	 * Èç¹û·¢ÏÖ±¾´Î¸üĞÂµÄÊ±¼äÈç¹ûÒÑ¾­³¬¹ıÁË£¬·şÎñÆ÷ËÀÍöµÄĞÄÌøÖÜÆÚ£¬Ôò²»ÄÜÔÚÏò·şÎñÆ÷¸üĞÂĞÅÏ¢¡£
-	 * ¶øÓ¦¸Ãµ±×÷ĞÂµÄ·şÎñÆ÷£¬½øĞĞÖØĞÂ×¢²á¡£
-	 * @throws Exception 
-	 */
-	public void refreshScheduleServerInfo() throws Exception {
-	  try{
-		rewriteScheduleInfo();
-		//Èç¹ûÈÎÎñĞÅÏ¢Ã»ÓĞ³õÊ¼»¯³É¹¦£¬²»×öÈÎÎñÏà¹ØµÄ´¦Àí
-		if(this.isRuntimeInfoInitial == false){
-			return;
-		}
-		
-        //ÖØĞÂ·ÖÅäÈÎÎñ
-        this.assignScheduleTask();
-        
-        //ÅĞ¶ÏÊÇ·ñĞèÒªÖØĞÂ¼ÓÔØÈÎÎñ¶ÓÁĞ£¬±ÜÃâÈÎÎñ´¦Àí½ø³Ì²»±ØÒªµÄ¼ì²éºÍµÈ´ı
-        boolean tmpBoolean = this.isNeedReLoadTaskItemList();
-        if(tmpBoolean != this.isNeedReloadTaskItem){
-        	//Ö»Òª²»ÏàÍ¬£¬¾ÍÉèÖÃĞèÒªÖØĞÂ×°ÔØ£¬ÒòÎªÔÚĞÄÌøÒì³£µÄÊ±ºò£¬×öÁËÇåÀí¶ÓÁĞµÄÊÂÇé£¬»Ö¸´ºóĞèÒªÖØĞÂ×°ÔØ¡£
-        	synchronized (NeedReloadTaskItemLock) {
-        		this.isNeedReloadTaskItem = true;
-        	}
-        	rewriteScheduleInfo();
+
+    public void initialRunningInfo() throws Exception {
+        scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(), this.taskTypeInfo.getJudgeDeadInterval());
+        List<String> list = scheduleCenter.loadScheduleServerNames(this.currenScheduleServer.getTaskType());
+        if (scheduleCenter.isLeader(this.currenScheduleServer.getUuid(), list)) {
+            // æ˜¯ç¬¬ä¸€æ¬¡å¯åŠ¨ï¼Œå…ˆæ¸…æ¥šæ‰€æœ‰çš„åƒåœ¾æ•°æ®
+            log.debug(this.currenScheduleServer.getUuid() + ":" + list.size());
+            this.scheduleCenter.initialRunningInfo4Static(this.currenScheduleServer.getBaseTaskType(), this.currenScheduleServer.getOwnSign(), this.currenScheduleServer.getUuid());
         }
-        
-        if(this.isPauseSchedule  == true || this.processor != null && processor.isSleeping() == true){
-            //Èç¹û·şÎñÒÑ¾­ÔİÍ£ÁË£¬ÔòĞèÒªÖØĞÂ¶¨Ê±¸üĞÂ cur_server ºÍ req_server
-            //Èç¹û·şÎñÃ»ÓĞÔİÍ££¬Ò»¶¨²»ÄÜµ÷ÓÃµÄ
-               this.getCurrentScheduleTaskItemListNow();
-          }
-		}catch(Throwable e){
-			//Çå³ıÄÚ´æÖĞËùÓĞµÄÒÑ¾­È¡µÃµÄÊı¾İºÍÈÎÎñ¶ÓÁĞ,±ÜÃâĞÄÌøÏß³ÌÊ§°ÜÊ±ºòµ¼ÖÂµÄÊı¾İÖØ¸´
-			this.clearMemoInfo();
-			if(e instanceof Exception){
-				throw (Exception)e;
-			}else{
-			   throw new Exception(e.getMessage(),e);
-			}
-		}
-	}	
-	/**
-	 * ÔÚleaderÖØĞÂ·ÖÅäÈÎÎñ£¬ÔÚÃ¿¸öserverÊÍ·ÅÔ­À´Õ¼ÓĞµÄÈÎÎñÏîÊ±£¬¶¼»áĞŞ¸ÄÕâ¸ö°æ±¾ºÅ
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean isNeedReLoadTaskItemList() throws Exception{
-		return this.lastFetchVersion < this.scheduleCenter.getReloadTaskItemFlag(this.currenScheduleServer.getTaskType());
-	}
-	
-	/**ÅĞ¶ÏÄ³¸öÈÎÎñ¶ÔÓ¦µÄÏß³Ì×éÊÇ·ñ´¦ÓÚ½©Ê¬×´Ì¬¡£
-	 * true ±íÊ¾ÓĞÏß³Ì×é´¦ÓÚ½©Ê¬×´Ì¬¡£ĞèÒª¸æ¾¯¡£
-	 * @param type
-	 * @param statMap
-	 * @return
-	 * @throws Exception
-	 */
-	private boolean isExistZombieServ(String type,Map<String,Stat> statMap) throws Exception{
-		boolean exist =false;
-		for(String key:statMap.keySet()){
-			Stat s  = statMap.get(key);
-			if(this.scheduleCenter.getSystemTime() -s.getMtime()>  this.taskTypeInfo.getHeartBeatRate() * 40)
-			{
-				log.error("zombie serverList exists! serv="+key+" ,type="+type +"³¬¹ı40´ÎĞÄÌøÖÜÆÚÎ´¸üĞÂ");
-				exist=true;
-			}
-		}
-		return exist;
-		 
-	}
-	/**
-	 * ¸ù¾İµ±Ç°µ÷¶È·şÎñÆ÷µÄĞÅÏ¢£¬ÖØĞÂ¼ÆËã·ÖÅäËùÓĞµÄµ÷¶ÈÈÎÎñ
-	 * ÈÎÎñµÄ·ÖÅäÊÇĞèÒª¼ÓËø£¬±ÜÃâÊı¾İ·ÖÅä´íÎó¡£ÎªÁË±ÜÃâÊı¾İËø´øÀ´µÄ¸ºÃæ×÷ÓÃ£¬Í¨¹ı°æ±¾ºÅÀ´´ïµ½ËøµÄÄ¿µÄ
-	 * 
-	 * 1¡¢»ñÈ¡ÈÎÎñ×´Ì¬µÄ°æ±¾ºÅ
-	 * 2¡¢»ñÈ¡ËùÓĞµÄ·şÎñÆ÷×¢²áĞÅÏ¢ºÍÈÎÎñ¶ÓÁĞĞÅÏ¢
-	 * 3¡¢Çå³ıÒÑ¾­³¬¹ıĞÄÌøÖÜÆÚµÄ·şÎñÆ÷×¢²áĞÅÏ¢
-	 * 3¡¢ÖØĞÂ¼ÆËãÈÎÎñ·ÖÅä
-	 * 4¡¢¸üĞÂÈÎÎñ×´Ì¬µÄ°æ±¾ºÅ¡¾ÀÖ¹ÛËø¡¿
-	 * 5¡¢¸ùÏµÈÎÎñ¶ÓÁĞµÄ·ÖÅäĞÅÏ¢
-	 * @throws Exception 
-	 */
-	public void assignScheduleTask() throws Exception {
-		scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(),this.taskTypeInfo.getJudgeDeadInterval());
-		List<String> serverList = scheduleCenter
-				.loadScheduleServerNames(this.currenScheduleServer.getTaskType());
-		
-		if(scheduleCenter.isLeader(this.currenScheduleServer.getUuid(), serverList)==false){
-			if(log.isDebugEnabled()){
-			   log.debug(this.currenScheduleServer.getUuid() +":²»ÊÇ¸ºÔğÈÎÎñ·ÖÅäµÄLeader,Ö±½Ó·µ»Ø");
-			}
-			return;
-		}
-		//ÉèÖÃ³õÊ¼»¯³É¹¦±ê×¼£¬±ÜÃâÔÚleader×ª»»µÄÊ±ºò£¬ĞÂÔöµÄÏß³Ì×é³õÊ¼»¯Ê§°Ü
-		scheduleCenter.setInitialRunningInfoSucuss(this.currenScheduleServer.getBaseTaskType(), this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
-		scheduleCenter.clearTaskItem(this.currenScheduleServer.getTaskType(), serverList);
-		scheduleCenter.assignTaskItem(this.currenScheduleServer.getTaskType(),this.currenScheduleServer.getUuid(),this.taskTypeInfo.getMaxTaskItemsOfOneThreadGroup(),serverList);
-	}	
-	/**
-	 * ÖØĞÂ¼ÓÔØµ±Ç°·şÎñÆ÷µÄÈÎÎñ¶ÓÁĞ
-	 * 1¡¢ÊÍ·Åµ±Ç°·şÎñÆ÷³ÖÓĞ£¬µ«ÓĞÆäËü·şÎñÆ÷½øĞĞÉêÇëµÄÈÎÎñ¶ÓÁĞ
-	 * 2¡¢ÖØĞÂ»ñÈ¡µ±Ç°·şÎñÆ÷µÄ´¦Àí¶ÓÁĞ
-	 * 
-	 * ÎªÁË±ÜÃâ´Ë²Ù×÷µÄ¹ı¶È£¬×èÈûÕæÕıµÄÊı¾İ´¦ÀíÄÜÁ¦¡£ÏµÍ³ÉèÖÃÒ»¸öÖØĞÂ×°ÔØµÄÆµÂÊ¡£ÀıÈç1·ÖÖÓ
-	 * 
-	 * ÌØ±ğ×¢Òâ£º
-	 *   ´Ë·½·¨µÄµ÷ÓÃ±ØĞëÊÇÔÚµ±Ç°ËùÓĞÈÎÎñ¶¼´¦ÀíÍê±Ïºó²ÅÄÜµ÷ÓÃ£¬·ñÔòÊÇ·ñÈÎÎñ¶ÓÁĞºó¿ÉÄÜÊı¾İ±»ÖØ¸´´¦Àí
-	 */
-	
-	public List<TaskItemDefine> getCurrentScheduleTaskItemList() {
-		try{
-		if (this.isNeedReloadTaskItem == true) {			
-			//ÌØ±ğ×¢Òâ£ºĞèÒªÅĞ¶ÏÊı¾İ¶ÓÁĞÊÇ·ñÒÑ¾­¿ÕÁË£¬·ñÔò¿ÉÄÜÔÚ¶ÓÁĞÇĞ»»µÄÊ±ºòµ¼ÖÂÊı¾İÖØ¸´´¦Àí
-			//Ö÷ÒªÊÇÔÚÏß³Ì²»ĞİÃß¾Í¼ÓÔØÊı¾İµÄÊ±ºòÒ»¶¨ĞèÒªÕâ¸öÅĞ¶Ï
-			if (this.processor != null) {
-					while (this.processor.isDealFinishAllData() == false) {
-						Thread.sleep(50);
-					}
-			}
-			//ÕæÕı¿ªÊ¼´¦ÀíÊı¾İ
-			synchronized (NeedReloadTaskItemLock) {
-				this.getCurrentScheduleTaskItemListNow();
-				this.isNeedReloadTaskItem = false;
-			}
-		}
-		this.lastReloadTaskItemListTime = this.scheduleCenter.getSystemTime();		
-		return this.currentTaskItemList;		
-		}catch(Exception e){
-			throw new RuntimeException(e);
-		}
-	}
-	//ÓÉÓÚÉÏÃæÔÚÊı¾İÖ´ĞĞÊ±ÓĞÊ¹ÓÃµ½synchronized £¬µ«ÊÇĞÄÌøÏß³Ì²¢Ã»ÓĞ¶ÔÓ¦¼ÓËø¡£
-	//ËùÒÔÔÚ´Ë·½·¨ÉÏ¼ÓÒ»ÏÂsynchronized¡£20151015
-	protected synchronized List<TaskItemDefine> getCurrentScheduleTaskItemListNow() throws Exception {
-		//Èç¹ûÒÑ¾­ÎÈ¶¨ÁË£¬ÀíÂÛÉÏ²»ĞèÒª¼ÓÔØÈ¥É¨ÃèËùÓĞµÄÒ¶×Ó½áµã
-		//20151019 by kongxuan.zlj
-		try{
-			Map<String, Stat> statMap= this.scheduleCenter.getCurrentServerStatList(this.currenScheduleServer.getTaskType());
-			//serverÏÂÃæµÄ»úÆ÷½ÚµãµÄÔËĞĞÊ±»·¾³ÊÇ·ñÔÚË¢ĞÂ£¬Èç¹û
-			isExistZombieServ(this.currenScheduleServer.getTaskType(), statMap);
-		}catch(Exception e ){
-			log.error("zombie serverList exists£¬ Exception:",e);
-		}
-//		
-		
-		//»ñÈ¡×îĞÂµÄ°æ±¾ºÅ
-		this.lastFetchVersion = this.scheduleCenter.getReloadTaskItemFlag(this.currenScheduleServer.getTaskType());
-		log.debug(" this.currenScheduleServer.getTaskType()="+this.currenScheduleServer.getTaskType()+",  need reload="+ isNeedReloadTaskItem);
-		try{
-			//ÊÇ·ñ±»ÈËÉêÇëµÄ¶ÓÁĞ
-			this.scheduleCenter.releaseDealTaskItem(this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
-			//ÖØĞÂ²éÑ¯µ±Ç°·şÎñÆ÷ÄÜ¹»´¦ÀíµÄ¶ÓÁĞ
-			//ÎªÁË±ÜÃâÔÚĞİÃßÇĞ»»µÄ¹ı³ÌÖĞ³öÏÖ¶ÓÁĞË²¼äµÄ²»Ò»ÖÂ£¬ÏÈÇå³ıÄÚ´æÖĞµÄ¶ÓÁĞ
-			this.currentTaskItemList.clear();
-			this.currentTaskItemList = this.scheduleCenter.reloadDealTaskItem(
-					this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
-			
-			//Èç¹û³¬¹ı10¸öĞÄÌøÖÜÆÚ»¹Ã»ÓĞ»ñÈ¡µ½µ÷¶È¶ÓÁĞ£¬Ôò±¨¾¯
-			if(this.currentTaskItemList.size() ==0 && 
-					scheduleCenter.getSystemTime() - this.lastReloadTaskItemListTime
-					> this.taskTypeInfo.getHeartBeatRate() * 20){
-				StringBuffer buf =new StringBuffer();
-				buf.append("µ÷¶È·şÎñÆ÷");
-				buf.append( this.currenScheduleServer.getUuid());
-				buf.append("[TASK_TYPE=");
-				buf.append( this.currenScheduleServer.getTaskType() );
-				buf.append( "]×ÔÆô¶¯ÒÔÀ´£¬³¬¹ı20¸öĞÄÌøÖÜÆÚ£¬»¹ Ã»ÓĞ»ñÈ¡µ½·ÖÅäµÄÈÎÎñ¶ÓÁĞ;");
-				buf.append("  currentTaskItemList.size() ="+currentTaskItemList.size());
-				buf.append(" ,scheduleCenter.getSystemTime()="+scheduleCenter.getSystemTime());
-				buf.append(" ,lastReloadTaskItemListTime="+lastReloadTaskItemListTime);
-				buf.append(" ,taskTypeInfo.getHeartBeatRate()="+taskTypeInfo.getHeartBeatRate()*10);
-				log.warn(buf.toString());
-			}
-			
-			if(this.currentTaskItemList.size() >0){
-				 //¸üĞÂÊ±¼ä´Á
-				 this.lastReloadTaskItemListTime = scheduleCenter.getSystemTime();
-			}
-			
-			return this.currentTaskItemList;
-		}catch(Throwable e){
-			this.lastFetchVersion = -1; //±ØĞë°Ñ°Ñ°æ±¾ºÅÉèÖÃĞ¡£¬±ÜÃâÈÎÎñ¼ÓÔØÊ§°Ü
-			if(e instanceof Exception ){
-				throw (Exception)e;
-			}else{
-				throw new Exception(e);
-			}
-		}
-	}	
-	public int getTaskItemCount(){
-		 return this.taskItemCount;
-	}
+    }
+
+    public void initial() throws Exception {
+        new Thread(this.currenScheduleServer.getTaskType() + "-" + this.currentSerialNumber + "-StartProcess") {
+            @SuppressWarnings("static-access")
+            public void run() {
+                try {
+                    log.info("å¼€å§‹è·å–è°ƒåº¦ä»»åŠ¡é˜Ÿåˆ—...... of " + currenScheduleServer.getUuid());
+                    while (isRuntimeInfoInitial == false) {
+                        if (isStopSchedule == true) {
+                            log.debug("å¤–éƒ¨å‘½ä»¤ç»ˆæ­¢è°ƒåº¦,é€€å‡ºè°ƒåº¦é˜Ÿåˆ—è·å–ï¼š" + currenScheduleServer.getUuid());
+                            return;
+                        }
+                        // log.error("isRuntimeInfoInitial = " +
+                        // isRuntimeInfoInitial);
+                        try {
+                            initialRunningInfo();
+                            isRuntimeInfoInitial = scheduleCenter.isInitialRunningInfoSucuss(currenScheduleServer.getBaseTaskType(), currenScheduleServer.getOwnSign());
+                        } catch (Throwable e) {
+                            // å¿½ç•¥åˆå§‹åŒ–çš„å¼‚å¸¸
+                            log.error(e.getMessage(), e);
+                        }
+                        if (isRuntimeInfoInitial == false) {
+                            Thread.currentThread().sleep(1000);
+                        }
+                    }
+                    int count = 0;
+                    lastReloadTaskItemListTime = scheduleCenter.getSystemTime();
+                    while (getCurrentScheduleTaskItemListNow().size() <= 0) {
+                        if (isStopSchedule == true) {
+                            log.debug("å¤–éƒ¨å‘½ä»¤ç»ˆæ­¢è°ƒåº¦,é€€å‡ºè°ƒåº¦é˜Ÿåˆ—è·å–ï¼š" + currenScheduleServer.getUuid());
+                            return;
+                        }
+                        Thread.currentThread().sleep(1000);
+                        count = count + 1;
+                        // log.error("å°è¯•è·å–è°ƒåº¦é˜Ÿåˆ—ï¼Œç¬¬" + count + "æ¬¡ ") ;
+                    }
+                    String tmpStr = "TaskItemDefine:";
+                    for (int i = 0; i < currentTaskItemList.size(); i++) {
+                        if (i > 0) {
+                            tmpStr = tmpStr + ",";
+                        }
+                        tmpStr = tmpStr + currentTaskItemList.get(i);
+                    }
+                    log.info("è·å–åˆ°ä»»åŠ¡å¤„ç†é˜Ÿåˆ—ï¼Œå¼€å§‹è°ƒåº¦ï¼š" + tmpStr + "  of  " + currenScheduleServer.getUuid());
+
+                    // ä»»åŠ¡æ€»é‡
+                    taskItemCount = scheduleCenter.loadAllTaskItem(currenScheduleServer.getTaskType()).size();
+                    // åªæœ‰åœ¨å·²ç»è·å–åˆ°ä»»åŠ¡å¤„ç†é˜Ÿåˆ—åæ‰å¼€å§‹å¯åŠ¨ä»»åŠ¡å¤„ç†å™¨
+                    computerStart();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    String str = e.getMessage();
+                    if (str.length() > 300) {
+                        str = str.substring(0, 300);
+                    }
+                    startErrorInfo = "å¯åŠ¨å¤„ç†å¼‚å¸¸ï¼š" + str;
+                }
+            }
+        }.start();
+    }
+
+    /**
+     * å®šæ—¶å‘æ•°æ®é…ç½®ä¸­å¿ƒæ›´æ–°å½“å‰æœåŠ¡å™¨çš„å¿ƒè·³ä¿¡æ¯ã€‚ å¦‚æœå‘ç°æœ¬æ¬¡æ›´æ–°çš„æ—¶é—´å¦‚æœå·²ç»è¶…è¿‡äº†ï¼ŒæœåŠ¡å™¨æ­»äº¡çš„å¿ƒè·³å‘¨æœŸï¼Œåˆ™ä¸èƒ½åœ¨å‘æœåŠ¡å™¨æ›´æ–°ä¿¡æ¯ã€‚
+     * è€Œåº”è¯¥å½“ä½œæ–°çš„æœåŠ¡å™¨ï¼Œè¿›è¡Œé‡æ–°æ³¨å†Œã€‚
+     * 
+     * @throws Exception
+     */
+    public void refreshScheduleServerInfo() throws Exception {
+        try {
+            rewriteScheduleInfo();
+            // å¦‚æœä»»åŠ¡ä¿¡æ¯æ²¡æœ‰åˆå§‹åŒ–æˆåŠŸï¼Œä¸åšä»»åŠ¡ç›¸å…³çš„å¤„ç†
+            if (this.isRuntimeInfoInitial == false) {
+                return;
+            }
+
+            // é‡æ–°åˆ†é…ä»»åŠ¡
+            this.assignScheduleTask();
+
+            // åˆ¤æ–­æ˜¯å¦éœ€è¦é‡æ–°åŠ è½½ä»»åŠ¡é˜Ÿåˆ—ï¼Œé¿å…ä»»åŠ¡å¤„ç†è¿›ç¨‹ä¸å¿…è¦çš„æ£€æŸ¥å’Œç­‰å¾…
+            boolean tmpBoolean = this.isNeedReLoadTaskItemList();
+            if (tmpBoolean != this.isNeedReloadTaskItem) {
+                // åªè¦ä¸ç›¸åŒï¼Œå°±è®¾ç½®éœ€è¦é‡æ–°è£…è½½ï¼Œå› ä¸ºåœ¨å¿ƒè·³å¼‚å¸¸çš„æ—¶å€™ï¼Œåšäº†æ¸…ç†é˜Ÿåˆ—çš„äº‹æƒ…ï¼Œæ¢å¤åéœ€è¦é‡æ–°è£…è½½ã€‚
+                synchronized (NeedReloadTaskItemLock) {
+                    this.isNeedReloadTaskItem = true;
+                }
+                rewriteScheduleInfo();
+            }
+
+            if (this.isPauseSchedule == true || this.processor != null && processor.isSleeping() == true) {
+                // å¦‚æœæœåŠ¡å·²ç»æš‚åœäº†ï¼Œåˆ™éœ€è¦é‡æ–°å®šæ—¶æ›´æ–° cur_server å’Œ req_server
+                // å¦‚æœæœåŠ¡æ²¡æœ‰æš‚åœï¼Œä¸€å®šä¸èƒ½è°ƒç”¨çš„
+                this.getCurrentScheduleTaskItemListNow();
+            }
+        } catch (Throwable e) {
+            // æ¸…é™¤å†…å­˜ä¸­æ‰€æœ‰çš„å·²ç»å–å¾—çš„æ•°æ®å’Œä»»åŠ¡é˜Ÿåˆ—,é¿å…å¿ƒè·³çº¿ç¨‹å¤±è´¥æ—¶å€™å¯¼è‡´çš„æ•°æ®é‡å¤
+            this.clearMemoInfo();
+            if (e instanceof Exception) {
+                throw (Exception) e;
+            } else {
+                throw new Exception(e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * åœ¨leaderé‡æ–°åˆ†é…ä»»åŠ¡ï¼Œåœ¨æ¯ä¸ªserveré‡Šæ”¾åŸæ¥å æœ‰çš„ä»»åŠ¡é¡¹æ—¶ï¼Œéƒ½ä¼šä¿®æ”¹è¿™ä¸ªç‰ˆæœ¬å·
+     * 
+     * @return
+     * @throws Exception
+     */
+    public boolean isNeedReLoadTaskItemList() throws Exception {
+        return this.lastFetchVersion < this.scheduleCenter.getReloadTaskItemFlag(this.currenScheduleServer.getTaskType());
+    }
+
+    /**
+     * åˆ¤æ–­æŸä¸ªä»»åŠ¡å¯¹åº”çš„çº¿ç¨‹ç»„æ˜¯å¦å¤„äºåƒµå°¸çŠ¶æ€ã€‚ true è¡¨ç¤ºæœ‰çº¿ç¨‹ç»„å¤„äºåƒµå°¸çŠ¶æ€ã€‚éœ€è¦å‘Šè­¦ã€‚
+     * 
+     * @param type
+     * @param statMap
+     * @return
+     * @throws Exception
+     */
+    private boolean isExistZombieServ(String type, Map<String, Stat> statMap) throws Exception {
+        boolean exist = false;
+        for (String key : statMap.keySet()) {
+            Stat s = statMap.get(key);
+            if (this.scheduleCenter.getSystemTime() - s.getMtime() > this.taskTypeInfo.getHeartBeatRate() * 40) {
+                log.error("zombie serverList exists! serv=" + key + " ,type=" + type + "è¶…è¿‡40æ¬¡å¿ƒè·³å‘¨æœŸæœªæ›´æ–°");
+                exist = true;
+            }
+        }
+        return exist;
+
+    }
+
+    /**
+     * æ ¹æ®å½“å‰è°ƒåº¦æœåŠ¡å™¨çš„ä¿¡æ¯ï¼Œé‡æ–°è®¡ç®—åˆ†é…æ‰€æœ‰çš„è°ƒåº¦ä»»åŠ¡
+     * ä»»åŠ¡çš„åˆ†é…æ˜¯éœ€è¦åŠ é”ï¼Œé¿å…æ•°æ®åˆ†é…é”™è¯¯ã€‚ä¸ºäº†é¿å…æ•°æ®é”å¸¦æ¥çš„è´Ÿé¢ä½œç”¨ï¼Œé€šè¿‡ç‰ˆæœ¬å·æ¥è¾¾åˆ°é”çš„ç›®çš„
+     * 
+     * 1ã€è·å–ä»»åŠ¡çŠ¶æ€çš„ç‰ˆæœ¬å· 2ã€è·å–æ‰€æœ‰çš„æœåŠ¡å™¨æ³¨å†Œä¿¡æ¯å’Œä»»åŠ¡é˜Ÿåˆ—ä¿¡æ¯ 3ã€æ¸…é™¤å·²ç»è¶…è¿‡å¿ƒè·³å‘¨æœŸçš„æœåŠ¡å™¨æ³¨å†Œä¿¡æ¯ 3ã€é‡æ–°è®¡ç®—ä»»åŠ¡åˆ†é…
+     * 4ã€æ›´æ–°ä»»åŠ¡çŠ¶æ€çš„ç‰ˆæœ¬å·ã€ä¹è§‚é”ã€‘ 5ã€æ ¹ç³»ä»»åŠ¡é˜Ÿåˆ—çš„åˆ†é…ä¿¡æ¯
+     * 
+     * @throws Exception
+     */
+    public void assignScheduleTask() throws Exception {
+        scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(), this.taskTypeInfo.getJudgeDeadInterval());
+        List<String> serverList = scheduleCenter.loadScheduleServerNames(this.currenScheduleServer.getTaskType());
+
+        if (scheduleCenter.isLeader(this.currenScheduleServer.getUuid(), serverList) == false) {
+            if (log.isDebugEnabled()) {
+                log.debug(this.currenScheduleServer.getUuid() + ":ä¸æ˜¯è´Ÿè´£ä»»åŠ¡åˆ†é…çš„Leader,ç›´æ¥è¿”å›");
+            }
+            return;
+        }
+        // è®¾ç½®åˆå§‹åŒ–æˆåŠŸæ ‡å‡†ï¼Œé¿å…åœ¨leaderè½¬æ¢çš„æ—¶å€™ï¼Œæ–°å¢çš„çº¿ç¨‹ç»„åˆå§‹åŒ–å¤±è´¥
+        scheduleCenter.setInitialRunningInfoSucuss(this.currenScheduleServer.getBaseTaskType(), this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
+        scheduleCenter.clearTaskItem(this.currenScheduleServer.getTaskType(), serverList);
+        scheduleCenter
+                .assignTaskItem(this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid(), this.taskTypeInfo.getMaxTaskItemsOfOneThreadGroup(), serverList);
+    }
+
+    /**
+     * é‡æ–°åŠ è½½å½“å‰æœåŠ¡å™¨çš„ä»»åŠ¡é˜Ÿåˆ— 1ã€é‡Šæ”¾å½“å‰æœåŠ¡å™¨æŒæœ‰ï¼Œä½†æœ‰å…¶å®ƒæœåŠ¡å™¨è¿›è¡Œç”³è¯·çš„ä»»åŠ¡é˜Ÿåˆ— 2ã€é‡æ–°è·å–å½“å‰æœåŠ¡å™¨çš„å¤„ç†é˜Ÿåˆ—
+     * 
+     * ä¸ºäº†é¿å…æ­¤æ“ä½œçš„è¿‡åº¦ï¼Œé˜»å¡çœŸæ­£çš„æ•°æ®å¤„ç†èƒ½åŠ›ã€‚ç³»ç»Ÿè®¾ç½®ä¸€ä¸ªé‡æ–°è£…è½½çš„é¢‘ç‡ã€‚ä¾‹å¦‚1åˆ†é’Ÿ
+     * 
+     * ç‰¹åˆ«æ³¨æ„ï¼š æ­¤æ–¹æ³•çš„è°ƒç”¨å¿…é¡»æ˜¯åœ¨å½“å‰æ‰€æœ‰ä»»åŠ¡éƒ½å¤„ç†å®Œæ¯•åæ‰èƒ½è°ƒç”¨ï¼Œå¦åˆ™æ˜¯å¦ä»»åŠ¡é˜Ÿåˆ—åå¯èƒ½æ•°æ®è¢«é‡å¤å¤„ç†
+     */
+
+    public List<TaskItemDefine> getCurrentScheduleTaskItemList() {
+        try {
+            if (this.isNeedReloadTaskItem == true) {
+                // ç‰¹åˆ«æ³¨æ„ï¼šéœ€è¦åˆ¤æ–­æ•°æ®é˜Ÿåˆ—æ˜¯å¦å·²ç»ç©ºäº†ï¼Œå¦åˆ™å¯èƒ½åœ¨é˜Ÿåˆ—åˆ‡æ¢çš„æ—¶å€™å¯¼è‡´æ•°æ®é‡å¤å¤„ç†
+                // ä¸»è¦æ˜¯åœ¨çº¿ç¨‹ä¸ä¼‘çœ å°±åŠ è½½æ•°æ®çš„æ—¶å€™ä¸€å®šéœ€è¦è¿™ä¸ªåˆ¤æ–­
+                if (this.processor != null) {
+                    while (this.processor.isDealFinishAllData() == false) {
+                        Thread.sleep(50);
+                    }
+                }
+                // çœŸæ­£å¼€å§‹å¤„ç†æ•°æ®
+                synchronized (NeedReloadTaskItemLock) {
+                    this.getCurrentScheduleTaskItemListNow();
+                    this.isNeedReloadTaskItem = false;
+                }
+            }
+            this.lastReloadTaskItemListTime = this.scheduleCenter.getSystemTime();
+            return this.currentTaskItemList;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ç”±äºä¸Šé¢åœ¨æ•°æ®æ‰§è¡Œæ—¶æœ‰ä½¿ç”¨åˆ°synchronized ï¼Œä½†æ˜¯å¿ƒè·³çº¿ç¨‹å¹¶æ²¡æœ‰å¯¹åº”åŠ é”ã€‚
+    // æ‰€ä»¥åœ¨æ­¤æ–¹æ³•ä¸ŠåŠ ä¸€ä¸‹synchronizedã€‚20151015
+    protected synchronized List<TaskItemDefine> getCurrentScheduleTaskItemListNow() throws Exception {
+        // å¦‚æœå·²ç»ç¨³å®šäº†ï¼Œç†è®ºä¸Šä¸éœ€è¦åŠ è½½å»æ‰«ææ‰€æœ‰çš„å¶å­ç»“ç‚¹
+        // 20151019 by kongxuan.zlj
+        try {
+            Map<String, Stat> statMap = this.scheduleCenter.getCurrentServerStatList(this.currenScheduleServer.getTaskType());
+            // serverä¸‹é¢çš„æœºå™¨èŠ‚ç‚¹çš„è¿è¡Œæ—¶ç¯å¢ƒæ˜¯å¦åœ¨åˆ·æ–°ï¼Œå¦‚æœ
+            isExistZombieServ(this.currenScheduleServer.getTaskType(), statMap);
+        } catch (Exception e) {
+            log.error("zombie serverList existsï¼Œ Exception:", e);
+        }
+        //
+
+        // è·å–æœ€æ–°çš„ç‰ˆæœ¬å·
+        this.lastFetchVersion = this.scheduleCenter.getReloadTaskItemFlag(this.currenScheduleServer.getTaskType());
+        log.debug(" this.currenScheduleServer.getTaskType()=" + this.currenScheduleServer.getTaskType() + ",  need reload=" + isNeedReloadTaskItem);
+        try {
+            // æ˜¯å¦è¢«äººç”³è¯·çš„é˜Ÿåˆ—
+            this.scheduleCenter.releaseDealTaskItem(this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
+            // é‡æ–°æŸ¥è¯¢å½“å‰æœåŠ¡å™¨èƒ½å¤Ÿå¤„ç†çš„é˜Ÿåˆ—
+            // ä¸ºäº†é¿å…åœ¨ä¼‘çœ åˆ‡æ¢çš„è¿‡ç¨‹ä¸­å‡ºç°é˜Ÿåˆ—ç¬é—´çš„ä¸ä¸€è‡´ï¼Œå…ˆæ¸…é™¤å†…å­˜ä¸­çš„é˜Ÿåˆ—
+            this.currentTaskItemList.clear();
+            this.currentTaskItemList = this.scheduleCenter.reloadDealTaskItem(this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
+
+            // å¦‚æœè¶…è¿‡10ä¸ªå¿ƒè·³å‘¨æœŸè¿˜æ²¡æœ‰è·å–åˆ°è°ƒåº¦é˜Ÿåˆ—ï¼Œåˆ™æŠ¥è­¦
+            if (this.currentTaskItemList.size() == 0 && scheduleCenter.getSystemTime() - this.lastReloadTaskItemListTime > this.taskTypeInfo.getHeartBeatRate() * 20) {
+                StringBuffer buf = new StringBuffer();
+                buf.append("è°ƒåº¦æœåŠ¡å™¨");
+                buf.append(this.currenScheduleServer.getUuid());
+                buf.append("[TASK_TYPE=");
+                buf.append(this.currenScheduleServer.getTaskType());
+                buf.append("]è‡ªå¯åŠ¨ä»¥æ¥ï¼Œè¶…è¿‡20ä¸ªå¿ƒè·³å‘¨æœŸï¼Œè¿˜ æ²¡æœ‰è·å–åˆ°åˆ†é…çš„ä»»åŠ¡é˜Ÿåˆ—;");
+                buf.append("  currentTaskItemList.size() =" + currentTaskItemList.size());
+                buf.append(" ,scheduleCenter.getSystemTime()=" + scheduleCenter.getSystemTime());
+                buf.append(" ,lastReloadTaskItemListTime=" + lastReloadTaskItemListTime);
+                buf.append(" ,taskTypeInfo.getHeartBeatRate()=" + taskTypeInfo.getHeartBeatRate() * 10);
+                log.warn(buf.toString());
+            }
+
+            if (this.currentTaskItemList.size() > 0) {
+                // æ›´æ–°æ—¶é—´æˆ³
+                this.lastReloadTaskItemListTime = scheduleCenter.getSystemTime();
+            }
+
+            return this.currentTaskItemList;
+        } catch (Throwable e) {
+            this.lastFetchVersion = -1; // å¿…é¡»æŠŠæŠŠç‰ˆæœ¬å·è®¾ç½®å°ï¼Œé¿å…ä»»åŠ¡åŠ è½½å¤±è´¥
+            if (e instanceof Exception) {
+                throw (Exception) e;
+            } else {
+                throw new Exception(e);
+            }
+        }
+    }
+
+    public int getTaskItemCount() {
+        return this.taskItemCount;
+    }
 
 }

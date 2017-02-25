@@ -3,31 +3,39 @@ package com.taobao.pamirs.schedule;
 import java.util.Comparator;
 import java.util.List;
 
-
 /**
- * µ÷¶ÈÆ÷¶ÔÍâµÄ»ù´¡½Ó¿Ú
+ * è°ƒåº¦å™¨å¯¹å¤–çš„åŸºç¡€æ¥å£
+ * 
  * @author xuannan
  *
- * @param <T> ÈÎÎñÀàĞÍ
+ * @param <T>
+ *            ä»»åŠ¡ç±»å‹
  */
 public interface IScheduleTaskDeal<T> {
 
-/**
- * ¸ù¾İÌõ¼ş£¬²éÑ¯µ±Ç°µ÷¶È·şÎñÆ÷¿É´¦ÀíµÄÈÎÎñ	
- * @param taskParameter ÈÎÎñµÄ×Ô¶¨Òå²ÎÊı
- * @param ownSign µ±Ç°»·¾³Ãû³Æ 
- * @param taskItemNum µ±Ç°ÈÎÎñÀàĞÍµÄÈÎÎñ¶ÓÁĞÊıÁ¿
- * @param taskItemList µ±Ç°µ÷¶È·şÎñÆ÷£¬·ÖÅäµ½µÄ¿É´¦Àí¶ÓÁĞ
- * @param eachFetchDataNum Ã¿´Î»ñÈ¡Êı¾İµÄÊıÁ¿
- * @return
- * @throws Exception
- */
-public List<T> selectTasks(String taskParameter,String ownSign,int taskItemNum,List<TaskItemDefine> taskItemList,int eachFetchDataNum) throws Exception;
+    /**
+     * æ ¹æ®æ¡ä»¶ï¼ŒæŸ¥è¯¢å½“å‰è°ƒåº¦æœåŠ¡å™¨å¯å¤„ç†çš„ä»»åŠ¡
+     * 
+     * @param taskParameter
+     *            ä»»åŠ¡çš„è‡ªå®šä¹‰å‚æ•°
+     * @param ownSign
+     *            å½“å‰ç¯å¢ƒåç§°
+     * @param taskItemNum
+     *            å½“å‰ä»»åŠ¡ç±»å‹çš„ä»»åŠ¡é˜Ÿåˆ—æ•°é‡
+     * @param taskItemList
+     *            å½“å‰è°ƒåº¦æœåŠ¡å™¨ï¼Œåˆ†é…åˆ°çš„å¯å¤„ç†é˜Ÿåˆ—
+     * @param eachFetchDataNum
+     *            æ¯æ¬¡è·å–æ•°æ®çš„æ•°é‡
+     * @return
+     * @throws Exception
+     */
+    public List<T> selectTasks(String taskParameter, String ownSign, int taskItemNum, List<TaskItemDefine> taskItemList, int eachFetchDataNum) throws Exception;
 
-/**
- * »ñÈ¡ÈÎÎñµÄ±È½ÏÆ÷,Ö÷ÒªÔÚNotSleepÄ£Ê½ÏÂĞèÒªÓÃµ½
- * @return
- */
-public Comparator<T> getComparator();
+    /**
+     * è·å–ä»»åŠ¡çš„æ¯”è¾ƒå™¨,ä¸»è¦åœ¨NotSleepæ¨¡å¼ä¸‹éœ€è¦ç”¨åˆ°
+     * 
+     * @return
+     */
+    public Comparator<T> getComparator();
 
 }

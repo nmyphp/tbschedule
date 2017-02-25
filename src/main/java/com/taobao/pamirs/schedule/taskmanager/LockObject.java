@@ -1,59 +1,59 @@
 package com.taobao.pamirs.schedule.taskmanager;
 
 class LockObject {
-	private int m_threadCount = 0;
-	private Object m_waitOnObject = new Object();
+    private int m_threadCount = 0;
+    private Object m_waitOnObject = new Object();
 
-	public LockObject() {
-	}
+    public LockObject() {
+    }
 
-	public void waitCurrentThread() throws Exception {
-		synchronized (m_waitOnObject) {
-			// System.out.println(Thread.currentThread().getName() + ":" +
-			// "ĞİÃßµ±Ç°Ïß³Ì");
-			this.m_waitOnObject.wait();
-		}
-	}
+    public void waitCurrentThread() throws Exception {
+        synchronized (m_waitOnObject) {
+            // System.out.println(Thread.currentThread().getName() + ":" +
+            // "ä¼‘çœ å½“å‰çº¿ç¨‹");
+            this.m_waitOnObject.wait();
+        }
+    }
 
-	public void notifyOtherThread() throws Exception {
-		synchronized (m_waitOnObject) {
-			// System.out.println(Thread.currentThread().getName() + ":" +
-			// "»½ĞÑËùÓĞµÈ´ıÏß³Ì");
-			this.m_waitOnObject.notifyAll();
-		}
-	}
+    public void notifyOtherThread() throws Exception {
+        synchronized (m_waitOnObject) {
+            // System.out.println(Thread.currentThread().getName() + ":" +
+            // "å”¤é†’æ‰€æœ‰ç­‰å¾…çº¿ç¨‹");
+            this.m_waitOnObject.notifyAll();
+        }
+    }
 
-	public void addThread() {
-		synchronized (this) {
-			m_threadCount = m_threadCount + 1;
-		}
-	}
+    public void addThread() {
+        synchronized (this) {
+            m_threadCount = m_threadCount + 1;
+        }
+    }
 
-	public void realseThread() {
-		synchronized (this) {
-			m_threadCount = m_threadCount - 1;
-		}
-	}
+    public void realseThread() {
+        synchronized (this) {
+            m_threadCount = m_threadCount - 1;
+        }
+    }
 
-	/**
-	 * ½µµÍÏß³ÌÊıÁ¿£¬Èç¹ûÊÇ×îºóÒ»¸öÏß³Ì£¬Ôò²»ÄÜĞİÃß
-	 * 
-	 * @return boolean
-	 */
-	public boolean realseThreadButNotLast() {
-		synchronized (this) {
-			if (this.m_threadCount == 1) {
-				return false;
-			} else {
-				m_threadCount = m_threadCount - 1;
-				return true;
-			}
-		}
-	}
+    /**
+     * é™ä½çº¿ç¨‹æ•°é‡ï¼Œå¦‚æœæ˜¯æœ€åä¸€ä¸ªçº¿ç¨‹ï¼Œåˆ™ä¸èƒ½ä¼‘çœ 
+     * 
+     * @return boolean
+     */
+    public boolean realseThreadButNotLast() {
+        synchronized (this) {
+            if (this.m_threadCount == 1) {
+                return false;
+            } else {
+                m_threadCount = m_threadCount - 1;
+                return true;
+            }
+        }
+    }
 
-	public int count() {
-		synchronized (this) {
-			return m_threadCount;
-		}
-	}
+    public int count() {
+        synchronized (this) {
+            return m_threadCount;
+        }
+    }
 }
