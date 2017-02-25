@@ -5,11 +5,11 @@
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleTaskTypeRunningInfo"%>
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
 <title>
-µ÷¶ÈÈÎÎñÏêÏ¸ĞÅÏ¢
+è°ƒåº¦ä»»åŠ¡è¯¦ç»†ä¿¡æ¯
 </title>
 <STYLE type=text/css>
 TH{height:20px;color:#5371BA;font-weight:bold;font-size:12px;text-align:center;border:#8CB2E3 solid;border-width:0 1 1 0;background-color:#E4EFF1;white-space:nowrap;overflow:hidden;}
@@ -26,7 +26,7 @@ String ownSign =  request.getParameter("ownSign");
 List<ScheduleTaskTypeRunningInfo> taskTypeRunningInfoList = ConsoleManager.getScheduleDataManager().getAllTaskTypeRunningInfo(baseTaskType);
 if(taskTypeRunningInfoList.size() ==0){
 %>
-ÈÎÎñ <%=baseTaskType%>£º»¹Ã»ÓĞÔËĞĞÆÚĞÅÏ¢
+ä»»åŠ¡ <%=baseTaskType%>ï¼šè¿˜æ²¡æœ‰è¿è¡ŒæœŸä¿¡æ¯
 <%
 	}else{
 %>
@@ -46,20 +46,20 @@ if(taskTypeRunningInfoList.size() ==0){
 <td>
    <table border="1" style="border-COLLAPSE: collapse;display:block;">
    <tr>
-   <th nowrap>ĞòºÅ</th>
-   <th>Ïß³Ì×é±àºÅ</th>
-   <th>Óò</th>
-   <th>IPµØÖ·</th>
-   <th>Ö÷»úÃû³Æ</th>
-   <th nowrap>Ïß³Ì</th>
-   <th>×¢²áÊ±¼ä</th>
-   <th>ĞÄÌøÊ±¼ä</th>
-   <th>È¡ÊıÊ±¼ä</th>   
-   <th nowrap>°æ±¾</th>
-   <th nowrap>ÏÂ´Î¿ªÊ¼</th>
-   <th nowrap>ÏÂ´Î½áÊø</th>
-   <th>´¦ÀíÏêÇé</th>
-   <th>´¦Àí»úÆ÷</th>
+   <th nowrap>åºå·</th>
+   <th>çº¿ç¨‹ç»„ç¼–å·</th>
+   <th>åŸŸ</th>
+   <th>IPåœ°å€</th>
+   <th>ä¸»æœºåç§°</th>
+   <th nowrap>çº¿ç¨‹</th>
+   <th>æ³¨å†Œæ—¶é—´</th>
+   <th>å¿ƒè·³æ—¶é—´</th>
+   <th>å–æ•°æ—¶é—´</th>   
+   <th nowrap>ç‰ˆæœ¬</th>
+   <th nowrap>ä¸‹æ¬¡å¼€å§‹</th>
+   <th nowrap>ä¸‹æ¬¡ç»“æŸ</th>
+   <th>å¤„ç†è¯¦æƒ…</th>
+   <th>å¤„ç†æœºå™¨</th>
    </tr>
    <%
    	List<ScheduleServer> serverList = ConsoleManager.getScheduleDataManager().selectAllValidScheduleServer(taskTypeRunningInfoList.get(i).getTaskType());
@@ -94,17 +94,17 @@ if(taskTypeRunningInfoList.size() ==0){
    </table> 
 </td>
 </tr>
-<!-- ¶ÓÁĞĞÅÏ¢ -->
+<!-- é˜Ÿåˆ—ä¿¡æ¯ -->
 <tr>
 <td>
    <table border="1" style="border-COLLAPSE: collapse;display:block;">
    <tr>
-   <th>ÈÎÎñÏî</th>
-   <th>µ±Ç°Ïß³Ì×é</th>
-   <th>ÇëÇóÏß³Ì×é</th>
-   <th>ÈÎÎñ×´Ì¬</th>
-   <th>ÈÎÎñ²ÎÊı</th>
-   <th>´¦ÀíÃèÊö</th>
+   <th>ä»»åŠ¡é¡¹</th>
+   <th>å½“å‰çº¿ç¨‹ç»„</th>
+   <th>è¯·æ±‚çº¿ç¨‹ç»„</th>
+   <th>ä»»åŠ¡çŠ¶æ€</th>
+   <th>ä»»åŠ¡å‚æ•°</th>
+   <th>å¤„ç†æè¿°</th>
    
    </tr>
    <%

@@ -1,7 +1,7 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 	if(ConsoleManager.isInitial() == false){
 		response.sendRedirect("config.jsp");
@@ -14,7 +14,7 @@
 <html>
 <head>
 <title>
-Scheduleµ÷¶È¹ÜÀí
+Scheduleè°ƒåº¦ç®¡ç†
 </title>
 <STYLE type=text/css>
 
@@ -28,30 +28,30 @@ table{border-collapse:collapse}
 <table id="list" border="1" >
 <thead>
      <tr>
-     	<th>ÐòºÅ</th>
+     	<th>åºå·</th>
      	<%
      		if ("true".equals(isManager)) {
      	%>
-     	<th >¹ÜÀí</th>
+     	<th >ç®¡ç†</th>
 		<%
 			}
 		%>
-     	<th>ÈÎÎñÀàÐÍ</th>
-     	<th>ÈÎÎñ´¦ÀíBean</th>
-     	<th>ÐÄÌøÆµÂÊ(Ãë)</th>
-     	<th>ËÀÍö¼ä¸ô(Ãë)</th>
-     	<th>Ïß³ÌÊý</th>
-     	<th>Ã¿´Î»ñÈ¡Êý¾ÝÁ¿</th>
-     	<th>Ã¿´ÎÖ´ÐÐÊýÁ¿</th>
-     	<th>Ã»ÓÐÊý¾ÝÊ±ÐÝÃßÊ±³¤(Ãë)</th>
-     	<th>´¦ÀíÄ£Ê½</th>
-     	<th>Ã¿´Î´¦ÀíÍêÊý¾ÝºóÐÝÃßÊ±¼ä(Ãë)</th>
-    	<th>Çå³ý´¦ÀíÓòÐÅÏ¢Ê±³¤(Ð¡Ê±)</th>
-     	<th>Ö´ÐÐ¿ªÊ¼Ê±¼ä</th>
-     	<th>Ö´ÐÐ½áÊøÊ±¼ä</th>
-     	<th>µ¥Ïß³Ì×é×î´óÈÎÎñÏî</th>
-     	<th>×Ô¶¨Òå²ÎÊý</th>
-     	<th>ÈÎÎñÏî</th>
+     	<th>ä»»åŠ¡ç±»åž‹</th>
+     	<th>ä»»åŠ¡å¤„ç†Bean</th>
+     	<th>å¿ƒè·³é¢‘çŽ‡(ç§’)</th>
+     	<th>æ­»äº¡é—´éš”(ç§’)</th>
+     	<th>çº¿ç¨‹æ•°</th>
+     	<th>æ¯æ¬¡èŽ·å–æ•°æ®é‡</th>
+     	<th>æ¯æ¬¡æ‰§è¡Œæ•°é‡</th>
+     	<th>æ²¡æœ‰æ•°æ®æ—¶ä¼‘çœ æ—¶é•¿(ç§’)</th>
+     	<th>å¤„ç†æ¨¡å¼</th>
+     	<th>æ¯æ¬¡å¤„ç†å®Œæ•°æ®åŽä¼‘çœ æ—¶é—´(ç§’)</th>
+    	<th>æ¸…é™¤å¤„ç†åŸŸä¿¡æ¯æ—¶é•¿(å°æ—¶)</th>
+     	<th>æ‰§è¡Œå¼€å§‹æ—¶é—´</th>
+     	<th>æ‰§è¡Œç»“æŸæ—¶é—´</th>
+     	<th>å•çº¿ç¨‹ç»„æœ€å¤§ä»»åŠ¡é¡¹</th>
+     	<th>è‡ªå®šä¹‰å‚æ•°</th>
+     	<th>ä»»åŠ¡é¡¹</th>
      </tr>
      </thead>
      <tbody>
@@ -76,9 +76,9 @@ table{border-collapse:collapse}
      		if ("true".equals(isManager)) {
      	%>
      	<td width="120" align="center">
-     		<a target="taskDetail" href="taskTypeEdit.jsp?taskType=<%=taskTypes.get(i).getBaseTaskType()%>"  style="color:#0000CD">±à¼­</a>
-     		<a target="taskDetail" href="taskTypeDeal.jsp?action=clearTaskType&taskType=<%=taskTypes.get(i).getBaseTaskType()%>"  style="color:#0000CD">ÇåÀí</a>
-     		<a target="taskDetail" href="javascript:void(0)" onclick="validateDel('<%=taskTypes.get(i).getBaseTaskType()%>')" style="color:#0000CD">É¾³ý</a>
+     		<a target="taskDetail" href="taskTypeEdit.jsp?taskType=<%=taskTypes.get(i).getBaseTaskType()%>"  style="color:#0000CD">ç¼–è¾‘</a>
+     		<a target="taskDetail" href="taskTypeDeal.jsp?action=clearTaskType&taskType=<%=taskTypes.get(i).getBaseTaskType()%>"  style="color:#0000CD">æ¸…ç†</a>
+     		<a target="taskDetail" href="javascript:void(0)" onclick="validateDel('<%=taskTypes.get(i).getBaseTaskType()%>')" style="color:#0000CD">åˆ é™¤</a>
      	</td>
 		<%
 			}
@@ -117,11 +117,11 @@ table{border-collapse:collapse}
 <%
 	if ("true".equals(isManager)) {
 %>
-<a target="taskDetail" href="taskTypeEdit.jsp?taskType=-1"  style="color:#0000CD">´´½¨ÐÂÈÎÎñ...</a>
+<a target="taskDetail" href="taskTypeEdit.jsp?taskType=-1"  style="color:#0000CD">åˆ›å»ºæ–°ä»»åŠ¡...</a>
 <%
 	}
 %>
-ÔËÐÐÆÚÐÅÏ¢£º<br/>
+è¿è¡ŒæœŸä¿¡æ¯ï¼š<br/>
 <iframe id="showTaskDetail" name="taskDetail"  height="80%" width="100%"></iframe>
 </body>
 </html>
@@ -141,12 +141,12 @@ if(list.rows.length >1){
 }
 
 function deleteTaskType(baseTaskType){
-	//return window.confirm("ÇëÈ·ÈÏËùÓÐµÄµ÷¶ÈÆ÷¶¼ÒÑ¾­Í£Ö¹£¬·ñÔò»áµ¼ÖÂµ÷¶ÈÆ÷Òì³££¡");
+	//return window.confirm("è¯·ç¡®è®¤æ‰€æœ‰çš„è°ƒåº¦å™¨éƒ½å·²ç»åœæ­¢ï¼Œå¦åˆ™ä¼šå¯¼è‡´è°ƒåº¦å™¨å¼‚å¸¸ï¼");
 		
 }
 
 function validateDel(str) {
-    var flag = window.confirm("È·ÈÏÉ¾³ýÈÎÎñ"+str+"?");
+    var flag = window.confirm("ç¡®è®¤åˆ é™¤ä»»åŠ¡"+str+"?");
     if(flag) {
         window.location.href="taskTypeDeal.jsp?action=deleteTaskType&taskType="+str; 
     }

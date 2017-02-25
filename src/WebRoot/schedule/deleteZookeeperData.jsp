@@ -1,6 +1,6 @@
 <%@page import="java.io.StringWriter"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 if(ConsoleManager.isInitial() == false){
 		response.sendRedirect("config.jsp");
@@ -23,7 +23,7 @@ if(ConsoleManager.isInitial() == false){
   if(action.equals("delete")){
 	  try{
 	  	ConsoleManager.getScheduleStrategyManager().deleteTree(path);
-	  	writer.write("ɾ��Ŀ¼��" + path + "�ɹ���");
+	  	writer.write("删除目录：" + path + "成功！");
 	  }catch(Exception e){
 		writer.write(e.getMessage());
 	  }
@@ -31,12 +31,12 @@ if(ConsoleManager.isInitial() == false){
       ConsoleManager.getScheduleStrategyManager().printTree(path,writer,"<br/>");
   }
 %>
- ����·����
+ 数据路径：
 <input id="path" type="text" size="80" value="<%=path%>"/>
-<input type="button" value="��ѯ" onclick="queryPath()"/>
+<input type="button" value="查询" onclick="queryPath()"/>
 <input type="checkbox" id="openDeleteButton" onclick="openDelete()">
-<input type="button" id ="deleteButton" disabled="disabled" value="ɾ��" onclick="deletePath()"/>
-<LABEL  style="color:red"><b>��ע��,��ɾ����Ŀ¼����Ŀ¼���������ݣ����Ҳ��ɻָ���</b></LABEL >
+<input type="button" id ="deleteButton" disabled="disabled" value="删除" onclick="deletePath()"/>
+<LABEL  style="color:red"><b>请注意,会删除改目录及子目录的所有内容，而且不可恢复！</b></LABEL >
 <hr/>
 <pre>
 <%=writer.getBuffer().toString()%>

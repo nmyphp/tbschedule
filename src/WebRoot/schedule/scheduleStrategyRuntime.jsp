@@ -2,12 +2,12 @@
 <%@page import="com.taobao.pamirs.schedule.strategy.ScheduleStrategyRunntime"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 
 <html>
 <head>
 <title>
-µ÷¶È¶¯Ì¬·ÖÅäÇé¿ö
+è°ƒåº¦åŠ¨æ€åˆ†é…æƒ…å†µ
 </title>
 <STYLE type=text/css>
 
@@ -25,11 +25,11 @@ table{border-collapse:collapse}
 <body style="font-size:12px;">
 <table border="1" >
      <tr>
-     	<th>ÐòºÅ</th>
-     	<th>ÈÎÎñÀàÐÍ</th>
-     	<th>´¦Àí»úÆ÷</th>
-    	<th>Ïß³Ì×éÊýÁ¿</th>
-    	<th>´íÎóÐÅÏ¢</th>
+     	<th>åºå·</th>
+     	<th>ä»»åŠ¡ç±»åž‹</th>
+     	<th>å¤„ç†æœºå™¨</th>
+    	<th>çº¿ç¨‹ç»„æ•°é‡</th>
+    	<th>é”™è¯¯ä¿¡æ¯</th>
      </tr>
 <%
 List<ScheduleStrategyRunntime> runntimeList = null;

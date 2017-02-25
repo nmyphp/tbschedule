@@ -1,6 +1,6 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="com.taobao.pamirs.schedule.strategy.ScheduleStrategy"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
     String isManager= request.getParameter("manager");
 	String taskTypeName= request.getParameter("taskType");
@@ -47,44 +47,44 @@ TD{font-size:12px;}
 <input type="hidden" name="action" value="<%=actionName%>"/>
 <table>
 <tr>
-	<td>²ßÂÔÃû³Æ:</td>
+	<td>ç­–ç•¥åç§°:</td>
 	<td><input type="text" id="strategyName" name="strategyName"  <%=editSts%> value="<%=scheduleStrategy.getStrategyName()%>" width="30"></td>
-	<td>±ØÐëÌîÐ´£¬²»ÄÜÓÐÖÐÎÄºÍÌØÊâ×Ö·û</td>
+	<td>å¿…é¡»å¡«å†™ï¼Œä¸èƒ½æœ‰ä¸­æ–‡å’Œç‰¹æ®Šå­—ç¬¦</td>
 </tr>
 <tr>
-	<td>ÈÎÎñÀàÐÍ:</td>
+	<td>ä»»åŠ¡ç±»åž‹:</td>
 	<td><input type="text" id="kind" name="kind"   value="<%=scheduleStrategy.getKind().toString()%>" width="30"></td>
-	<td>¿ÉÑ¡ÀàÐÍ£ºSchedule,Java,Bean ´óÐ¡Ð´Ãô¸Ð</td>
+	<td>å¯é€‰ç±»åž‹ï¼šSchedule,Java,Bean å¤§å°å†™æ•æ„Ÿ</td>
 </tr>
 <tr>
-	<td>ÈÎÎñÃû³Æ:</td>
+	<td>ä»»åŠ¡åç§°:</td>
 	<td><input type="text" id="taskName" name="taskName"  value="<%=scheduleStrategy.getTaskName()%>" width="30"></td>
-	<td>ÓëÈÎÎñÀàÐÍÆ¥ÅäµÄÃû³ÆÀýÈç£º1¡¢ÈÎÎñ¹ÜÀíÖÐÅäÖÃµÄÈÎÎñÃû³Æ(¶ÔÓ¦Schedule) 2¡¢ClassÃû³Æ(¶ÔÓ¦java) 3¡¢BeanµÄÃû³Æ(¶ÔÓ¦Bean)</td>
+	<td>ä¸Žä»»åŠ¡ç±»åž‹åŒ¹é…çš„åç§°ä¾‹å¦‚ï¼š1ã€ä»»åŠ¡ç®¡ç†ä¸­é…ç½®çš„ä»»åŠ¡åç§°(å¯¹åº”Schedule) 2ã€Classåç§°(å¯¹åº”java) 3ã€Beançš„åç§°(å¯¹åº”Bean)</td>
 </tr>
 <tr>
-	<td>ÈÎÎñ²ÎÊý:</td>
+	<td>ä»»åŠ¡å‚æ•°:</td>
 	<td><input type="text" id="taskParameter" name="taskParameter"   value="<%=scheduleStrategy.getTaskParameter()%>" width="30"></td>
-	<td>¶ººÅ·Ö¸ôµÄKey-Value¡£ ¶ÔÈÎÎñÀàÐÍÎªScheduleµÄÎÞÐ§£¬ÐèÒªÍ¨¹ýÈÎÎñ¹ÜÀíÀ´ÅäÖÃµÄ</td>
+	<td>é€—å·åˆ†éš”çš„Key-Valueã€‚ å¯¹ä»»åŠ¡ç±»åž‹ä¸ºScheduleçš„æ— æ•ˆï¼Œéœ€è¦é€šè¿‡ä»»åŠ¡ç®¡ç†æ¥é…ç½®çš„</td>
 </tr>
 
 <tr>
-	<td>µ¥JVM×î´óÏß³Ì×éÊýÁ¿:</td>
+	<td>å•JVMæœ€å¤§çº¿ç¨‹ç»„æ•°é‡:</td>
 	<td><input type="text" name="numOfSingleServer" value="<%=scheduleStrategy.getNumOfSingleServer() %>" width="30"></td>
-	<td>µ¥JVM×î´óÏß³Ì×éÊýÁ¿£¬Èç¹ûÊÇ0£¬Ôò±íÊ¾Ã»ÓÐÏÞÖÆ.Ã¿Ì¨»úÆ÷ÔËÐÐµÄÏß³Ì×éÊýÁ¿ =×ÜÁ¿/»úÆ÷Êý </td>
+	<td>å•JVMæœ€å¤§çº¿ç¨‹ç»„æ•°é‡ï¼Œå¦‚æžœæ˜¯0ï¼Œåˆ™è¡¨ç¤ºæ²¡æœ‰é™åˆ¶.æ¯å°æœºå™¨è¿è¡Œçš„çº¿ç¨‹ç»„æ•°é‡ =æ€»é‡/æœºå™¨æ•° </td>
 </tr>
 <tr>
-	<td>×î´óÏß³Ì×éÊýÁ¿£º</td>
+	<td>æœ€å¤§çº¿ç¨‹ç»„æ•°é‡ï¼š</td>
 	<td><input type="text" name="assignNum" value="<%=scheduleStrategy.getAssignNum()%>"  width="30"></td>
-	<td>ËùÓÐ·þÎñÆ÷×Ü¹²ÔËÐÐµÄ×î´óÊýÁ¿</td>
+	<td>æ‰€æœ‰æœåŠ¡å™¨æ€»å…±è¿è¡Œçš„æœ€å¤§æ•°é‡</td>
 </tr>
 <tr>
-	<td>IPµØÖ·(¶ººÅ·Ö¸ô)£º</td>
+	<td>IPåœ°å€(é€—å·åˆ†éš”)ï¼š</td>
 	<td><input type="text" name="ips" value="<%=ips%>" width="30"></td>
-	<td>127.0.0.1»òÕßlocalhost»áÔÚËùÓÐ»úÆ÷ÉÏÔËÐÐ</td>
+	<td>127.0.0.1æˆ–è€…localhostä¼šåœ¨æ‰€æœ‰æœºå™¨ä¸Šè¿è¡Œ</td>
 </tr>
 </table>
 <br/>
-<input type="button" value="±£´æ" onclick="save();" style="width:100px" >
+<input type="button" value="ä¿å­˜" onclick="save();" style="width:100px" >
 
 </form>
 
@@ -96,11 +96,11 @@ function save(){
 	var strategyName = document.all("strategyName").value;
 	var reg = /.*[\u4e00-\u9fa5]+.*$/; 
 	if(reg.test(strategyName)){
-	   alert('ÈÎÎñÀàÐÍ²»ÄÜº¬ÖÐÎÄ');
+	   alert('ä»»åŠ¡ç±»åž‹ä¸èƒ½å«ä¸­æ–‡');
 	   return;
 	}
 	if(strategyName==null||strategyName==''||isContainSpace(strategyName)){
-		alert('ÈÎÎñÀàÐÍ²»ÄÜÎª¿Õ»ò´æÔÚ¿Õ¸ñ');
+		alert('ä»»åŠ¡ç±»åž‹ä¸èƒ½ä¸ºç©ºæˆ–å­˜åœ¨ç©ºæ ¼');
 		return;
 	}
     document.getElementById("scheduleStrategyForm").submit();

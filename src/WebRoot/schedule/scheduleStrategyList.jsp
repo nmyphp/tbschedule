@@ -2,14 +2,14 @@
 <%@page import="com.taobao.pamirs.schedule.ScheduleUtil"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
     String isManager= request.getParameter("manager");
 %>
 <html>
 <head>
 <title>
-µ÷¶È²ßÂÔ¹ÜÀí
+è°ƒåº¦ç­–ç•¥ç®¡ç†
 </title>
 <STYLE type=text/css>
 
@@ -24,18 +24,18 @@ table{border-collapse:collapse}
 
 <table id="contentTable" border="1">
      <tr>
-     	<th>ĞòºÅ</th>
+     	<th>åºå·</th>
      	<%if("true".equals(isManager)){%>
-     	<th>¹ÜÀí</th>
+     	<th>ç®¡ç†</th>
 		<%}%>
-     	<th>²ßÂÔÃû³Æ</th>
-     	<th>ÈÎÎñ×´Ì¬</th>
-     	<th>ÈÎÎñÀàĞÍ</th>
-     	<th>ÈÎÎñÃû³Æ</th>
-     	<th>ÈÎÎñ²ÎÊı</th>
-     	<th>µ¥JVM×î´óÏß³Ì×éÊıÁ¿</th>
-    	<th>×î´óÏß³Ì×éÊıÁ¿</th>
-     	<th>IPµØÖ·(¶ººÅ·Ö¸ô)</th>
+     	<th>ç­–ç•¥åç§°</th>
+     	<th>ä»»åŠ¡çŠ¶æ€</th>
+     	<th>ä»»åŠ¡ç±»å‹</th>
+     	<th>ä»»åŠ¡åç§°</th>
+     	<th>ä»»åŠ¡å‚æ•°</th>
+     	<th>å•JVMæœ€å¤§çº¿ç¨‹ç»„æ•°é‡</th>
+    	<th>æœ€å¤§çº¿ç¨‹ç»„æ•°é‡</th>
+     	<th>IPåœ°å€(é€—å·åˆ†éš”)</th>
      </tr>
 <%
 List<ScheduleStrategy> scheduleStrategyList =  ConsoleManager.getScheduleStrategyManager().loadAllScheduleStrategy();
@@ -52,12 +52,12 @@ for(int i=0;i<scheduleStrategyList.size();i++){
 	}
 	
 	String pauseOrResumeAction = "pauseTaskType";
-	String pauseOrResumeActionName = "Í£Ö¹";
-	String stsName = "Õı³£";
+	String pauseOrResumeActionName = "åœæ­¢";
+	String stsName = "æ­£å¸¸";
 	if (ScheduleStrategy.STS_PAUSE.equals(scheduleStrategyList.get(i).getSts())) {
 		pauseOrResumeAction = "resumeTaskType";
-		pauseOrResumeActionName = "»Ö¸´";
-		stsName = "Í£Ö¹";
+		pauseOrResumeActionName = "æ¢å¤";
+		stsName = "åœæ­¢";
 	}
 
 	
@@ -67,8 +67,8 @@ for(int i=0;i<scheduleStrategyList.size();i++){
      	<td><%=(i+1)%></td>
      	<%if("true".equals(isManager)){%>
      	<td width="100" align="center">
-     	    <a target="strategyDetail" href="scheduleStrategyEdit.jsp?taskType=<%=scheduleStrategy.getStrategyName()%>" style="color:#0000CD">±à¼­</a>
-     	    <a target="strategyDetail" href="javascript:void(0)" onclick="validateDel('<%=scheduleStrategy.getStrategyName()%>')">É¾³ı</a>
+     	    <a target="strategyDetail" href="scheduleStrategyEdit.jsp?taskType=<%=scheduleStrategy.getStrategyName()%>" style="color:#0000CD">ç¼–è¾‘</a>
+     	    <a target="strategyDetail" href="javascript:void(0)" onclick="validateDel('<%=scheduleStrategy.getStrategyName()%>')">åˆ é™¤</a>
      		<a target="strategyDetail" href="scheduleStrategyDeal.jsp?action=<%=pauseOrResumeAction%>&strategyName=<%=scheduleStrategy.getStrategyName()%>" style="color:#0000CD"><%=pauseOrResumeActionName%></a>
      	</td>
 		<%}%>
@@ -88,9 +88,9 @@ for(int i=0;i<scheduleStrategyList.size();i++){
 </table>
 <br/>
 <%if("true".equals(isManager)){%>
-<a target="strategyDetail" href="scheduleStrategyEdit.jsp?taskType=-1" style="color:#0000CD">´´½¨ĞÂ²ßÂÔ...</a>
+<a target="strategyDetail" href="scheduleStrategyEdit.jsp?taskType=-1" style="color:#0000CD">åˆ›å»ºæ–°ç­–ç•¥...</a>
 <%}%>
-ÈÎÎñÔÚ¸÷¸ö»úÆ÷ÉÏµÄ·ÖÅäÇé¿ö£º
+ä»»åŠ¡åœ¨å„ä¸ªæœºå™¨ä¸Šçš„åˆ†é…æƒ…å†µï¼š
 <iframe id="showStrategyDetail" name="strategyDetail" height="80%" width="100%"></iframe>
 </body>
 </html>
@@ -110,7 +110,7 @@ if(contentTable.rows.length >1){
 }
 
 function validateDel(str) {
-    var flag = window.confirm("È·ÈÏÉ¾³ı²ßÂÔ"+str+"?");
+    var flag = window.confirm("ç¡®è®¤åˆ é™¤ç­–ç•¥"+str+"?");
     if(flag) {
         window.location.href="scheduleStrategyDeal.jsp?action=deleteScheduleStrategy&strategyName="+str; 
     }

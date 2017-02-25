@@ -1,10 +1,10 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="com.taobao.pamirs.schedule.strategy.ScheduleStrategy"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
 <title>
-´´½¨µ÷¶ÈÈÎÎñ
+åˆ›å»ºè°ƒåº¦ä»»åŠ¡
 </title>
 </head>
 <body bgcolor="#ffffff">
@@ -22,7 +22,7 @@
 			ConsoleManager.getScheduleStrategyManager().updateManagerFactoryInfo(uuid,false);
 			isRefreshParent = true;
 		}else{
-			throw new Exception("²»Ö§³ÖµÄ²Ù×÷£º" + action);
+			throw new Exception("ä¸æ”¯æŒçš„æ“ä½œï¼š" + action);
 		}
 	} catch (Throwable e) {
 		e.printStackTrace();

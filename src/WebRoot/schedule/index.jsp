@@ -1,5 +1,5 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 	try {
 		ConsoleManager.initial();
@@ -9,7 +9,7 @@
 <html>
 <head>
 <title>
-Scheduleµ÷¶È¹ÜÀí
+Scheduleè°ƒåº¦ç®¡ç†
 </title>
 <STYLE type=text/css>
 
@@ -20,24 +20,24 @@ TD{background-color: ;border:#8CB2E3 solid;border-width:0 1 1 0;font-size:12px;}
 
 </head>
 <body style="font-size:12px;">
-<h1 align="center">TaobaoScheduleµ÷¶È¹ÜÀí¿ØÖÆÌ¨</h1>
-<a id="strategyList" onclick="linkOnclick(this);"  target="content" href="scheduleStrategyList.jsp?manager=<%=isManager%>" style="color:#0000CD">µ÷¶È²ßÂÔ</a>
-<a id="taskTypeList" onclick="linkOnclick(this);" target="content" href="taskTypeList.jsp?manager=<%=isManager%>" style="color:#0000CD">ÈÎÎñ¹ÜÀí</a>
-<a id="managerFactoryList" onclick="linkOnclick(this);"  target="content" href="managerFactoryList.jsp?manager=<%=isManager%>" style="color:#0000CD">»úÆ÷¹ÜÀí</a>
-<a id="serverList" onclick="linkOnclick(this);"  target="content" href="serverList.jsp" style="color:#0000CD">´¦ÀíÏß³Ì×éÁĞ±í</a>
+<h1 align="center">TaobaoScheduleè°ƒåº¦ç®¡ç†æ§åˆ¶å°</h1>
+<a id="strategyList" onclick="linkOnclick(this);"  target="content" href="scheduleStrategyList.jsp?manager=<%=isManager%>" style="color:#0000CD">è°ƒåº¦ç­–ç•¥</a>
+<a id="taskTypeList" onclick="linkOnclick(this);" target="content" href="taskTypeList.jsp?manager=<%=isManager%>" style="color:#0000CD">ä»»åŠ¡ç®¡ç†</a>
+<a id="managerFactoryList" onclick="linkOnclick(this);"  target="content" href="managerFactoryList.jsp?manager=<%=isManager%>" style="color:#0000CD">æœºå™¨ç®¡ç†</a>
+<a id="serverList" onclick="linkOnclick(this);"  target="content" href="serverList.jsp" style="color:#0000CD">å¤„ç†çº¿ç¨‹ç»„åˆ—è¡¨</a>
 
 <%
 	if ("true".equals(isManager)) {
 %>
-	<a id="config" onclick="linkOnclick(this);"  target="content" href="config.jsp" style="color:#0000CD">ZookeeperÁ¬½ÓÅäÖÃ</a>
-	<a id="zookeeperData" onclick="linkOnclick(this);"  target="content" href="zookeeperData.jsp" style="color:#0000CD">ZookeeperÊı¾İ</a>
-	<a id="zookeeperDataExport" onclick="linkOnclick(this);"  target="content" href="exportConfig.jsp" style="color:#0000CD">ExportÅäÖÃÊı¾İ</a>
-	<a id="zookeeperDataImport" onclick="linkOnclick(this);"  target="content" href="importConfig.jsp" style="color:#0000CD">ImportÅäÖÃÊı¾İ</a>
+	<a id="config" onclick="linkOnclick(this);"  target="content" href="config.jsp" style="color:#0000CD">Zookeeperè¿æ¥é…ç½®</a>
+	<a id="zookeeperData" onclick="linkOnclick(this);"  target="content" href="zookeeperData.jsp" style="color:#0000CD">Zookeeperæ•°æ®</a>
+	<a id="zookeeperDataExport" onclick="linkOnclick(this);"  target="content" href="exportConfig.jsp" style="color:#0000CD">Exporté…ç½®æ•°æ®</a>
+	<a id="zookeeperDataImport" onclick="linkOnclick(this);"  target="content" href="importConfig.jsp" style="color:#0000CD">Importé…ç½®æ•°æ®</a>
 <%
 	}
 %>
-&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspÇë²Î¿¼£º<a href="http://code.taobao.org/p/tbschedule/wiki/index/">tbschedule¿ªÔ´ÏîÄ¿</a>
-&nbsp&nbsp<font style="color:red;font-size:15">[½¨ÒéÊ¹ÓÃIE8]</font>
+&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspè¯·å‚è€ƒï¼š<a href="http://code.taobao.org/p/tbschedule/wiki/index/">tbscheduleå¼€æºé¡¹ç›®</a>
+&nbsp&nbsp<font style="color:red;font-size:15">[å»ºè®®ä½¿ç”¨IE8]</font>
 <iframe  name="content" FRAMEBORDER="0"  height="85%" width="100%" src="scheduleStrategyList.jsp?manager=<%=isManager%>"></iframe>
 </body>
 </html>

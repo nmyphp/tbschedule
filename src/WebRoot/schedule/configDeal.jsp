@@ -1,7 +1,7 @@
 <%@page import="java.util.Properties"%>
 <%@page import="com.taobao.pamirs.schedule.zk.ZKManager"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 
 Properties p = new Properties();

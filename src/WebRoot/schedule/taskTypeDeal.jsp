@@ -1,11 +1,11 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
 <title>
-´´½¨µ÷¶ÈÈÎÎñ
+åˆ›å»ºè°ƒåº¦ä»»åŠ¡
 </title>
 </head>
 <body bgcolor="#ffffff">
@@ -43,22 +43,22 @@
 			taskType.setSts(request.getParameter("sts"));
 			if(action.equalsIgnoreCase("createTaskType")){
 				ConsoleManager.getScheduleDataManager().createBaseTaskType(taskType);
-				result = "ÈÎÎñ" + baseTaskType + "´´½¨³É¹¦£¡£¡£¡£¡";
+				result = "ä»»åŠ¡" + baseTaskType + "åˆ›å»ºæˆåŠŸï¼ï¼ï¼ï¼";
 			}else{
 				ConsoleManager.getScheduleDataManager().updateBaseTaskType(taskType);
-				result = "ÈÎÎñ" + baseTaskType + "ĞŞ¸Ä³É¹¦£¡£¡£¡£¡";			
+				result = "ä»»åŠ¡" + baseTaskType + "ä¿®æ”¹æˆåŠŸï¼ï¼ï¼ï¼";			
 			}
 			isRefreshParent = true;
 			
 		} else if (action.equalsIgnoreCase("clearTaskType")) {
 			ConsoleManager.getScheduleDataManager().clearTaskType(
 					baseTaskType);
-			result = "ÈÎÎñ" + baseTaskType + "ÔËĞĞÆÚĞÅÏ¢ÇåÀí³É¹¦£¡£¡£¡£¡";
+			result = "ä»»åŠ¡" + baseTaskType + "è¿è¡ŒæœŸä¿¡æ¯æ¸…ç†æˆåŠŸï¼ï¼ï¼ï¼";
 			isRefreshParent = false;
 		} else if (action.equalsIgnoreCase("deleteTaskType")) {
 			ConsoleManager.getScheduleDataManager().deleteTaskType(
 					baseTaskType);
-			result = "ÈÎÎñ" + baseTaskType + "É¾³ı³É¹¦£¡£¡£¡£¡";
+			result = "ä»»åŠ¡" + baseTaskType + "åˆ é™¤æˆåŠŸï¼ï¼ï¼ï¼";
 			isRefreshParent = true;
 		} else if (action.equalsIgnoreCase("pauseTaskType")) {
 			ConsoleManager.getScheduleDataManager().pauseAllServer(baseTaskType);
@@ -67,7 +67,7 @@
 			ConsoleManager.getScheduleDataManager().resumeAllServer(baseTaskType);
 			isRefreshParent = true;
 		}else{
-			throw new Exception("²»Ö§³ÖµÄ²Ù×÷£º" + action);
+			throw new Exception("ä¸æ”¯æŒçš„æ“ä½œï¼š" + action);
 		}
 	} catch (Throwable e) {
 		e.printStackTrace();

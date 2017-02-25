@@ -1,7 +1,7 @@
 <%@page import="java.io.*"%>
 <%@page import="java.util.*"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
-<%@ page contentType="text/html; charset=GB2312"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%
 	if (ConsoleManager.isInitial() == false) {
 		response.sendRedirect("config.jsp");
@@ -25,19 +25,19 @@
 					ConsoleManager.getScheduleStrategyManager()
 							.importConfig(line, writer, isUpdate);
 				} else {
-					writer.write("<h3><font color=\"red\">·Ç·¨ÅäÖÃĞÅÏ¢£º\n\t\t</font>"
+					writer.write("<h3><font color=\"red\">éæ³•é…ç½®ä¿¡æ¯ï¼š\n\t\t</font>"
 							+ line + "</h3>");
 				}
 			}
 			if (!isUploadConfig) {
-				writer.append("<h3><font color=\"red\">´íÎóĞÅÏ¢£º\n\t</font>Ã»ÓĞÑ¡Ôñµ¼ÈëµÄÅäÖÃÎÄ¼ş</h3>");
+				writer.append("<h3><font color=\"red\">é”™è¯¯ä¿¡æ¯ï¼š\n\t</font>æ²¡æœ‰é€‰æ‹©å¯¼å…¥çš„é…ç½®æ–‡ä»¶</h3>");
 			}
 		}
 	} catch (Exception e) {
 		StringWriter strWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(strWriter);
 		e.printStackTrace(printWriter);
-		writer.append("<h3><font color=\"red\">´íÎóĞÅÏ¢¶ÑÕ»£º\n\t\t</font>"
+		writer.append("<h3><font color=\"red\">é”™è¯¯ä¿¡æ¯å †æ ˆï¼š\n\t\t</font>"
 				+ e.getMessage() + "\n" + strWriter.toString()
 				+ "</h3>");
 	}
@@ -47,20 +47,20 @@
 <body style="font-size: 12px;">
 <form id="taskTypeForm" method="post" name="taskTypeForm"
 	action="importConfig.jsp"><pre
-	style="width: 100px; float: left;">ÅäÖÃÎÄ±¾ĞÅÏ¢£º</pre> <textarea
+	style="width: 100px; float: left;">é…ç½®æ–‡æœ¬ä¿¡æ¯ï¼š</pre> <textarea
 	name="configContent" style="width: 1000px; height: 150px;"><%=configContent%></textarea>
 <br />
-ÊÇ·ñÇ¿ÖÆ¸üĞÂ£º&nbsp;&nbsp; <select name="isUpdate">
-	<option value="true" <%if (isUpdate) {%> selected <%}%>>ÊÇ</option>
-	<option value="false" <%if (!isUpdate) {%> selected <%}%>>·ñ</option>
-</select> <input type="button" onclick="importConfig();" value="µ¼ÈëÅäÖÃ" /></form>
+æ˜¯å¦å¼ºåˆ¶æ›´æ–°ï¼š&nbsp;&nbsp; <select name="isUpdate">
+	<option value="true" <%if (isUpdate) {%> selected <%}%>>æ˜¯</option>
+	<option value="false" <%if (!isUpdate) {%> selected <%}%>>å¦</option>
+</select> <input type="button" onclick="importConfig();" value="å¯¼å…¥é…ç½®" /></form>
 <pre>
 	<h3>
 <%=writer.toString()%>
 	</h3>
 </pre>
 <script>
-	// µ¼ÈëÅäÖÃÎÄ¼ş
+	// å¯¼å…¥é…ç½®æ–‡ä»¶
 	function importConfig() {
 		document.getElementById("taskTypeForm").submit();
 	}

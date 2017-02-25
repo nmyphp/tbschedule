@@ -1,7 +1,7 @@
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
     String isManager= request.getParameter("manager");
 	String taskTypeName= request.getParameter("taskType");
@@ -21,7 +21,7 @@
 		editSts="style=\"background-color: blue\" readonly=\"readonly\"";
 	}else{
 		taskType = new ScheduleTaskType();
-		taskType.setBaseTaskType("ÇëÊäÈëÐÂµÄÈÎÎñÀàÐÍ...");
+		taskType.setBaseTaskType("è¯·è¾“å…¥æ–°çš„ä»»åŠ¡ç±»åž‹...");
 		taskType.setDealBeanName("");
 		isNew = true;
 		actionName ="createTaskType";
@@ -45,61 +45,61 @@ TD{font-size:12px;}
 
 <table>
 <tr>
-	<td>ÈÎÎñÃû³Æ:</td><td><input type="text" id="taskType" name="taskType"  <%=editSts%> value="<%=taskType.getBaseTaskType()%>" width="30"></td>
-	<td>ÈÎÎñ´¦ÀíµÄSpringBean:</td><td><input type="text" id="dealBean" name="dealBean" value="<%=taskType.getDealBeanName()%>" width="30"></td>
+	<td>ä»»åŠ¡åç§°:</td><td><input type="text" id="taskType" name="taskType"  <%=editSts%> value="<%=taskType.getBaseTaskType()%>" width="30"></td>
+	<td>ä»»åŠ¡å¤„ç†çš„SpringBean:</td><td><input type="text" id="dealBean" name="dealBean" value="<%=taskType.getDealBeanName()%>" width="30"></td>
 </tr>
 <tr>
-	<td>ÐÄÌøÆµÂÊ(Ãë):</td><td><input type="text" name="heartBeatRate" value="<%=taskType.getHeartBeatRate()/1000.0 %>" width="30"></td>
-	<td>¼Ù¶¨·þÎñËÀÍö¼ä¸ô(Ãë):</td><td><input type="text" name="judgeDeadInterval" value="<%=taskType.getJudgeDeadInterval()/1000.0 %>" width="30"></td>
+	<td>å¿ƒè·³é¢‘çŽ‡(ç§’):</td><td><input type="text" name="heartBeatRate" value="<%=taskType.getHeartBeatRate()/1000.0 %>" width="30"></td>
+	<td>å‡å®šæœåŠ¡æ­»äº¡é—´éš”(ç§’):</td><td><input type="text" name="judgeDeadInterval" value="<%=taskType.getJudgeDeadInterval()/1000.0 %>" width="30"></td>
 </tr>
 <tr>
-	<td>Ïß³ÌÊý£º</td><td><input type="text" name="threadNumber" value="<%=taskType.getThreadNumber()%>"  width="30"></td>
-	<td>´¦ÀíÄ£Ê½£º</td><td><input type="text" name="processType" value="<%=taskType.getProcessorType()%>" width="30">
-		SLEEP ºÍ  NOTSLEEP</td>
+	<td>çº¿ç¨‹æ•°ï¼š</td><td><input type="text" name="threadNumber" value="<%=taskType.getThreadNumber()%>"  width="30"></td>
+	<td>å¤„ç†æ¨¡å¼ï¼š</td><td><input type="text" name="processType" value="<%=taskType.getProcessorType()%>" width="30">
+		SLEEP å’Œ  NOTSLEEP</td>
 </tr>
 <tr>
-	<td>Ã¿´Î»ñÈ¡Êý¾ÝÁ¿£º</td><td><input type="text" name="fetchNumber" value="<%=taskType.getFetchDataNumber() %>" width="30"></td>
-	<td>Ã¿´ÎÖ´ÐÐÊýÁ¿£º</td><td><input type="text" name="executeNumber" value="<%=taskType.getExecuteNumber() %>" width="30">
-		Ö»ÔÚbeanÊµÏÖIScheduleTaskDealMulti²ÅÉúÐ§</td>
+	<td>æ¯æ¬¡èŽ·å–æ•°æ®é‡ï¼š</td><td><input type="text" name="fetchNumber" value="<%=taskType.getFetchDataNumber() %>" width="30"></td>
+	<td>æ¯æ¬¡æ‰§è¡Œæ•°é‡ï¼š</td><td><input type="text" name="executeNumber" value="<%=taskType.getExecuteNumber() %>" width="30">
+		åªåœ¨beanå®žçŽ°IScheduleTaskDealMultiæ‰ç”Ÿæ•ˆ</td>
 </tr>
 <tr>
-	<td>Ã»ÓÐÊý¾ÝÊ±ÐÝÃßÊ±³¤(Ãë)£º</td><td><input type="text" name="sleepTimeNoData" value="<%=taskType.getSleepTimeNoData()/1000.0%>" width="30"></td>
-	<td>Ã¿´Î´¦ÀíÍêÊý¾ÝºóÐÝÃßÊ±¼ä(Ãë)£º</td><td><input type="text" name="sleepTimeInterval" value="<%= taskType.getSleepTimeInterval()/1000.0%>" width="30"></td>
+	<td>æ²¡æœ‰æ•°æ®æ—¶ä¼‘çœ æ—¶é•¿(ç§’)ï¼š</td><td><input type="text" name="sleepTimeNoData" value="<%=taskType.getSleepTimeNoData()/1000.0%>" width="30"></td>
+	<td>æ¯æ¬¡å¤„ç†å®Œæ•°æ®åŽä¼‘çœ æ—¶é—´(ç§’)ï¼š</td><td><input type="text" name="sleepTimeInterval" value="<%= taskType.getSleepTimeInterval()/1000.0%>" width="30"></td>
 </tr>
 <tr>
-	<td>Ö´ÐÐ¿ªÊ¼Ê±¼ä£º</td><td><input type="text" name="permitRunStartTime" value="<%=taskType.getPermitRunStartTime()==null?"":taskType.getPermitRunStartTime()%>" width="30"></td>
-	<td>Ö´ÐÐ½áÊøÊ±¼ä£º</td><td><input type="text" name="permitRunEndTime" value="<%=taskType.getPermitRunEndTime()==null?"":taskType.getPermitRunEndTime()%>" width="30"></td>
+	<td>æ‰§è¡Œå¼€å§‹æ—¶é—´ï¼š</td><td><input type="text" name="permitRunStartTime" value="<%=taskType.getPermitRunStartTime()==null?"":taskType.getPermitRunStartTime()%>" width="30"></td>
+	<td>æ‰§è¡Œç»“æŸæ—¶é—´ï¼š</td><td><input type="text" name="permitRunEndTime" value="<%=taskType.getPermitRunEndTime()==null?"":taskType.getPermitRunEndTime()%>" width="30"></td>
 </tr>
 <tr>
-	<td>µ¥Ïß³Ì×é×î´óÈÎÎñÏî£º</td><td><input type="text" name="maxTaskItemsOfOneThreadGroup" value="<%=taskType.getMaxTaskItemsOfOneThreadGroup()%>" width="30"></td>
-	<td colspan="2">Ã¿Ò»×éÏß³ÌÄÜ·ÖÅäµÄ×î´óÈÎÎñÊýÁ¿£¬±ÜÃâÔÚËæ×Å»úÆ÷µÄ¼õÉÙ°ÑÕý³£µÄ·þÎñÆ÷Ñ¹ËÀ£¬0»òÕß¿Õ±íÊ¾²»ÏÞÖÆ</td>
+	<td>å•çº¿ç¨‹ç»„æœ€å¤§ä»»åŠ¡é¡¹ï¼š</td><td><input type="text" name="maxTaskItemsOfOneThreadGroup" value="<%=taskType.getMaxTaskItemsOfOneThreadGroup()%>" width="30"></td>
+	<td colspan="2">æ¯ä¸€ç»„çº¿ç¨‹èƒ½åˆ†é…çš„æœ€å¤§ä»»åŠ¡æ•°é‡ï¼Œé¿å…åœ¨éšç€æœºå™¨çš„å‡å°‘æŠŠæ­£å¸¸çš„æœåŠ¡å™¨åŽ‹æ­»ï¼Œ0æˆ–è€…ç©ºè¡¨ç¤ºä¸é™åˆ¶</td>
 </tr>
 <tr>
-	<td>×Ô¶¨Òå²ÎÊý(×Ö·û´®):</td><td colspan="3"><input type="text" id="taskParameter" name="taskParameter" value="<%=taskType.getTaskParameter()==null?"":taskType.getTaskParameter()%>" style="width:657"></td>
+	<td>è‡ªå®šä¹‰å‚æ•°(å­—ç¬¦ä¸²):</td><td colspan="3"><input type="text" id="taskParameter" name="taskParameter" value="<%=taskType.getTaskParameter()==null?"":taskType.getTaskParameter()%>" style="width:657"></td>
 </tr>
 <tr>
-	<td>ÈÎÎñÏî(","·Ö¸ô):</td><td colspan="3"><TEXTAREA  type="textarea" rows="5" , id="taskItems" name="taskItems" style="width:657"><%=taskItems%> </TEXTAREA></td>
+	<td>ä»»åŠ¡é¡¹(","åˆ†éš”):</td><td colspan="3"><TEXTAREA  type="textarea" rows="5" , id="taskItems" name="taskItems" style="width:657"><%=taskItems%> </TEXTAREA></td>
 </tr>
 
 </table>
 <br/>
-<input type="button" value="±£´æ" onclick="save();" style="width:100px" >
+<input type="button" value="ä¿å­˜" onclick="save();" style="width:100px" >
 
 </form>
-<b>Ö´ÐÐ¿ªÊ¼Ê±¼äËµÃ÷£º</b><br/>
-1.ÔÊÐíÖ´ÐÐÊ±¶ÎµÄ¿ªÊ¼Ê±¼äcrontabµÄÊ±¼ä¸ñÊ½.'0 * * * * ?'  ±íÊ¾ÔÚÃ¿·ÖÖÓµÄ0Ãë¿ªÊ¼<br/>
-2.ÒÔstartrun:¿ªÊ¼£¬Ôò±íÊ¾¿ª»úÁ¢¼´Æô¶¯µ÷¶È.<br/>
-3.¸ñÊ½²Î¼û£º http://dogstar.javaeye.com/blog/116130<br/><br/>
-<b>Ö´ÐÐ½áÊøÊ±¼äËµÃ÷£º</b><br/>
-1.ÔÊÐíÖ´ÐÐÊ±¶ÎµÄ½áÊøÊ±¼äcrontabµÄÊ±¼ä¸ñÊ½,'20 * * * * ?'  ±íÊ¾ÔÚÃ¿·ÖÖÓµÄ20ÃëÖÕÖ¹<br/>
-2.Èç¹û²»ÉèÖÃ£¬±íÊ¾È¡²»µ½Êý¾Ý¾ÍÍ£Ö¹ <br/>
-3.¸ñÊ½²Î¼û£ºhttp://dogstar.javaeye.com/blog/116130<br/><br/>
-<b>ÈÎÎñÏîµÄËµÃ÷£º</b><br/>
-1¡¢½«Ò»¸öÊý¾Ý±íÖÐËùÓÐÊý¾ÝµÄID°´10È¡Ä££¬¾Í½«Êý¾Ý»®·Ö³ÉÁË0¡¢1¡¢2¡¢3¡¢4¡¢5¡¢6¡¢7¡¢8¡¢9¹©10¸öÈÎÎñÏî¡£<br/>
-2¡¢½«Ò»¸öÄ¿Â¼ÏÂµÄËùÓÐÎÄ¼þ°´ÎÄ¼þÃû³ÆµÄÊ××ÖÄ¸(²»Çø·Ö´óÐ¡Ð´)£¬ ¾Í»®·Ö³ÉÁËA¡¢B¡¢C¡¢D¡¢E¡¢F¡¢G¡¢H¡¢I¡¢J¡¢K¡¢L¡¢M¡¢N¡¢O¡¢P¡¢Q¡¢R¡¢S¡¢T¡¢U¡¢V¡¢W¡¢X¡¢Y¡¢Z¹©26¸öÈÎÎñÏî¡£<br/>
-3¡¢½«Ò»¸öÊý¾Ý±íµÄÊý¾ÝID¹þÏ£ºó°´1000È¡Ä£×÷Îª×îºóµÄHASHCODE,ÎÒÃÇ¾Í¿ÉÒÔ½«Êý¾Ý°´[0,100)¡¢[100,200) ¡¢[200,300)¡¢[300,400) ¡¢[400,500)¡¢[500,600)¡¢[600,700)¡¢[700,800)¡¢[800,900)¡¢ [900,1000)»®·ÖÎªÊ®¸öÈÎÎñÏî£¬
-	µ±È»ÄãÒ²¿ÉÒÔ»®·ÖÎª100¸öÈÎÎñÏî£¬×î¶àÊÇ1000¸öÏî¡£<br/>
-4¡¢ÈÎÎñÏîÊÇ½øÐÐÈÎÎñ·ÖÅäµÄ×îÐ¡µ¥Î»¡£Ò»¸öÈÎÎñ¶ÓÁÐÖ»ÄÜÓÉÒ»¸öScheduleServerÀ´½øÐÐ´¦Àí¡£µ«Ò»¸öServer¿ÉÒÔ´¦ÀíÈÎÒâÊýÁ¿µÄÈÎÎñÏî¡£
+<b>æ‰§è¡Œå¼€å§‹æ—¶é—´è¯´æ˜Žï¼š</b><br/>
+1.å…è®¸æ‰§è¡Œæ—¶æ®µçš„å¼€å§‹æ—¶é—´crontabçš„æ—¶é—´æ ¼å¼.'0 * * * * ?'  è¡¨ç¤ºåœ¨æ¯åˆ†é’Ÿçš„0ç§’å¼€å§‹<br/>
+2.ä»¥startrun:å¼€å§‹ï¼Œåˆ™è¡¨ç¤ºå¼€æœºç«‹å³å¯åŠ¨è°ƒåº¦.<br/>
+3.æ ¼å¼å‚è§ï¼š http://dogstar.javaeye.com/blog/116130<br/><br/>
+<b>æ‰§è¡Œç»“æŸæ—¶é—´è¯´æ˜Žï¼š</b><br/>
+1.å…è®¸æ‰§è¡Œæ—¶æ®µçš„ç»“æŸæ—¶é—´crontabçš„æ—¶é—´æ ¼å¼,'20 * * * * ?'  è¡¨ç¤ºåœ¨æ¯åˆ†é’Ÿçš„20ç§’ç»ˆæ­¢<br/>
+2.å¦‚æžœä¸è®¾ç½®ï¼Œè¡¨ç¤ºå–ä¸åˆ°æ•°æ®å°±åœæ­¢ <br/>
+3.æ ¼å¼å‚è§ï¼šhttp://dogstar.javaeye.com/blog/116130<br/><br/>
+<b>ä»»åŠ¡é¡¹çš„è¯´æ˜Žï¼š</b><br/>
+1ã€å°†ä¸€ä¸ªæ•°æ®è¡¨ä¸­æ‰€æœ‰æ•°æ®çš„IDæŒ‰10å–æ¨¡ï¼Œå°±å°†æ•°æ®åˆ’åˆ†æˆäº†0ã€1ã€2ã€3ã€4ã€5ã€6ã€7ã€8ã€9ä¾›10ä¸ªä»»åŠ¡é¡¹ã€‚<br/>
+2ã€å°†ä¸€ä¸ªç›®å½•ä¸‹çš„æ‰€æœ‰æ–‡ä»¶æŒ‰æ–‡ä»¶åç§°çš„é¦–å­—æ¯(ä¸åŒºåˆ†å¤§å°å†™)ï¼Œ å°±åˆ’åˆ†æˆäº†Aã€Bã€Cã€Dã€Eã€Fã€Gã€Hã€Iã€Jã€Kã€Lã€Mã€Nã€Oã€Pã€Qã€Rã€Sã€Tã€Uã€Vã€Wã€Xã€Yã€Zä¾›26ä¸ªä»»åŠ¡é¡¹ã€‚<br/>
+3ã€å°†ä¸€ä¸ªæ•°æ®è¡¨çš„æ•°æ®IDå“ˆå¸ŒåŽæŒ‰1000å–æ¨¡ä½œä¸ºæœ€åŽçš„HASHCODE,æˆ‘ä»¬å°±å¯ä»¥å°†æ•°æ®æŒ‰[0,100)ã€[100,200) ã€[200,300)ã€[300,400) ã€[400,500)ã€[500,600)ã€[600,700)ã€[700,800)ã€[800,900)ã€ [900,1000)åˆ’åˆ†ä¸ºåä¸ªä»»åŠ¡é¡¹ï¼Œ
+	å½“ç„¶ä½ ä¹Ÿå¯ä»¥åˆ’åˆ†ä¸º100ä¸ªä»»åŠ¡é¡¹ï¼Œæœ€å¤šæ˜¯1000ä¸ªé¡¹ã€‚<br/>
+4ã€ä»»åŠ¡é¡¹æ˜¯è¿›è¡Œä»»åŠ¡åˆ†é…çš„æœ€å°å•ä½ã€‚ä¸€ä¸ªä»»åŠ¡é˜Ÿåˆ—åªèƒ½ç”±ä¸€ä¸ªScheduleServeræ¥è¿›è¡Œå¤„ç†ã€‚ä½†ä¸€ä¸ªServerå¯ä»¥å¤„ç†ä»»æ„æ•°é‡çš„ä»»åŠ¡é¡¹ã€‚
 </body>
 </html>
 
@@ -108,29 +108,29 @@ function save(){
 	var taskType = document.all("taskType").value;
 	var reg = /.*[\u4e00-\u9fa5]+.*$/; 
 	if(reg.test(taskType)){
-	   alert('ÈÎÎñÀàÐÍ²»ÄÜº¬ÖÐÎÄ');
+	   alert('ä»»åŠ¡ç±»åž‹ä¸èƒ½å«ä¸­æ–‡');
 	   return;
 	}
 	if(taskType==null||taskType==''||isContainSpace(taskType)){
-		alert('ÈÎÎñÀàÐÍ²»ÄÜÎª¿Õ»ò´æÔÚ¿Õ¸ñ');
+		alert('ä»»åŠ¡ç±»åž‹ä¸èƒ½ä¸ºç©ºæˆ–å­˜åœ¨ç©ºæ ¼');
 		return;
 	}
 	var str = document.all("dealBean").value;
 	if(str == null || str.length==0){
-		alert("ÇëÊäÈë´¦ÀíÈÎÎñµÄbeanÃû³Æ£¡£¡");
+		alert("è¯·è¾“å…¥å¤„ç†ä»»åŠ¡çš„beanåç§°ï¼ï¼");
 		return;
 	}
 	if(isContainSpace(str)){
-		alert('´¦ÀíÈÎÎñµÄbeanÃû³Æ²»ÄÜ´æÔÚ¿Õ¸ñ');
+		alert('å¤„ç†ä»»åŠ¡çš„beanåç§°ä¸èƒ½å­˜åœ¨ç©ºæ ¼');
 		return;
 	}
 	if(reg.test(str)){
-	   alert('beanÃû³Æ²»ÄÜº¬ÖÐÎÄ');
+	   alert('beanåç§°ä¸èƒ½å«ä¸­æ–‡');
 	   return;
 	}
     str = document.all("taskItems").value;
 	if(str == null || str.length==0){
-		alert("ÇëÊäÈëÈÎÎñÏî£¡£¡");
+		alert("è¯·è¾“å…¥ä»»åŠ¡é¡¹ï¼ï¼");
 		return;
 	}
     document.getElementById("taskTypeForm").submit();

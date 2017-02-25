@@ -3,11 +3,11 @@
 <%@page import="com.taobao.pamirs.schedule.taskmanager.ScheduleServer"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
 <%@page import="java.util.List"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
 <title>
-µ÷¶¯·þÎñÆ÷ÀúÊ·ÐÅÏ¢
+è°ƒåŠ¨æœåŠ¡å™¨åŽ†å²ä¿¡æ¯
 </title>
 <STYLE type=text/css>
 
@@ -33,11 +33,11 @@ if(managerFactoryUUID == null || managerFactoryUUID.trim().length() == 0){
 %>
 <table border="0">
   <tr>
-  	<td>ÈÎÎñÀàÐÍ£º</td><td><input type="text" id="baseTaskType" value="<%=baseTaskType==null?"":baseTaskType%>"> </td>
-  	<td>ÈÎÎñÓò£º</td><td><input type="text" id="ownSign" value="<%=ownSign==null?"":ownSign%>"> </td>
-  	<td>IP£º</td><td><input type="text" id="ip" value="<%=ip==null?"":ip%>"> </td>
-  	<td>ÅÅÐò£º</td><td><input type="text" id="orderStr" value="<%=orderStr==null?"":orderStr%>"> </td>
-  	<td><input type="button"  onclick="query()" value="²éÑ¯" style="width:100;"></td>
+  	<td>ä»»åŠ¡ç±»åž‹ï¼š</td><td><input type="text" id="baseTaskType" value="<%=baseTaskType==null?"":baseTaskType%>"> </td>
+  	<td>ä»»åŠ¡åŸŸï¼š</td><td><input type="text" id="ownSign" value="<%=ownSign==null?"":ownSign%>"> </td>
+  	<td>IPï¼š</td><td><input type="text" id="ip" value="<%=ip==null?"":ip%>"> </td>
+  	<td>æŽ’åºï¼š</td><td><input type="text" id="orderStr" value="<%=orderStr==null?"":orderStr%>"> </td>
+  	<td><input type="button"  onclick="query()" value="æŸ¥è¯¢" style="width:100;"></td>
   </tr>  
 </table>
 <%
@@ -45,20 +45,20 @@ if(managerFactoryUUID == null || managerFactoryUUID.trim().length() == 0){
 %>
    <table id="list" border="1" style=";border-COLLAPSE: collapse;display:block;">
    <tr >
-   <th nowrap>ÐòºÅ</th>
-   <th>ÈÎÎñÀàÐÍ<BR/>[TASK_TYPE]</th>
-   <th>Óò<BR/>[OWN_SIGN]</th>
-   <th>IPµØÖ·<BR/>[IP]</th>
-   <th>Ö÷»úÃû³Æ[HOST_NAME]</th>
-   <th nowrap>Ïß³Ì<BR/>[THREAD_NUM]</th>
-   <th>×¢²áÊ±¼ä<BR/>[REGISTER_TIME]</th>
-   <th>ÐÄÌøÊ±¼ä<BR/>[HEARTBEAT_TIME]</th>
-   <th>È¡ÊýÊ±¼ä<BR/>[LAST_FETCH_DATA_TIME]</th>
-   <th nowrap>°æ±¾<BR/>[VERSION]</th>
-   <th nowrap>ÏÂ´Î¿ªÊ¼<BR/>[NEXT_RUN_START_TIME]</th>
-   <th nowrap>ÏÂ´Î½áÊø<BR/>[NEXT_RUN_END_TIME]</th>
-   <th>´¦ÀíÆ÷<BR/>[MANAGER_FACTORY]</th>
-   <th>´¦ÀíÏêÇé</th>   
+   <th nowrap>åºå·</th>
+   <th>ä»»åŠ¡ç±»åž‹<BR/>[TASK_TYPE]</th>
+   <th>åŸŸ<BR/>[OWN_SIGN]</th>
+   <th>IPåœ°å€<BR/>[IP]</th>
+   <th>ä¸»æœºåç§°[HOST_NAME]</th>
+   <th nowrap>çº¿ç¨‹<BR/>[THREAD_NUM]</th>
+   <th>æ³¨å†Œæ—¶é—´<BR/>[REGISTER_TIME]</th>
+   <th>å¿ƒè·³æ—¶é—´<BR/>[HEARTBEAT_TIME]</th>
+   <th>å–æ•°æ—¶é—´<BR/>[LAST_FETCH_DATA_TIME]</th>
+   <th nowrap>ç‰ˆæœ¬<BR/>[VERSION]</th>
+   <th nowrap>ä¸‹æ¬¡å¼€å§‹<BR/>[NEXT_RUN_START_TIME]</th>
+   <th nowrap>ä¸‹æ¬¡ç»“æŸ<BR/>[NEXT_RUN_END_TIME]</th>
+   <th>å¤„ç†å™¨<BR/>[MANAGER_FACTORY]</th>
+   <th>å¤„ç†è¯¦æƒ…</th>   
    </tr>
    <%
    List<ScheduleServer> serverList = null;

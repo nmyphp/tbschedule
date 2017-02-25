@@ -1,6 +1,6 @@
 <%@page import="java.io.StringWriter"%>
 <%@page import="com.taobao.pamirs.schedule.ConsoleManager"%>
-<%@ page contentType="text/html; charset=GB2312" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%
 if(ConsoleManager.isInitial() == false){
 		response.sendRedirect("config.jsp");
