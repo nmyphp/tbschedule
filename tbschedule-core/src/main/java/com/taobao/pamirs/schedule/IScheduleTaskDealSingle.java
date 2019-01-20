@@ -13,6 +13,7 @@ public interface IScheduleTaskDealSingle<T> extends IScheduleTaskDeal<T> {
      * @param task Object
      * @param ownSign 当前环境名称
      */
-    public boolean execute(T task, String ownSign) throws Exception;
+
+    boolean execute(T task, String ownSign) throws Exception;
 
 }
