@@ -20,12 +20,12 @@ public interface IScheduleTaskDeal<T> {
      * @param taskItemList 当前调度服务器，分配到的可处理队列
      * @param eachFetchDataNum 每次获取数据的数量
      */
-    public List<T> selectTasks(String taskParameter, String ownSign, int taskItemNum, List<TaskItemDefine> taskItemList,
+    List<T> selectTasks(String taskParameter, String ownSign, int taskItemNum, List<TaskItemDefine> taskItemList,
         int eachFetchDataNum) throws Exception;
 
     /**
      * 获取任务的比较器,主要在NotSleep模式下需要用到
      */
-    public Comparator<T> getComparator();
+    Comparator<T> getComparator();
 
 }

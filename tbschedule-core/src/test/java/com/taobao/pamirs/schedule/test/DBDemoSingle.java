@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.taobao.pamirs.schedule.IScheduleTaskDealSingle;
 import com.taobao.pamirs.schedule.TaskItemDefine;
+import org.springframework.core.annotation.Order;
 
 /**
  * 单个任务处理实现
@@ -28,6 +29,7 @@ public class DBDemoSingle implements IScheduleTaskDealSingle<Long> {
 
     protected DataSource dataSource;
 
+    @Override
     public Comparator<Long> getComparator() {
         return new Comparator<Long>() {
             public int compare(Long o1, Long o2) {
@@ -40,6 +42,7 @@ public class DBDemoSingle implements IScheduleTaskDealSingle<Long> {
         };
     }
 
+    @Override
     public List<Long> selectTasks(String taskParameter, String ownSign, int taskItemNum, List<TaskItemDefine> queryCondition, int fetchNum) throws Exception {
         List<Long> result = new ArrayList<Long>();
         if (queryCondition.size() == 0) {
@@ -82,6 +85,7 @@ public class DBDemoSingle implements IScheduleTaskDealSingle<Long> {
         }
     }
 
+    @Override
     public boolean execute(Long task, String ownSign) throws Exception {
         Connection conn = null;
         Long id = (Long) task;

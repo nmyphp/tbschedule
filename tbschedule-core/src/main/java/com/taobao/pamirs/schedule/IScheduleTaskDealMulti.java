@@ -13,5 +13,5 @@ public interface IScheduleTaskDealMulti<T> extends IScheduleTaskDeal<T> {
      * @param tasks 任务数组
      * @param ownSign 当前环境名称
      */
-    public boolean execute(T[] tasks, String ownSign) throws Exception;
+    boolean execute(T[] tasks, String ownSign) throws Exception;
 }
