@@ -6,6 +6,7 @@ import com.taobao.pamirs.schedule.IScheduleTaskDealSingle;
 import com.taobao.pamirs.schedule.TaskItemDefine;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +23,12 @@ public class SampleTask implements IScheduleTaskDealSingle<User> {
     public List<User> selectTasks(String taskParameter, String ownSign, int taskItemNum,
         List<TaskItemDefine> taskItemList, int eachFetchDataNum) {
 
-        List<User> users = userService.getUsers(taskItemNum, taskItemList, eachFetchDataNum);
+        List<Integer> taskItemIds = taskItemList.stream()
+            .map(TaskItemDefine::getTaskItemId)
+            .map(Integer::valueOf)
+            .collect(Collectors.toList());
+
+        List<User> users = userService.getUsers(taskItemNum, taskItemIds, eachFetchDataNum);
         log.info("获取到{}条待处理的用户", users.size());
         return users;
     }

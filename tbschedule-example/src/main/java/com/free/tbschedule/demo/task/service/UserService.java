@@ -1,7 +1,6 @@
 package com.free.tbschedule.demo.task.service;
 
 import com.free.tbschedule.demo.task.dto.User;
-import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
@@ -13,7 +12,7 @@ public interface UserService {
      * @param remainder 余数为多少
      * @param topNum 取前多少个数据
      */
-    List<User> getUsers(int mod, Collection remainder, int topNum);
+    List<User> getUsers(int mod, List<Integer> remainder, int topNum);
 
     /**
      * 更新用户信息

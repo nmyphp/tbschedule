@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="GBK"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans default-autowire="byName">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
     <bean id="sampleTask" class="com.free.tbschedule.demo.task.SampleTask"/>
     <bean id="scheduleManagerFactory" class="com.taobao.pamirs.schedule.strategy.TBScheduleManagerFactory"
         init-method="init">
@@ -15,4 +19,6 @@
             </map>
         </property>
     </bean>
+
+    <context:component-scan base-package="com.free.tbschedule.demo.task"/>
 </beans>

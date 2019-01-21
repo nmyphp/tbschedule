@@ -119,7 +119,25 @@ public class Main {
 ```html
 http://localhost:8080/schedule/index.jsp?manager=true
 ```
+> ZK连接配置
+
+![ZK连接配置](./doc/zk_connection.png)
+
 这里的配置只要和第3步保持一致就可以了，然后依次点击：保存-管理主页，将进入tbshedule的调度配置页面。
+
+> 调度策略
+
+![调度策略](./doc/strategy_conf.png)
+
+*策略名称*可以自定义，比如SampleTask-strategy。*任务名称*可以自定义，但需要和[任务管理]页面的保持一致。
+
+> 任务管理
+
+![任务管理](./doc/task_conf.png)
+
+*任务名称*可以自定义，但需要和[调度策略]页面的保持一致。任务处理的SpringBean需要和schedule.xml中的beanName保持一致。
+
+至此，一个基于tbschedule的调度任务创建完成，请开始你的体验之旅吧！
 
 ### 了解更多
 [tbschedule主要概念](./doc/tbschedule.md)
