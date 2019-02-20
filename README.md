@@ -1,12 +1,12 @@
-## tbschedule
+![Logo](./doc/tbschedule_logo_black.png)
+
 tbschedule是一个支持分布式的调度框架，让批量任务或者不断变化的任务能够被动态的分配到多个主机的JVM中，
-在不同的线程组中并行执行，所有的任务能够被不重复，不遗漏的快速处理。
-基于ZooKeeper的纯Java实现，由Alibaba开源。
+在不同的线程组中并行执行，所有的任务能够被不重复，不遗漏的快速处理。基于ZooKeeper的纯Java实现，由Alibaba开源。
 > 代码来自http://code.taobao.org/p/tbschedule/src/
 
-## Quick Start
+## Getting Started
 
-### 1. 获取代码，并在本地打包
+#### 1. 获取代码，并在本地打包
 ```shell
 clone https://github.com/nmyphp/tbschedule.git
 
@@ -16,16 +16,16 @@ mvn package
 ```
 打包之后，在tbschedule-core和tbschedule-console下面会分别生成：
 
-tbschedule-core\target\tbschedule-core-3.4.0.jar
-
-tbschedule-console\target\tbschedule-console-3.4.0.war
+>tbschedule-core\target\tbschedule-core-3.4.0.jar
+>
+>tbschedule-console\target\tbschedule-console-3.4.0.war
 
 将tbschedule-core发布到你的私服：
 ```
 mvn deploy
 ```
 
-### 2. 依赖核心jar包，开发业务代码
+#### 2. 依赖核心jar包，开发业务代码
 在工程中添加如下依赖：
 ```
 <dependency>
@@ -79,7 +79,7 @@ public class SampleTask implements IScheduleTaskDealSingle<User> {
 ```
 如果需要批处理，实现IScheduleTaskDealMulti接口，详细请参考SampleMutiTask。
 
-### 3. 配置调度
+#### 3. 配置调度
 tbschedule需要依赖Zookeeper做分布式调度，所以需要在配置中指定zk的地址，作业根路径等信息。
 ```xml
 <?xml version="1.0" encoding="GBK"?>
@@ -114,24 +114,24 @@ public class Main {
     }
 }
 ```
-### 4. 部署tbschedule管理后台，配置作业调度信息
+#### 4. 部署tbschedule管理后台，配置作业调度信息
 将上面打包得到的tbschedule-console-3.4.0.war部署到tomcat容器中，比如tomcat端口为8080，访问：
 ```html
 http://localhost:8080/schedule/index.jsp?manager=true
 ```
-> ZK连接配置
+- ZK连接配置
 
 ![ZK连接配置](./doc/zk_connection.png)
 
 这里的配置只要和第3步保持一致就可以了，然后依次点击：保存-管理主页，将进入tbshedule的调度配置页面。
 
-> 调度策略
+- 调度策略
 
 ![调度策略](./doc/strategy_conf.png)
 
 *策略名称*可以自定义，比如SampleTask-strategy。*任务名称*可以自定义，但需要和[任务管理]页面的保持一致。
 
-> 任务管理
+- 任务管理
 
 ![任务管理](./doc/task_conf.png)
 
@@ -140,5 +140,6 @@ http://localhost:8080/schedule/index.jsp?manager=true
 至此，一个基于tbschedule的调度任务创建完成，请开始你的体验之旅吧！
 
 ### 了解更多
-[tbschedule主要概念](./doc/tbschedule.md)
+- [tbschedule主要概念](./doc/tbschedule.md)
+- [tbschedule运行图解](./doc/tbscheduleLogic.md)
 
