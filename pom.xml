@@ -15,7 +15,7 @@
     </properties>
 
     <modules>
-        <module>gi</module>
+        <module>tbschedule-core</module>
         <module>tbschedule-console</module>
         <module>tbschedule-example</module>
     </modules>
