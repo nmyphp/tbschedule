@@ -142,4 +142,6 @@ http://localhost:8080/schedule/index.jsp?manager=true
 ### 了解更多
 - [tbschedule主要概念](./doc/tbschedule.md)
 - [tbschedule运行图解](./doc/tbscheduleLogic.md)
+- 欢迎加入QQ群讨论
 
+![QQ群](./doc/tbschedule_QR_code.png)
