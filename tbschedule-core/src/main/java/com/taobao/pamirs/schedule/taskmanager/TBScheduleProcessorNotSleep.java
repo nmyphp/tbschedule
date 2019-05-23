@@ -51,7 +51,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
     /**
      * 正在处理中的任务队列
      */
-    protected List<Object> runningTaskList = new CopyOnWriteArrayList<Object>();
+    protected List<Object> runningTaskList = new CopyOnWriteArrayList<>();
     /**
      * 在重新取数据，可能会重复的数据。在重新去数据前，从runningTaskList拷贝得来
      */
@@ -66,16 +66,16 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
     boolean isMutilTask = false;
 
     /**
-     * 是否已经获得终止调度信号
+     * 是否已经获得终止调度信号: 用户停止队列调度
      */
-    boolean isStopSchedule = false;// 用户停止队列调度
+    boolean isStopSchedule = false;
     boolean isSleeping = false;
 
     /**
      * 创建一个调度处理器
      */
     public TBScheduleProcessorNotSleep(TBScheduleManager aManager, IScheduleTaskDeal<T> aTaskDealBean,
-        StatisticsInfo aStatisticsInfo) throws Exception {
+        StatisticsInfo aStatisticsInfo) {
         this.scheduleManager = aManager;
         this.statisticsInfo = aStatisticsInfo;
         this.taskTypeInfo = this.scheduleManager.getTaskTypeInfo();
@@ -100,7 +100,8 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
     /**
      * 需要注意的是，调度服务器从配置中心注销的工作，必须在所有线程退出的情况下才能做
      */
-    public void stopSchedule() throws Exception {
+    @Override
+    public void stopSchedule() {
         // 设置停止调度的标志,调度线程发现这个标志，执行完当前任务后，就退出调度
         this.isStopSchedule = true;
         // 清除所有未处理任务,但已经进入处理队列的，需要处理完毕
@@ -184,14 +185,17 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
         }
     }
 
+    @Override
     public void clearAllHasFetchData() {
         this.taskList.clear();
     }
 
+    @Override
     public boolean isDealFinishAllData() {
         return this.taskList.size() == 0 && this.runningTaskList.size() == 0;
     }
 
+    @Override
     public boolean isSleeping() {
         return this.isSleeping;
     }
@@ -302,6 +306,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
     /**
      * 运行函数
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void run() {
         long startTime = 0;
@@ -324,6 +329,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                 } else {
                     executeTask = this.getScheduleTaskIdMulti();
                 }
+
                 if (executeTask == null) {
                     this.loadScheduleData();
                     continue;
@@ -367,9 +373,13 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                 } finally {
                     this.runningTaskList.remove(executeTask);
                 }
+
+                // 单次调度只执行一次数据获取
+                if (this.taskTypeInfo.getExeCountEachSchedule() == 1) {
+                    return;
+                }
             } catch (Throwable e) {
                 throw new RuntimeException(e);
-                // log.error(e.getMessage(), e);
             }
         }
     }
@@ -397,11 +407,13 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
             this.comparator = aComparator;
         }
 
+        @Override
         public int compare(T o1, T o2) {
             statisticsInfo.addOtherCompareCount(1);
             return this.comparator.compare(o1, o2);
         }
 
+        @Override
         public boolean equals(Object obj) {
             return this.comparator.equals(obj);
         }

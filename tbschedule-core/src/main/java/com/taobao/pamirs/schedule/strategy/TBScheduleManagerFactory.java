@@ -432,6 +432,7 @@ class ManagerFactoryTimerTask extends java.util.TimerTask {
         this.factory = aFactory;
     }
 
+    @Override
     public void run() {
         try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
