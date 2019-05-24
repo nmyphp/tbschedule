@@ -373,11 +373,6 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                 } finally {
                     this.runningTaskList.remove(executeTask);
                 }
-
-                // 单次调度只执行一次数据获取
-                if (this.taskTypeInfo.getExeCountEachSchedule() == 1) {
-                    return;
-                }
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }

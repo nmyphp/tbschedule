@@ -257,11 +257,6 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
                         }
                         logger.warn("Task :" + executeTask + " 处理失败", ex);
                     }
-
-                    // 单次调度只执行一次数据获取
-                    if (this.taskTypeInfo.getExeCountEachSchedule() == 1) {
-                        return;
-                    }
                 }
                 // 当前队列中所有的任务都已经完成了。
                 if (logger.isTraceEnabled()) {
@@ -276,7 +271,7 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
                     if (size > 0) {
                         this.m_lockObject.notifyOtherThread();
                     } else {
-                        // 判断当没有数据的是否，是否需要退出调度
+                        // 判断当没有数据时，是否需要退出调度
                         if (this.isStopSchedule == false && this.scheduleManager.isContinueWhenData() == true) {
                             if (logger.isTraceEnabled()) {
                                 logger.trace("没有装载到数据，start sleep");

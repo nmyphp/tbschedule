@@ -147,6 +147,7 @@ abstract class TBScheduleManager implements IStrategyTask {
         return this.currenScheduleServer.getTaskType();
     }
 
+    @Override
     public void initialTaskParameter(String strategyName, String taskParameter) {
         // 没有实现的方法，需要的参数直接从任务配置中读取
     }
