@@ -22,12 +22,12 @@ public class ScheduleTaskType implements java.io.Serializable {
     /**
      * 向配置中心更新心跳信息的频率
      */
-    private long heartBeatRate = 5 * 1000;// 1分钟
+    private long heartBeatRate = 5 * 1000;
 
     /**
      * 判断一个服务器死亡的周期。为了安全，至少是心跳周期的两倍以上
      */
-    private long judgeDeadInterval = 1 * 60 * 1000;// 2分钟
+    private long judgeDeadInterval = 1 * 60 * 1000;
 
     /**
      * 当没有数据的时候，休眠的时间
@@ -78,7 +78,9 @@ public class ScheduleTaskType implements java.io.Serializable {
      */
     private String taskParameter;
 
-    // 任务类型：静态static,动态dynamic
+    /**
+     * 任务类型：静态static,动态dynamic
+     */
     private String taskKind = TASKKIND_STATIC;
 
     public static String TASKKIND_STATIC = "static";
@@ -102,6 +104,11 @@ public class ScheduleTaskType implements java.io.Serializable {
      * 服务状态: pause,resume
      */
     private String sts = STS_RESUME;
+
+    /**
+     * 每次调度，获取数据的次数
+     */
+    private int fetchDataCountEachSchedule = -1;
 
     public static String STS_PAUSE = "pause";
     public static String STS_RESUME = "resume";
@@ -263,6 +270,7 @@ public class ScheduleTaskType implements java.io.Serializable {
 
     }
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
@@ -307,4 +315,11 @@ public class ScheduleTaskType implements java.io.Serializable {
         this.maxTaskItemsOfOneThreadGroup = maxTaskItemsOfOneThreadGroup;
     }
 
+    public int getFetchDataCountEachSchedule() {
+        return fetchDataCountEachSchedule;
+    }
+
+    public void setFetchDataCountEachSchedule(int fetchDataCountEachSchedule) {
+        this.fetchDataCountEachSchedule = fetchDataCountEachSchedule;
+    }
 }

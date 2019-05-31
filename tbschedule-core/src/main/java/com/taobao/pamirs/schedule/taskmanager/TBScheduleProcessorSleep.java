@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +53,9 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
     boolean isMutilTask = false;
 
     /**
-     * 是否已经获得终止调度信号
+     * 是否已经获得终止调度信号: 用户停止队列调度
      */
-    boolean isStopSchedule = false;// 用户停止队列调度
+    boolean isStopSchedule = false;
     boolean isSleeping = false;
 
     StatisticsInfo statisticsInfo;
@@ -62,7 +64,7 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
      * 创建一个调度处理器
      */
     public TBScheduleProcessorSleep(TBScheduleManager aManager, IScheduleTaskDeal<T> aTaskDealBean,
-        StatisticsInfo aStatisticsInfo) throws Exception {
+        StatisticsInfo aStatisticsInfo) {
         this.scheduleManager = aManager;
         this.statisticsInfo = aStatisticsInfo;
         this.taskTypeInfo = this.scheduleManager.getTaskTypeInfo();
@@ -86,7 +88,8 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
     /**
      * 需要注意的是，调度服务器从配置中心注销的工作，必须在所有线程退出的情况下才能做
      */
-    public void stopSchedule() throws Exception {
+    @Override
+    public void stopSchedule() {
         // 设置停止调度的标志,调度线程发现这个标志，执行完当前任务后，就退出调度
         this.isStopSchedule = true;
         // 清除所有未处理任务,但已经进入处理队列的，需要处理完毕
@@ -127,14 +130,17 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
         return result;
     }
 
+    @Override
     public void clearAllHasFetchData() {
         this.taskList.clear();
     }
 
+    @Override
     public boolean isDealFinishAllData() {
         return this.taskList.size() == 0;
     }
 
+    @Override
     public boolean isSleeping() {
         return this.isSleeping;
     }
@@ -158,7 +164,7 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
             List<TaskItemDefine> taskItems = this.scheduleManager.getCurrentScheduleTaskItemList();
             // 根据队列信息查询需要调度的数据，然后增加到任务列表中
             if (taskItems.size() > 0) {
-                List<TaskItemDefine> tmpTaskList = new ArrayList<TaskItemDefine>();
+                List<TaskItemDefine> tmpTaskList = new ArrayList<>();
                 synchronized (taskItems) {
                     for (TaskItemDefine taskItemDefine : taskItems) {
                         tmpTaskList.add(taskItemDefine);
@@ -185,17 +191,21 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
         return 0;
     }
 
+    @Override
     @SuppressWarnings({"rawtypes", "unchecked", "static-access"})
     public void run() {
         try {
             long startTime = 0;
+            AtomicInteger fetchDataNum = new AtomicInteger(0);
             while (true) {
                 this.m_lockObject.addThread();
                 Object executeTask;
                 while (true) {
-                    if (this.isStopSchedule == true) {// 停止队列调度
+                    // 停止队列调度
+                    if (this.isStopSchedule == true) {
                         this.m_lockObject.realseThread();
-                        this.m_lockObject.notifyOtherThread();// 通知所有的休眠线程
+                        // 通知所有的休眠线程
+                        this.m_lockObject.notifyOtherThread();
                         synchronized (this.threadList) {
                             this.threadList.remove(Thread.currentThread());
                             if (this.threadList.size() == 0) {
@@ -257,20 +267,32 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
                 }
                 if (this.m_lockObject.realseThreadButNotLast() == false) {
                     int size = 0;
-                    Thread.currentThread().sleep(100);
+                    Thread.sleep(100);
                     startTime = scheduleManager.scheduleCenter.getSystemTime();
+                    // 如果调度次数达到设置的上限，暂停调度
+                    if (fetchDataNum.intValue() >= this.taskTypeInfo.getFetchDataCountEachSchedule()
+                            && this.taskTypeInfo.getFetchDataCountEachSchedule() != -1) {
+                        this.scheduleManager.pause("达到调度次数上限，暂停调度");
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("达到执行次数上限{}，暂停调度", this.taskTypeInfo.getFetchDataCountEachSchedule());
+                        }
+                        this.m_lockObject.notifyOtherThread();
+                        this.m_lockObject.realseThread();
+                        continue;
+                    }
                     // 装载数据
                     size = this.loadScheduleData();
+                    fetchDataNum.addAndGet(1);
                     if (size > 0) {
                         this.m_lockObject.notifyOtherThread();
                     } else {
-                        // 判断当没有数据的是否，是否需要退出调度
+                        // 判断当没有数据时，是否需要退出调度
                         if (this.isStopSchedule == false && this.scheduleManager.isContinueWhenData() == true) {
                             if (logger.isTraceEnabled()) {
                                 logger.trace("没有装载到数据，start sleep");
                             }
                             this.isSleeping = true;
-                            Thread.currentThread().sleep(this.scheduleManager.getTaskTypeInfo().getSleepTimeNoData());
+                            Thread.sleep(this.scheduleManager.getTaskTypeInfo().getSleepTimeNoData());
                             this.isSleeping = false;
 
                             if (logger.isTraceEnabled()) {

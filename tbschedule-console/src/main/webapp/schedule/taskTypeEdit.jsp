@@ -106,7 +106,10 @@
             <td>单线程组最大任务项：</td>
             <td><input type="text" name="maxTaskItemsOfOneThreadGroup"
                        value="<%=taskType.getMaxTaskItemsOfOneThreadGroup()%>" width="30"></td>
-            <td colspan="2">每一组线程能分配的最大任务数量，避免在随着机器的减少把正常的服务器压死，0或者空表示不限制</td>
+            <td>单次调度执行次数：</td>
+            <td><input type="text" name="fetchDataCountEachSchedule" value="<%=taskType.getFetchDataCountEachSchedule() %>" width="30">
+            默认为-1，表示没有执行次数限制
+            </td>
         </tr>
         <tr>
             <td>自定义参数(字符串):</td>

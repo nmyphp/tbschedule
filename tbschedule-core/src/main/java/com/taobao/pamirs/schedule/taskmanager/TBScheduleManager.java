@@ -15,6 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 
 /**
  * 1、任务调度分配器的目标： 让所有的任务不重复，不遗漏的被快速处理。 2、一个Manager只管理一种任务类型的一组工作线程。 3、在一个JVM里面可能存在多个处理相同任务类型的Manager，也可能存在处理不同任务类型的Manager。
@@ -64,7 +65,7 @@ abstract class TBScheduleManager implements IStrategyTask {
     /**
      * 当前处理任务队列清单 ArrayList实现不是同步的。因多线程操作修改该列表，会造成ConcurrentModificationException
      */
-    protected List<TaskItemDefine> currentTaskItemList = new CopyOnWriteArrayList<TaskItemDefine>();
+    protected List<TaskItemDefine> currentTaskItemList = new CopyOnWriteArrayList<>();
     /**
      * 最近一起重新装载调度任务的时间。 当前实际 - 上此装载时间 > intervalReloadTaskItemList，则向配置中心请求最新的任务分配情况
      */
@@ -146,6 +147,7 @@ abstract class TBScheduleManager implements IStrategyTask {
         return this.currenScheduleServer.getTaskType();
     }
 
+    @Override
     public void initialTaskParameter(String strategyName, String taskParameter) {
         // 没有实现的方法，需要的参数直接从任务配置中读取
     }
@@ -324,6 +326,7 @@ abstract class TBScheduleManager implements IStrategyTask {
     /**
      * 当服务器停止的时候，调用此方法清除所有未处理任务，清除服务器的注册信息。 也可能是控制中心发起的终止指令。 需要注意的是，这个方法必须在当前任务处理完毕后才能执行
      */
+    @Override
     public void stop(String strategyName) throws Exception {
         if (log.isInfoEnabled()) {
             log.info("停止服务器 ：" + this.currenScheduleServer.getUuid());
@@ -396,6 +399,7 @@ class HeartBeatTimerTask extends java.util.TimerTask {
         manager = aManager;
     }
 
+    @Override
     public void run() {
         try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -423,6 +427,7 @@ class PauseOrResumeScheduleTask extends java.util.TimerTask {
         this.cronTabExpress = aCronTabExpress;
     }
 
+    @Override
     public void run() {
         try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -446,13 +451,30 @@ class PauseOrResumeScheduleTask extends java.util.TimerTask {
 }
 
 class StatisticsInfo {
-
-    private AtomicLong fetchDataNum = new AtomicLong(0);// 读取次数
-    private AtomicLong fetchDataCount = new AtomicLong(0);// 读取的数据量
-    private AtomicLong dealDataSucess = new AtomicLong(0);// 处理成功的数据量
-    private AtomicLong dealDataFail = new AtomicLong(0);// 处理失败的数据量
-    private AtomicLong dealSpendTime = new AtomicLong(0);// 处理总耗时,没有做同步，可能存在一定的误差
-    private AtomicLong otherCompareCount = new AtomicLong(0);// 特殊比较的次数
+    /**
+     * 读取次数
+     */
+    private AtomicLong fetchDataNum = new AtomicLong(0);
+    /**
+     * 读取的数据量
+     */
+    private AtomicLong fetchDataCount = new AtomicLong(0);
+    /**
+     * 处理成功的数据量
+     */
+    private AtomicLong dealDataSucess = new AtomicLong(0);
+    /**
+     * 处理失败的数据量
+     */
+    private AtomicLong dealDataFail = new AtomicLong(0);
+    /**
+     * 处理总耗时,没有做同步，可能存在一定的误差
+     */
+    private AtomicLong dealSpendTime = new AtomicLong(0);
+    /**
+     * 特殊比较的次数
+     */
+    private AtomicLong otherCompareCount = new AtomicLong(0);
 
     public void addFetchDataNum(long value) {
         this.fetchDataNum.addAndGet(value);
@@ -476,6 +498,10 @@ class StatisticsInfo {
 
     public void addOtherCompareCount(long value) {
         this.otherCompareCount.addAndGet(value);
+    }
+
+    public AtomicLong getFetchDataNum() {
+        return fetchDataNum;
     }
 
     public String getDealDescription() {
