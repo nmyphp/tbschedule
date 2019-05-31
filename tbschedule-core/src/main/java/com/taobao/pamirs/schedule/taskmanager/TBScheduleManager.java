@@ -500,6 +500,10 @@ class StatisticsInfo {
         this.otherCompareCount.addAndGet(value);
     }
 
+    public AtomicLong getFetchDataNum() {
+        return fetchDataNum;
+    }
+
     public String getDealDescription() {
         return "FetchDataCount=" + this.fetchDataCount + ",FetchDataNum=" + this.fetchDataNum + ",DealDataSucess="
             + this.dealDataSucess + ",DealDataFail=" + this.dealDataFail

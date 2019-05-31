@@ -108,7 +108,7 @@ public class ScheduleTaskType implements java.io.Serializable {
     /**
      * 每次调度，获取数据的次数
      */
-    private int exeCountEachSchedule = -1;
+    private int fetchDataCountEachSchedule = -1;
 
     public static String STS_PAUSE = "pause";
     public static String STS_RESUME = "resume";
@@ -315,11 +315,11 @@ public class ScheduleTaskType implements java.io.Serializable {
         this.maxTaskItemsOfOneThreadGroup = maxTaskItemsOfOneThreadGroup;
     }
 
-    public int getExeCountEachSchedule() {
-        return exeCountEachSchedule;
+    public int getFetchDataCountEachSchedule() {
+        return fetchDataCountEachSchedule;
     }
 
-    public void setExeCountEachSchedule(int exeCountEachSchedule) {
-        this.exeCountEachSchedule = exeCountEachSchedule;
+    public void setFetchDataCountEachSchedule(int fetchDataCountEachSchedule) {
+        this.fetchDataCountEachSchedule = fetchDataCountEachSchedule;
     }
 }

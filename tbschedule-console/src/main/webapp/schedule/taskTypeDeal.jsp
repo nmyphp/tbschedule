@@ -43,8 +43,8 @@
                     : Integer.parseInt(request.getParameter("maxTaskItemsOfOneThreadGroup")));
             taskType.setTaskParameter(request.getParameter("taskParameter"));
 
-            String exeCountEachSchedule = request.getParameter("exeCountEachSchedule");
-            taskType.setExeCountEachSchedule(exeCountEachSchedule == null ? 0 : Integer.parseInt(exeCountEachSchedule));
+            String fetchDataCountEachSchedule = request.getParameter("fetchDataCountEachSchedule");
+            taskType.setFetchDataCountEachSchedule(fetchDataCountEachSchedule == null ? 0 : Integer.parseInt(fetchDataCountEachSchedule));
 
             String itemDefines = request.getParameter("taskItems");
             itemDefines = itemDefines.replaceAll("\r", "");

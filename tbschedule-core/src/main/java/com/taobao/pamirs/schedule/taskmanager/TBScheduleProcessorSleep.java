@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,7 +164,7 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
             List<TaskItemDefine> taskItems = this.scheduleManager.getCurrentScheduleTaskItemList();
             // 根据队列信息查询需要调度的数据，然后增加到任务列表中
             if (taskItems.size() > 0) {
-                List<TaskItemDefine> tmpTaskList = new ArrayList<TaskItemDefine>();
+                List<TaskItemDefine> tmpTaskList = new ArrayList<>();
                 synchronized (taskItems) {
                     for (TaskItemDefine taskItemDefine : taskItems) {
                         tmpTaskList.add(taskItemDefine);
@@ -194,6 +196,7 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
     public void run() {
         try {
             long startTime = 0;
+            AtomicInteger fetchDataNum = new AtomicInteger(0);
             while (true) {
                 this.m_lockObject.addThread();
                 Object executeTask;
@@ -266,8 +269,20 @@ class TBScheduleProcessorSleep<T> implements IScheduleProcessor, Runnable {
                     int size = 0;
                     Thread.sleep(100);
                     startTime = scheduleManager.scheduleCenter.getSystemTime();
+                    // 如果调度次数达到设置的上限，暂停调度
+                    if (fetchDataNum.intValue() >= this.taskTypeInfo.getFetchDataCountEachSchedule()
+                            && this.taskTypeInfo.getFetchDataCountEachSchedule() != -1) {
+                        this.scheduleManager.pause("达到调度次数上限，暂停调度");
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("达到执行次数上限{}，暂停调度", this.taskTypeInfo.getFetchDataCountEachSchedule());
+                        }
+                        this.m_lockObject.notifyOtherThread();
+                        this.m_lockObject.realseThread();
+                        continue;
+                    }
                     // 装载数据
                     size = this.loadScheduleData();
+                    fetchDataNum.addAndGet(1);
                     if (size > 0) {
                         this.m_lockObject.notifyOtherThread();
                     } else {

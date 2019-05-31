@@ -107,7 +107,8 @@
             <td><input type="text" name="maxTaskItemsOfOneThreadGroup"
                        value="<%=taskType.getMaxTaskItemsOfOneThreadGroup()%>" width="30"></td>
             <td>单次调度执行次数：</td>
-            <td><input type="text" name="exeCountEachSchedule" value="<%=taskType.getExeCountEachSchedule() %>" width="30">
+            <td><input type="text" name="fetchDataCountEachSchedule" value="<%=taskType.getFetchDataCountEachSchedule() %>" width="30">
+            默认为-1，表示没有执行次数限制
             </td>
         </tr>
         <tr>

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
@@ -312,6 +313,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
         long startTime = 0;
         long sequence = 0;
         Object executeTask = null;
+        AtomicInteger fetchDataNum = new AtomicInteger(0);
         while (true) {
             try {
                 if (this.isStopSchedule == true) { // 停止队列调度
@@ -331,7 +333,16 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                 }
 
                 if (executeTask == null) {
-                    this.loadScheduleData();
+                    if (fetchDataNum.intValue() >= this.taskTypeInfo.getFetchDataCountEachSchedule()
+                            && this.taskTypeInfo.getFetchDataCountEachSchedule() != -1) {
+                        this.scheduleManager.pause("达到调度次数上限，暂停调度");
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("达到执行次数上限{}，暂停调度", this.taskTypeInfo.getFetchDataCountEachSchedule());
+                        }
+                    } else {
+                        this.loadScheduleData();
+                        fetchDataNum.addAndGet(1);
+                    }
                     continue;
                 }
 
