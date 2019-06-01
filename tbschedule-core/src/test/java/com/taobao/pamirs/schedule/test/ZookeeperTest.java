@@ -11,17 +11,23 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.taobao.pamirs.schedule.zk.ScheduleWatcher;
 import com.taobao.pamirs.schedule.zk.ZKTools;
 
 public class ZookeeperTest {
+
+    @BeforeClass
+    public static void setUp() {
+        EmbedTestingServer.start();
+    }
+
     @Test
     public void testCloseStatus() throws Exception {
         ZooKeeper zk = new ZooKeeper("localhost:2181", 3000, new ScheduleWatcher(null));
-        int i = 1;
-        while (true) {
+        for (int i = 0; i < 3; i++) {
             try {
                 StringWriter writer = new StringWriter();
                 ZKTools.printTree(zk, "/zookeeper/quota", writer, "");
@@ -57,7 +63,8 @@ public class ZookeeperTest {
         ZooKeeper zk = new ZooKeeper("localhost:2181", 3000, new ScheduleWatcher(null));
         List<ACL> acls = new ArrayList<ACL>();
         zk.addAuthInfo("digest", "TestUser:password".getBytes());
-        acls.add(new ACL(ZooDefs.Perms.ALL, new Id("digest", DigestAuthenticationProvider.generateDigest("TestUser:password"))));
+        acls.add(new ACL(ZooDefs.Perms.ALL,
+                new Id("digest", DigestAuthenticationProvider.generateDigest("TestUser:password"))));
         acls.add(new ACL(ZooDefs.Perms.READ, Ids.ANYONE_ID_UNSAFE));
         zk.create("/abc", new byte[0], acls, CreateMode.PERSISTENT);
         zk.getData("/abc", false, null);

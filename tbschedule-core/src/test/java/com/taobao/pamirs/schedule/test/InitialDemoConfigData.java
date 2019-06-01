@@ -1,5 +1,6 @@
 package com.taobao.pamirs.schedule.test;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,11 @@ public class InitialDemoConfigData extends UnitilsJUnit4 {
     protected static transient Logger log = LoggerFactory.getLogger(InitialDemoConfigData.class);
     @SpringBeanByName
     TBScheduleManagerFactory scheduleManagerFactory;
+
+    @BeforeClass
+    public static void setUp() {
+        EmbedTestingServer.start();
+    }
 
     public void setScheduleManagerFactory(TBScheduleManagerFactory tbScheduleManagerFactory) {
         this.scheduleManagerFactory = tbScheduleManagerFactory;
