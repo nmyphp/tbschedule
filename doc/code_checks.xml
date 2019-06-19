@@ -4,7 +4,7 @@
 <module name="Checker">
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
-    <module name="FileContentsHolder"/>
+    <!--<module name="FileContentsHolder"/>-->
     <module name="SuppressWarningsHolder"/>
     <module name="ConstantName"/>
     <module name="LocalFinalVariableName"/>
@@ -65,9 +65,9 @@
     <module name="MethodCount"/>
     <module name="InnerTypeLast"/>
     <module name="MutableException"/>
-    <module name="FinalParameters">
+    <!--<module name="FinalParameters">
       <property name="tokens" value="LITERAL_CATCH,CTOR_DEF,METHOD_DEF"/>
-    </module>
+    </module>-->
     <module name="TrailingComment"/>
     <module name="UncommentedMain"/>
     <module name="OuterTypeFilename"/>
@@ -136,8 +136,8 @@
   <module name="FileLength"/>
   <module name="SeverityMatchFilter"/>
   <module name="SuppressionFilter"/>
-  <module name="SuppressionCommentFilter"/>
-  <module name="SuppressWithNearbyCommentFilter"/>
+  <!--<module name="SuppressionCommentFilter"/>-->
+  <!--<module name="SuppressWithNearbyCommentFilter"/>-->
   <module name="UniqueProperties"/>
   <module name="FileTabCharacter"/>
   <module name="SuppressWarningsFilter"/>
