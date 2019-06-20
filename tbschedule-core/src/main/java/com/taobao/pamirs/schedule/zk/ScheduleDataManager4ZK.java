@@ -46,8 +46,8 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
     private String PATH_BaseTaskType;
     private String PATH_TaskItem = "taskItem";
     private String PATH_Server = "server";
-    private long zkBaseTime = 0;
-    private long loclaBaseTime = 0;
+    private long zkBaseTime;
+    private long loclaBaseTime;
 
     public ScheduleDataManager4ZK(ZKManager aZkManager) throws Exception {
         this.zkManager = aZkManager;

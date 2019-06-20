@@ -5,8 +5,6 @@ import com.taobao.pamirs.schedule.strategy.TBScheduleManagerFactory;
 import java.util.List;
 
 public class TBScheduleManagerDynamic extends TBScheduleManager {
-    // private static transient Log log =
-    // LogFactory.getLog(TBScheduleManagerDynamic.class);
 
     TBScheduleManagerDynamic(TBScheduleManagerFactory aFactory, String baseTaskType, String ownSign, int managerPort,
         String jxmUrl, IScheduleDataManager aScheduleCenter)
@@ -14,6 +12,7 @@ public class TBScheduleManagerDynamic extends TBScheduleManager {
         super(aFactory, baseTaskType, ownSign, aScheduleCenter);
     }
 
+    @Override
     public void initial() throws Exception {
         if (scheduleCenter.isLeader(this.currenScheduleServer.getUuid(),
             scheduleCenter.loadScheduleServerNames(this.currenScheduleServer.getTaskType()))) {
@@ -24,24 +23,28 @@ public class TBScheduleManagerDynamic extends TBScheduleManager {
         computerStart();
     }
 
+    @Override
     public void refreshScheduleServerInfo() throws Exception {
-        throw new Exception("没有实现");
+        throw new Exception("暂未实现");
     }
 
     public boolean isNeedReLoadTaskItemList() throws Exception {
-        throw new Exception("没有实现");
+        throw new Exception("暂未实现");
     }
 
+    @Override
     public void assignScheduleTask() throws Exception {
-        throw new Exception("没有实现");
+        throw new Exception("暂未实现");
 
     }
 
+    @Override
     public List<TaskItemDefine> getCurrentScheduleTaskItemList() {
-        throw new RuntimeException("没有实现");
+        throw new RuntimeException("暂未实现");
     }
 
+    @Override
     public int getTaskItemCount() {
-        throw new RuntimeException("没有实现");
+        throw new RuntimeException("暂未实现");
     }
 }

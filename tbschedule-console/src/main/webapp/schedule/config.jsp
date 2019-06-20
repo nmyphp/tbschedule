@@ -75,7 +75,7 @@
     <% if (ConsoleManager.isInitial() == false) {%>
     <b>有几种原因导致你需要配置这些信息：</b><br>
     &nbsp&nbsp&nbsp&nbsp 1、你是第一次启动<br>
-    &nbsp&nbsp&nbsp&nbsp 2、你的配置信息被删除&nbsp<b><%=ConsoleManager.configFile%>
+    &nbsp&nbsp&nbsp&nbsp 2、你的配置信息被删除&nbsp<b><%=ConsoleManager.CONFIG_FILE%>
 </b><br>
     &nbsp&nbsp&nbsp&nbsp 3、连接不上你配置的Zookeeper服务器<br>
     <%}%>

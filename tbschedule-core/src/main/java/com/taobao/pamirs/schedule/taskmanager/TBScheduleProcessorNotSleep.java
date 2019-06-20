@@ -26,7 +26,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
 
     private static transient Logger logger = LoggerFactory.getLogger(TBScheduleProcessorNotSleep.class);
 
-    List<Thread> threadList = new CopyOnWriteArrayList<Thread>();
+    List<Thread> threadList = new CopyOnWriteArrayList<>();
     /**
      * 任务管理器
      */
@@ -143,7 +143,8 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
             T result = null;
             while (true) {
                 if (this.taskList.size() > 0) {
-                    result = this.taskList.remove(0); // 按正序处理
+                    // 按正序处理
+                    result = this.taskList.remove(0);
                 } else {
                     return null;
                 }
@@ -179,7 +180,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
             if (result.size() == 0) {
                 return null;
             } else {
-                return (T[]) result.toArray((T[]) Array.newInstance(result.get(0).getClass(), 0));
+                return result.toArray((T[]) Array.newInstance(result.get(0).getClass(), 0));
             }
         } finally {
             lockFetchMutilID.unlock();
@@ -207,7 +208,8 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
     protected int loadScheduleData() {
         lockLoadData.lock();
         try {
-            if (this.taskList.size() > 0 || this.isStopSchedule == true) { // 判断是否有别的线程已经装载过了。
+            // 判断是否有别的线程已经装载过了
+            if (this.taskList.size() > 0 || this.isStopSchedule == true) {
                 return this.taskList.size();
             }
             // 在每次数据处理完毕后休眠固定的时间
@@ -253,7 +255,7 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                         logger.debug("没有任务分配");
                     }
                 }
-                addFetchNum(taskList.size(), "TBScheduleProcessor.loadScheduleData");
+                addFetchNum(taskList.size());
                 if (taskList.size() <= 0) {
                     // 判断当没有数据的是否，是否需要退出调度
                     if (this.scheduleManager.isContinueWhenData() == true) {
@@ -316,7 +318,8 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
         AtomicInteger fetchDataNum = new AtomicInteger(0);
         while (true) {
             try {
-                if (this.isStopSchedule == true) { // 停止队列调度
+                // 停止队列调度
+                if (this.isStopSchedule == true) {
                     synchronized (this.threadList) {
                         this.threadList.remove(Thread.currentThread());
                         if (this.threadList.size() == 0) {
@@ -351,34 +354,30 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
                     startTime = scheduleManager.scheduleCenter.getSystemTime();
                     sequence = sequence + 1;
                     if (this.isMutilTask == false) {
-                        if (((IScheduleTaskDealSingle<Object>) this.taskDealBean)
-                            .execute(executeTask, scheduleManager.getScheduleServer().getOwnSign()) == true) {
-                            addSuccessNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime,
-                                "com.taobao.pamirs.schedule.TBScheduleProcessorNotSleep.run");
+                        boolean executeSuccessful = ((IScheduleTaskDealSingle<Object>) this.taskDealBean)
+                            .execute(executeTask, scheduleManager.getScheduleServer().getOwnSign());
+                        if (executeSuccessful) {
+                            addSuccessNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime);
                         } else {
-                            addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime,
-                                "com.taobao.pamirs.schedule.TBScheduleProcessorNotSleep.run");
+                            addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime);
                         }
                     } else {
-                        if (((IScheduleTaskDealMulti<Object>) this.taskDealBean)
-                            .execute((Object[]) executeTask, scheduleManager.getScheduleServer().getOwnSign())
-                            == true) {
+                        boolean executeSuccessful = ((IScheduleTaskDealMulti<Object>) this.taskDealBean)
+                            .execute((Object[]) executeTask, scheduleManager.getScheduleServer().getOwnSign());
+                        if (executeSuccessful) {
                             addSuccessNum(((Object[]) executeTask).length,
-                                scheduleManager.scheduleCenter.getSystemTime() - startTime,
-                                "com.taobao.pamirs.schedule.TBScheduleProcessorNotSleep.run");
+                                scheduleManager.scheduleCenter.getSystemTime() - startTime);
                         } else {
                             addFailNum(((Object[]) executeTask).length,
-                                scheduleManager.scheduleCenter.getSystemTime() - startTime,
-                                "com.taobao.pamirs.schedule.TBScheduleProcessorNotSleep.run");
+                                scheduleManager.scheduleCenter.getSystemTime() - startTime);
                         }
                     }
                 } catch (Throwable ex) {
                     if (this.isMutilTask == false) {
-                        addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime,
-                            "TBScheduleProcessor.run");
+                        addFailNum(1, scheduleManager.scheduleCenter.getSystemTime() - startTime);
                     } else {
                         addFailNum(((Object[]) executeTask).length,
-                            scheduleManager.scheduleCenter.getSystemTime() - startTime, "TBScheduleProcessor.run");
+                            scheduleManager.scheduleCenter.getSystemTime() - startTime);
                     }
                     logger.error("Task :" + executeTask + " 处理失败", ex);
                 } finally {
@@ -390,17 +389,17 @@ class TBScheduleProcessorNotSleep<T> implements IScheduleProcessor, Runnable {
         }
     }
 
-    public void addFetchNum(long num, String addr) {
+    public void addFetchNum(long num) {
         this.statisticsInfo.addFetchDataCount(1);
         this.statisticsInfo.addFetchDataNum(num);
     }
 
-    public void addSuccessNum(long num, long spendTime, String addr) {
+    public void addSuccessNum(long num, long spendTime) {
         this.statisticsInfo.addDealDataSucess(num);
         this.statisticsInfo.addDealSpendTime(spendTime);
     }
 
-    public void addFailNum(long num, long spendTime, String addr) {
+    public void addFailNum(long num, long spendTime) {
         this.statisticsInfo.addDealDataFail(num);
         this.statisticsInfo.addDealSpendTime(spendTime);
     }

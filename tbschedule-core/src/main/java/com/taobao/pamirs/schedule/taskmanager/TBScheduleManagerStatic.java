@@ -50,8 +50,6 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                             log.debug("外部命令终止调度,退出调度队列获取：" + currenScheduleServer.getUuid());
                             return;
                         }
-                        // log.error("isRuntimeInfoInitial = " +
-                        // isRuntimeInfoInitial);
                         try {
                             initialRunningInfo();
                             isRuntimeInfoInitial = scheduleCenter
@@ -74,7 +72,6 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                         }
                         Thread.sleep(1000);
                         count = count + 1;
-                        // log.error("尝试获取调度队列，第" + count + "次 ") ;
                     }
                     String tmpStr = "TaskItemDefine:";
                     for (int i = 0; i < currentTaskItemList.size(); i++) {
@@ -154,7 +151,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
     /**
      * 判断某个任务对应的线程组是否处于僵尸状态。 true 表示有线程组处于僵尸状态。需要告警。
      */
-    private boolean isExistZombieServ(String type, Map<String, Stat> statMap) throws Exception {
+    private boolean isExistZombieServ(String type, Map<String, Stat> statMap) {
         boolean exist = false;
         for (String key : statMap.keySet()) {
             Stat s = statMap.get(key);
@@ -168,10 +165,18 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
     }
 
     /**
-     * 根据当前调度服务器的信息，重新计算分配所有的调度任务 任务的分配是需要加锁，避免数据分配错误。为了避免数据锁带来的负面作用，通过版本号来达到锁的目的
+     * 根据当前调度服务器的信息，重新计算分配所有的调度任务 任务的分配是需要加锁，避免数据分配错误。
+     * 为了避免数据锁带来的负面作用，通过版本号来达到锁的目的
      * <p>
-     * 1、获取任务状态的版本号 2、获取所有的服务器注册信息和任务队列信息 3、清除已经超过心跳周期的服务器注册信息 3、重新计算任务分配 4、更新任务状态的版本号【乐观锁】 5、根系任务队列的分配信息
+     * 1、获取任务状态的版本号
+     * 2、获取所有的服务器注册信息和任务队列信息
+     * 3、清除已经超过心跳周期的服务器注册信息
+     * 4、重新计算任务分配
+     * 5、更新任务状态的版本号【乐观锁】
+     * 6、根系任务队列的分配信息
+     * </p>
      */
+    @Override
     public void assignScheduleTask() throws Exception {
         scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(),
             this.taskTypeInfo.getJudgeDeadInterval());
@@ -199,7 +204,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
      * <p>
      * 特别注意： 此方法的调用必须是在当前所有任务都处理完毕后才能调用，否则是否任务队列后可能数据被重复处理
      */
-
+    @Override
     public List<TaskItemDefine> getCurrentScheduleTaskItemList() {
         try {
             if (this.isNeedReloadTaskItem == true) {

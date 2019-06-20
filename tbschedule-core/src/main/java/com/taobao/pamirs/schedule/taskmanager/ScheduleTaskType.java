@@ -114,7 +114,7 @@ public class ScheduleTaskType implements java.io.Serializable {
     public static String STS_RESUME = "resume";
 
     public static String[] splitTaskItem(String str) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int start = 0;
         int index = 0;
         while (index < str.length()) {
@@ -128,7 +128,8 @@ public class ScheduleTaskType implements java.io.Serializable {
                         break;
                     }
                 }
-                index = index + 1; // 跳过逗号
+                // 跳过逗号
+                index = index + 1;
                 start = index;
             } else if (str.charAt(index) == ',') {
                 list.add(str.substring(start, index).trim());
@@ -139,7 +140,8 @@ public class ScheduleTaskType implements java.io.Serializable {
                         break;
                     }
                 }
-                index = index + 1; // 跳过逗号
+                // 跳过逗号
+                index = index + 1;
                 start = index;
             } else {
                 index = index + 1;
@@ -148,7 +150,7 @@ public class ScheduleTaskType implements java.io.Serializable {
         if (start < str.length()) {
             list.add(str.substring(start).trim());
         }
-        return (String[]) list.toArray(new String[0]);
+        return list.toArray(new String[0]);
     }
 
     public long getVersion() {
