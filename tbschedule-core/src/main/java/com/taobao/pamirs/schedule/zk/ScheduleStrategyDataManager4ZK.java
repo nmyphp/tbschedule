@@ -23,7 +23,9 @@ public class ScheduleStrategyDataManager4ZK {
     private String PATH_ManagerFactory;
     private Gson gson;
 
-    // 在Spring对象创建完毕后，创建内部对象
+    /**
+     * 在Spring对象创建完毕后，创建内部对象
+     */
     public ScheduleStrategyDataManager4ZK(ZKManager aZkManager) throws Exception {
         this.zkManager = aZkManager;
         gson = new GsonBuilder().registerTypeAdapter(Timestamp.class, new TimestampTypeAdapter())
@@ -46,7 +48,7 @@ public class ScheduleStrategyDataManager4ZK {
             return null;
         }
         String valueString = new String(this.getZooKeeper().getData(zkPath, false, null));
-        ScheduleStrategy result = (ScheduleStrategy) this.gson.fromJson(valueString, ScheduleStrategy.class);
+        ScheduleStrategy result = this.gson.fromJson(valueString, ScheduleStrategy.class);
         return result;
     }
 
@@ -98,7 +100,7 @@ public class ScheduleStrategyDataManager4ZK {
 
     public List<ScheduleStrategy> loadAllScheduleStrategy() throws Exception {
         String zkPath = this.PATH_Strategy;
-        List<ScheduleStrategy> result = new ArrayList<ScheduleStrategy>();
+        List<ScheduleStrategy> result = new ArrayList<>();
         List<String> names = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(names);
         for (String name : names) {
@@ -128,7 +130,7 @@ public class ScheduleStrategyDataManager4ZK {
             }
         }
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (ScheduleStrategy scheduleStrategy : loadAllScheduleStrategy()) {
             boolean isFind = false;
             // 暂停或者不在IP范围
@@ -150,7 +152,8 @@ public class ScheduleStrategyDataManager4ZK {
                     }
                 }
             }
-            if (isFind == false) {// 清除原来注册的Factory
+            // 清除原来注册的Factory
+            if (isFind == false) {
                 String zkPath =
                     this.PATH_Strategy + "/" + scheduleStrategy.getStrategyName() + "/" + managerFactory.getUuid();
                 if (this.getZooKeeper().exists(zkPath, false) != null) {
@@ -181,7 +184,7 @@ public class ScheduleStrategyDataManager4ZK {
             byte[] value = this.getZooKeeper().getData(zkPath, false, null);
             if (value != null) {
                 String valueString = new String(value);
-                result = (ScheduleStrategyRunntime) this.gson.fromJson(valueString, ScheduleStrategyRunntime.class);
+                result = this.gson.fromJson(valueString, ScheduleStrategyRunntime.class);
                 if (null == result) {
                     throw new Exception("gson 反序列化异常,对象为null");
                 }
@@ -206,7 +209,7 @@ public class ScheduleStrategyDataManager4ZK {
      * 装载所有的策略运行状态
      */
     public List<ScheduleStrategyRunntime> loadAllScheduleStrategyRunntime() throws Exception {
-        List<ScheduleStrategyRunntime> result = new ArrayList<ScheduleStrategyRunntime>();
+        List<ScheduleStrategyRunntime> result = new ArrayList<>();
         String zkPath = this.PATH_Strategy;
         for (String taskType : this.getZooKeeper().getChildren(zkPath, false)) {
             for (String uuid : this.getZooKeeper().getChildren(zkPath + "/" + taskType, false)) {
@@ -218,7 +221,7 @@ public class ScheduleStrategyDataManager4ZK {
 
     public List<ScheduleStrategyRunntime> loadAllScheduleStrategyRunntimeByUUID(String managerFactoryUUID)
         throws Exception {
-        List<ScheduleStrategyRunntime> result = new ArrayList<ScheduleStrategyRunntime>();
+        List<ScheduleStrategyRunntime> result = new ArrayList<>();
         String zkPath = this.PATH_Strategy;
 
         List<String> taskTypeList = this.getZooKeeper().getChildren(zkPath, false);
@@ -233,7 +236,7 @@ public class ScheduleStrategyDataManager4ZK {
 
     public List<ScheduleStrategyRunntime> loadAllScheduleStrategyRunntimeByTaskType(String strategyName)
         throws Exception {
-        List<ScheduleStrategyRunntime> result = new ArrayList<ScheduleStrategyRunntime>();
+        List<ScheduleStrategyRunntime> result = new ArrayList<>();
         String zkPath = this.PATH_Strategy;
         if (this.getZooKeeper().exists(zkPath + "/" + strategyName, false) == null) {
             return result;
@@ -241,6 +244,7 @@ public class ScheduleStrategyDataManager4ZK {
         List<String> uuidList = this.getZooKeeper().getChildren(zkPath + "/" + strategyName, false);
         // 排序
         Collections.sort(uuidList, new Comparator<String>() {
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }
@@ -279,7 +283,7 @@ public class ScheduleStrategyDataManager4ZK {
     public void updateStrategyRunntimeErrorMessage(String strategyName, String manangerFactoryUUID, String message)
         throws Exception {
         String zkPath = this.PATH_Strategy + "/" + strategyName + "/" + manangerFactoryUUID;
-        ScheduleStrategyRunntime result = null;
+        ScheduleStrategyRunntime result;
         if (this.getZooKeeper().exists(zkPath, false) != null) {
             result = this.loadScheduleStrategyRunntime(strategyName, manangerFactoryUUID);
         } else {
@@ -372,9 +376,10 @@ public class ScheduleStrategyDataManager4ZK {
 
     public List<ManagerFactoryInfo> loadAllManagerFactoryInfo() throws Exception {
         String zkPath = this.PATH_ManagerFactory;
-        List<ManagerFactoryInfo> result = new ArrayList<ManagerFactoryInfo>();
+        List<ManagerFactoryInfo> result = new ArrayList<>();
         List<String> names = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(names, new Comparator<String>() {
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }

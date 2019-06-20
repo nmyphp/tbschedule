@@ -23,7 +23,7 @@ public class ZKManager {
 
     private static transient Logger log = LoggerFactory.getLogger(ZKManager.class);
     private ZooKeeper zk;
-    private List<ACL> acl = new ArrayList<ACL>();
+    private List<ACL> acl = new ArrayList<>();
     private Properties properties;
     private boolean isCheckParentPath = true;
 
@@ -57,6 +57,7 @@ public class ZKManager {
         zk = new ZooKeeper(this.properties.getProperty(keys.zkConnectString.toString()),
             Integer.parseInt(this.properties.getProperty(keys.zkSessionTimeout.toString())),
             new Watcher() {
+                @Override
                 public void process(WatchedEvent event) {
                     sessionEvent(connectionLatch, event);
                 }
@@ -132,7 +133,7 @@ public class ZKManager {
         return this.properties.getProperty(keys.zkConnectString.toString());
     }
 
-    public boolean checkZookeeperState() throws Exception {
+    public boolean checkZookeeperState() {
         return zk != null && zk.getState() == States.CONNECTED;
     }
 

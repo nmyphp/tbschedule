@@ -23,7 +23,7 @@ public class ConsoleManager {
 
     private static TBScheduleManagerFactory scheduleManagerFactory;
 
-    public static boolean isInitial() throws Exception {
+    public static boolean isInitial() {
         return scheduleManagerFactory != null;
     }
 
