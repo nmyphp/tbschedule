@@ -48,7 +48,7 @@ public class ZKTools {
         if (zk.exists(path, false) == null) {
             return new String[0];
         }
-        List<String> dealList = new ArrayList<String>();
+        List<String> dealList = new ArrayList<>();
         dealList.add(path);
         int index = 0;
         while (index < dealList.size()) {
@@ -63,6 +63,6 @@ public class ZKTools {
             }
             index++;
         }
-        return (String[]) dealList.toArray(new String[0]);
+        return dealList.toArray(new String[0]);
     }
 }

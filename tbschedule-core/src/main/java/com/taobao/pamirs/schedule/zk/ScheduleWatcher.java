@@ -23,6 +23,7 @@ public class ScheduleWatcher implements Watcher {
         route.put(path, watcher);
     }
 
+    @Override
     public void process(WatchedEvent event) {
         if (log.isInfoEnabled()) {
             log.info("已经触发了" + event.getType() + ":" + event.getState() + "事件！" + event.getPath());
