@@ -17,6 +17,7 @@ import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskItem;
 import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType;
 import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskTypeRunningInfo;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -592,6 +593,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
         List<String> serverList = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(serverList, new Comparator<String>() {
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }
@@ -616,8 +618,9 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         });
         for (String name : serverList) {
             try {
-                String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + name, false, null));
-                ScheduleServer server = (ScheduleServer) this.gson.fromJson(valueString, ScheduleServer.class);
+                String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + name, false, null),
+                    Charset.forName("UTF-8"));
+                ScheduleServer server = this.gson.fromJson(valueString, ScheduleServer.class);
                 server.setCenterServerTime(new Timestamp(this.getSystemTime()));
                 result.add(server);
             } catch (Exception e) {
@@ -636,7 +639,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
                 String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_Server;
                 for (String uuid : this.getZooKeeper().getChildren(zkPath, false)) {
                     String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + uuid, false, null));
-                    ScheduleServer server = (ScheduleServer) this.gson.fromJson(valueString, ScheduleServer.class);
+                    ScheduleServer server = this.gson.fromJson(valueString, ScheduleServer.class);
                     server.setCenterServerTime(new Timestamp(this.getSystemTime()));
                     if (server.getManagerFactoryUUID().equals(factoryUUID)) {
                         result.add(server);
@@ -873,7 +876,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
             server.setVersion(server.getVersion() + 1);
             String valueString = this.gson.toJson(server);
             try {
-                this.getZooKeeper().setData(zkPath, valueString.getBytes(), -1);
+                this.getZooKeeper().setData(zkPath, valueString.getBytes(Charset.forName("UTF-8")), -1);
             } catch (Exception e) {
                 // 恢复上次的心跳时间
                 server.setHeartBeatTime(oldHeartBeatTime);

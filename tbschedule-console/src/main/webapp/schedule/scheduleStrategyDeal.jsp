@@ -10,7 +10,7 @@
 <body bgcolor="#ffffff">
 
 <%
-    String action = (String) request.getParameter("action");
+    String action = request.getParameter("action");
     String result = "";
     boolean isRefreshParent = false;
     ScheduleStrategy scheduleStrategy = new ScheduleStrategy();
