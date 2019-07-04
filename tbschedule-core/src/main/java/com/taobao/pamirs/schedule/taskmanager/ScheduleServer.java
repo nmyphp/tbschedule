@@ -82,7 +82,7 @@ public class ScheduleServer {
     }
 
     public static ScheduleServer createScheduleServer(IScheduleDataManager aScheduleCenter, String aBaseTaskType,
-        String aOwnSign, int aThreadNum) throws Exception {
+        String aOwnSign, int aThreadNum) {
         ScheduleServer result = new ScheduleServer();
         result.baseTaskType = aBaseTaskType;
         result.ownSign = aOwnSign;

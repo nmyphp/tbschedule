@@ -85,14 +85,7 @@ public class ZKManager {
             }
         } // Disconnected：Zookeeper会自动处理Disconnected状态重连
         else if (event.getState() == KeeperState.Disconnected) {
-            log.info("tb_hj_schedule Disconnected，等待重新建立ZK连接...");
-            try {
-                reConnection();
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        } else if (event.getState() == KeeperState.NoSyncConnected) {
-            log.info("tb_hj_schedule NoSyncConnected，等待重新建立ZK连接...");
+            log.info("与ZK断开连接，等待重新建立ZK连接...");
             try {
                 reConnection();
             } catch (Exception e) {
