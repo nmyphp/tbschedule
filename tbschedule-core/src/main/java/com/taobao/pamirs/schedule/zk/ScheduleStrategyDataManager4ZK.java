@@ -126,14 +126,14 @@ public class ScheduleStrategyDataManager4ZK {
         } else {
             String zkPath = this.PATH_ManagerFactory + "/" + managerFactory.getUuid();
             if (this.getZooKeeper().exists(zkPath, false) == null) {
-                zkPath = this.getZooKeeper().create(zkPath, null, this.zkManager.getAcl(), CreateMode.EPHEMERAL);
+                this.getZooKeeper().create(zkPath, null, this.zkManager.getAcl(), CreateMode.EPHEMERAL);
             }
         }
 
         List<String> result = new ArrayList<>();
         for (ScheduleStrategy scheduleStrategy : loadAllScheduleStrategy()) {
             boolean isFind = false;
-            // 暂停或者不在IP范围
+
             if (ScheduleStrategy.STS_PAUSE.equalsIgnoreCase(scheduleStrategy.getSts()) == false
                 && scheduleStrategy.getIPList() != null) {
                 for (String ip : scheduleStrategy.getIPList()) {
@@ -144,7 +144,7 @@ public class ScheduleStrategyDataManager4ZK {
                             this.PATH_Strategy + "/" + scheduleStrategy.getStrategyName() + "/" + managerFactory
                                 .getUuid();
                         if (this.getZooKeeper().exists(zkPath, false) == null) {
-                            zkPath = this.getZooKeeper()
+                            this.getZooKeeper()
                                 .create(zkPath, null, this.zkManager.getAcl(), CreateMode.EPHEMERAL);
                         }
                         isFind = true;
@@ -152,7 +152,7 @@ public class ScheduleStrategyDataManager4ZK {
                     }
                 }
             }
-            // 清除原来注册的Factory
+            // 暂停或者不在IP范围，清除原来注册的Factory
             if (isFind == false) {
                 String zkPath =
                     this.PATH_Strategy + "/" + scheduleStrategy.getStrategyName() + "/" + managerFactory.getUuid();
