@@ -17,6 +17,7 @@ import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskItem;
 import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskType;
 import com.taobao.pamirs.schedule.taskmanager.ScheduleTaskTypeRunningInfo;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,8 +47,8 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
     private String PATH_BaseTaskType;
     private String PATH_TaskItem = "taskItem";
     private String PATH_Server = "server";
-    private long zkBaseTime = 0;
-    private long loclaBaseTime = 0;
+    private long zkBaseTime;
+    private long loclaBaseTime;
 
     public ScheduleDataManager4ZK(ZKManager aZkManager) throws Exception {
         this.zkManager = aZkManager;
@@ -75,6 +76,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return this.zkManager.getZooKeeper();
     }
 
+    @Override
     public void createBaseTaskType(ScheduleTaskType baseTaskType) throws Exception {
         if (baseTaskType.getBaseTaskType().indexOf("$") > 0) {
             throw new Exception("调度任务" + baseTaskType.getBaseTaskType() + "名称不能包括特殊字符 $");
@@ -89,6 +91,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
     }
 
+    @Override
     public void updateBaseTaskType(ScheduleTaskType baseTaskType) throws Exception {
         if (baseTaskType.getBaseTaskType().indexOf("$") > 0) {
             throw new Exception("调度任务" + baseTaskType.getBaseTaskType() + "名称不能包括特殊字符 $");
@@ -103,6 +106,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
 
     }
 
+    @Override
     public void initialRunningInfo4Dynamic(String baseTaskType, String ownSign) throws Exception {
         String taskType = ScheduleUtil.getTaskTypeByBaseAndOwnSign(baseTaskType, ownSign);
         // 清除所有的老信息，只有leader能执行此操作
@@ -112,6 +116,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
     }
 
+    @Override
     public void initialRunningInfo4Static(String baseTaskType, String ownSign, String uuid) throws Exception {
 
         String taskType = ScheduleUtil.getTaskTypeByBaseAndOwnSign(baseTaskType, ownSign);
@@ -136,11 +141,13 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         setInitialRunningInfoSucuss(baseTaskType, taskType, uuid);
     }
 
+    @Override
     public void setInitialRunningInfoSucuss(String baseTaskType, String taskType, String uuid) throws Exception {
         String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_TaskItem;
         this.getZooKeeper().setData(zkPath, uuid.getBytes(), -1);
     }
 
+    @Override
     public boolean isInitialRunningInfoSucuss(String baseTaskType, String ownSign) throws Exception {
         String taskType = ScheduleUtil.getTaskTypeByBaseAndOwnSign(baseTaskType, ownSign);
         String leader = this.getLeader(this.loadScheduleServerNames(taskType));
@@ -154,6 +161,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return false;
     }
 
+    @Override
     public long updateReloadTaskItemFlag(String taskType) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
         String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_Server;
@@ -162,6 +170,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
 
     }
 
+    @Override
     public Map<String, Stat> getCurrentServerStatList(String taskType) throws Exception {
         Map<String, Stat> statMap = new HashMap<String, Stat>();
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
@@ -175,6 +184,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return statMap;
     }
 
+    @Override
     public long getReloadTaskItemFlag(String taskType) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
         String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_Server;
@@ -211,6 +221,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
     /**
      * 创建任务项，注意其中的 CurrentSever和RequestServer不会起作用
      */
+    @Override
     public void createScheduleTaskItem(ScheduleTaskItem[] taskItems) throws Exception {
         for (ScheduleTaskItem taskItem : taskItems) {
             String zkPath =
@@ -237,6 +248,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
     }
 
+    @Override
     public void updateScheduleTaskItemStatus(String taskType, String taskItem, ScheduleTaskItem.TaskItemSts sts,
         String message) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
@@ -256,6 +268,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
     /**
      * 删除任务项
      */
+    @Override
     public void deleteScheduleTaskItem(String taskType, String taskItem) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
         String zkPath =
@@ -263,6 +276,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         ZKTools.deleteTree(this.getZooKeeper(), zkPath);
     }
 
+    @Override
     public List<ScheduleTaskItem> loadAllTaskItem(String taskType) throws Exception {
         List<ScheduleTaskItem> result = new ArrayList<ScheduleTaskItem>();
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
@@ -321,6 +335,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
 
     }
 
+    @Override
     public ScheduleTaskType loadTaskTypeBaseInfo(String baseTaskType) throws Exception {
         String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType;
         if (this.getZooKeeper().exists(zkPath, false) == null) {
@@ -489,7 +504,8 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
                 isModify = true;
             }
         }
-        if (isModify == true) { // 设置需要所有的服务器重新装载任务
+        // 设置需要所有的服务器重新装载任务
+        if (isModify == true) {
             this.updateReloadTaskItemFlag(taskType);
         }
     }
@@ -501,6 +517,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return this.getZooKeeper().getChildren(zkPath, false).size();
     }
 
+    @Override
     public void clearExpireTaskTypeRunningInfo(String baseTaskType, String serverUUID, double expireDateInternal)
         throws Exception {
         for (String name : this.getZooKeeper().getChildren(this.PATH_BaseTaskType + "/" + baseTaskType, false)) {
@@ -567,6 +584,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return result;
     }
 
+    @Override
     public List<String> loadScheduleServerNames(String taskType) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
         String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_Server;
@@ -575,6 +593,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
         List<String> serverList = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(serverList, new Comparator<String>() {
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }
@@ -592,14 +611,16 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
         List<String> serverList = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(serverList, new Comparator<String>() {
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }
         });
         for (String name : serverList) {
             try {
-                String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + name, false, null));
-                ScheduleServer server = (ScheduleServer) this.gson.fromJson(valueString, ScheduleServer.class);
+                String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + name, false, null),
+                    Charset.forName("UTF-8"));
+                ScheduleServer server = this.gson.fromJson(valueString, ScheduleServer.class);
                 server.setCenterServerTime(new Timestamp(this.getSystemTime()));
                 result.add(server);
             } catch (Exception e) {
@@ -609,6 +630,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return result;
     }
 
+    @Override
     public List<ScheduleServer> selectScheduleServerByManagerFactoryUUID(String factoryUUID) throws Exception {
         List<ScheduleServer> result = new ArrayList<ScheduleServer>();
         for (String baseTaskType : this.getZooKeeper().getChildren(this.PATH_BaseTaskType, false)) {
@@ -617,7 +639,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
                 String zkPath = this.PATH_BaseTaskType + "/" + baseTaskType + "/" + taskType + "/" + this.PATH_Server;
                 for (String uuid : this.getZooKeeper().getChildren(zkPath, false)) {
                     String valueString = new String(this.getZooKeeper().getData(zkPath + "/" + uuid, false, null));
-                    ScheduleServer server = (ScheduleServer) this.gson.fromJson(valueString, ScheduleServer.class);
+                    ScheduleServer server = this.gson.fromJson(valueString, ScheduleServer.class);
                     server.setCenterServerTime(new Timestamp(this.getSystemTime()));
                     if (server.getManagerFactoryUUID().equals(factoryUUID)) {
                         result.add(server);
@@ -626,6 +648,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
             }
         }
         Collections.sort(result, new Comparator<ScheduleServer>() {
+            @Override
             public int compare(ScheduleServer u1, ScheduleServer u2) {
                 int result = u1.getTaskType().compareTo(u2.getTaskType());
                 if (result == 0) {
@@ -639,6 +662,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return result;
     }
 
+    @Override
     public String getLeader(List<String> serverList) {
         if (serverList == null || serverList.size() == 0) {
             return "";
@@ -656,6 +680,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         return leader;
     }
 
+    @Override
     public boolean isLeader(String uuid, List<String> serverList) {
         return uuid.equals(getLeader(serverList));
     }
@@ -806,6 +831,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
     }
 
+    @Override
     public void registerScheduleServer(ScheduleServer server) throws Exception {
         if (server.isRegister() == true) {
             throw new Exception(server.getUuid() + " 被重复注册");
@@ -835,6 +861,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         server.setRegister(true);
     }
 
+    @Override
     public boolean refreshScheduleServer(ScheduleServer server) throws Exception {
         Timestamp heartBeatTime = new Timestamp(this.getSystemTime());
         String zkPath = this.PATH_BaseTaskType + "/" + server.getBaseTaskType() + "/" + server.getTaskType() + "/"
@@ -849,7 +876,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
             server.setVersion(server.getVersion() + 1);
             String valueString = this.gson.toJson(server);
             try {
-                this.getZooKeeper().setData(zkPath, valueString.getBytes(), -1);
+                this.getZooKeeper().setData(zkPath, valueString.getBytes(Charset.forName("UTF-8")), -1);
             } catch (Exception e) {
                 // 恢复上次的心跳时间
                 server.setHeartBeatTime(oldHeartBeatTime);
@@ -860,6 +887,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         }
     }
 
+    @Override
     public void unRegisterScheduleServer(String taskType, String serverUUID) throws Exception {
         String baseTaskType = ScheduleUtil.splitBaseTaskTypeFromTaskType(taskType);
         String zkPath =
@@ -883,6 +911,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
         this.updateBaseTaskType(taskType);
     }
 
+    @Override
     public long getSystemTime() {
         return this.zkBaseTime + (System.currentTimeMillis() - this.loclaBaseTime);
     }
@@ -921,6 +950,7 @@ class ScheduleServerComparator implements Comparator<ScheduleServer> {
         }
     }
 
+    @Override
     public int compare(ScheduleServer o1, ScheduleServer o2) {
         int result = 0;
         for (String name : orderFields) {
@@ -962,12 +992,14 @@ class ScheduleServerComparator implements Comparator<ScheduleServer> {
 
 class TimestampTypeAdapter implements JsonSerializer<Timestamp>, JsonDeserializer<Timestamp> {
 
+    @Override
     public JsonElement serialize(Timestamp src, Type arg1, JsonSerializationContext arg2) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateFormatAsString = format.format(new Date(src.getTime()));
         return new JsonPrimitive(dateFormatAsString);
     }
 
+    @Override
     public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
         if (!(json instanceof JsonPrimitive)) {

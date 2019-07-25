@@ -37,8 +37,10 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
         }
     }
 
-    public void initial() throws Exception {
+    @Override
+    public void initial() {
         new Thread(this.currenScheduleServer.getTaskType() + "-" + this.currentSerialNumber + "-StartProcess") {
+            @Override
             @SuppressWarnings("static-access")
             public void run() {
                 try {
@@ -48,8 +50,6 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                             log.debug("外部命令终止调度,退出调度队列获取：" + currenScheduleServer.getUuid());
                             return;
                         }
-                        // log.error("isRuntimeInfoInitial = " +
-                        // isRuntimeInfoInitial);
                         try {
                             initialRunningInfo();
                             isRuntimeInfoInitial = scheduleCenter
@@ -60,7 +60,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                             log.error(e.getMessage(), e);
                         }
                         if (isRuntimeInfoInitial == false) {
-                            Thread.currentThread().sleep(1000);
+                            Thread.sleep(1000);
                         }
                     }
                     int count = 0;
@@ -70,9 +70,8 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                             log.debug("外部命令终止调度,退出调度队列获取：" + currenScheduleServer.getUuid());
                             return;
                         }
-                        Thread.currentThread().sleep(1000);
+                        Thread.sleep(1000);
                         count = count + 1;
-                        // log.error("尝试获取调度队列，第" + count + "次 ") ;
                     }
                     String tmpStr = "TaskItemDefine:";
                     for (int i = 0; i < currentTaskItemList.size(); i++) {
@@ -84,7 +83,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                     log.info("获取到任务处理队列，开始调度：" + tmpStr + "  of  " + currenScheduleServer.getUuid());
 
                     // 任务总量
-                    taskItemCount = scheduleCenter.loadAllTaskItem(currenScheduleServer.getTaskType()).size();
+                    taskItemCount = scheduleCenter.queryTaskItemCount(currenScheduleServer.getTaskType());
                     // 只有在已经获取到任务处理队列后才开始启动任务处理器
                     computerStart();
                 } catch (Exception e) {
@@ -100,8 +99,10 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
     }
 
     /**
-     * 定时向数据配置中心更新当前服务器的心跳信息。 如果发现本次更新的时间如果已经超过了，服务器死亡的心跳周期，则不能在向服务器更新信息。 而应该当作新的服务器，进行重新注册。
+     * 定时向数据配置中心更新当前服务器的心跳信息。 如果发现本次更新的时间如果已经超过了，
+     * 服务器死亡的心跳周期，则不能在向服务器更新信息。 而应该当作新的服务器，进行重新注册。
      */
+    @Override
     public void refreshScheduleServerInfo() throws Exception {
         try {
             rewriteScheduleInfo();
@@ -150,7 +151,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
     /**
      * 判断某个任务对应的线程组是否处于僵尸状态。 true 表示有线程组处于僵尸状态。需要告警。
      */
-    private boolean isExistZombieServ(String type, Map<String, Stat> statMap) throws Exception {
+    private boolean isExistZombieServ(String type, Map<String, Stat> statMap) {
         boolean exist = false;
         for (String key : statMap.keySet()) {
             Stat s = statMap.get(key);
@@ -164,10 +165,18 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
     }
 
     /**
-     * 根据当前调度服务器的信息，重新计算分配所有的调度任务 任务的分配是需要加锁，避免数据分配错误。为了避免数据锁带来的负面作用，通过版本号来达到锁的目的
+     * 根据当前调度服务器的信息，重新计算分配所有的调度任务 任务的分配是需要加锁，避免数据分配错误。
+     * 为了避免数据锁带来的负面作用，通过版本号来达到锁的目的
      * <p>
-     * 1、获取任务状态的版本号 2、获取所有的服务器注册信息和任务队列信息 3、清除已经超过心跳周期的服务器注册信息 3、重新计算任务分配 4、更新任务状态的版本号【乐观锁】 5、根系任务队列的分配信息
+     * 1、获取任务状态的版本号
+     * 2、获取所有的服务器注册信息和任务队列信息
+     * 3、清除已经超过心跳周期的服务器注册信息
+     * 4、重新计算任务分配
+     * 5、更新任务状态的版本号【乐观锁】
+     * 6、根系任务队列的分配信息
+     * </p>
      */
+    @Override
     public void assignScheduleTask() throws Exception {
         scheduleCenter.clearExpireScheduleServer(this.currenScheduleServer.getTaskType(),
             this.taskTypeInfo.getJudgeDeadInterval());
@@ -195,7 +204,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
      * <p>
      * 特别注意： 此方法的调用必须是在当前所有任务都处理完毕后才能调用，否则是否任务队列后可能数据被重复处理
      */
-
+    @Override
     public List<TaskItemDefine> getCurrentScheduleTaskItemList() {
         try {
             if (this.isNeedReloadTaskItem == true) {
@@ -219,8 +228,10 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
         }
     }
 
-    // 由于上面在数据执行时有使用到synchronized ，但是心跳线程并没有对应加锁。
-    // 所以在此方法上加一下synchronized。20151015
+    /**
+     * 由于上面在数据执行时有使用到synchronized ，但是心跳线程并没有对应加锁。
+     * 所以在此方法上加一下synchronized。
+     */
     protected synchronized List<TaskItemDefine> getCurrentScheduleTaskItemListNow() throws Exception {
         // 如果已经稳定了，理论上不需要加载去扫描所有的叶子结点
         // 20151019 by kongxuan.zlj
@@ -232,7 +243,6 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
         } catch (Exception e) {
             log.error("zombie serverList exists， Exception:", e);
         }
-        //
 
         // 获取最新的版本号
         this.lastFetchVersion = this.scheduleCenter.getReloadTaskItemFlag(this.currenScheduleServer.getTaskType());
@@ -249,7 +259,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
             this.currentTaskItemList = this.scheduleCenter
                 .reloadDealTaskItem(this.currenScheduleServer.getTaskType(), this.currenScheduleServer.getUuid());
 
-            // 如果超过10个心跳周期还没有获取到调度队列，则报警
+            // 如果超过20个心跳周期还没有获取到调度队列，则报警
             if (this.currentTaskItemList.size() == 0 && scheduleCenter.getSystemTime() - this.lastReloadTaskItemListTime
                 > this.taskTypeInfo.getHeartBeatRate() * 20) {
                 StringBuffer buf = new StringBuffer();
@@ -257,7 +267,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
                 buf.append(this.currenScheduleServer.getUuid());
                 buf.append("[TASK_TYPE=");
                 buf.append(this.currenScheduleServer.getTaskType());
-                buf.append("]自启动以来，超过20个心跳周期，还 没有获取到分配的任务队列;");
+                buf.append("]自启动以来，超过20个心跳周期，还没有获取到分配的任务队列;");
                 buf.append("  currentTaskItemList.size() =" + currentTaskItemList.size());
                 buf.append(" ,scheduleCenter.getSystemTime()=" + scheduleCenter.getSystemTime());
                 buf.append(" ,lastReloadTaskItemListTime=" + lastReloadTaskItemListTime);
@@ -272,7 +282,8 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
 
             return this.currentTaskItemList;
         } catch (Throwable e) {
-            this.lastFetchVersion = -1; // 必须把把版本号设置小，避免任务加载失败
+            // 必须把把版本号设置小，避免任务加载失败
+            this.lastFetchVersion = -1;
             if (e instanceof Exception) {
                 throw (Exception) e;
             } else {
@@ -281,6 +292,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
         }
     }
 
+    @Override
     public int getTaskItemCount() {
         return this.taskItemCount;
     }

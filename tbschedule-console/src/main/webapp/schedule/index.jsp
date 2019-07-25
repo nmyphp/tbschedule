@@ -56,8 +56,7 @@
     }
 %>
 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp请参考：<a
-        href="http://code.taobao.org/p/tbschedule/wiki/index/">tbschedule开源项目</a>
-&nbsp&nbsp<font style="color:red;font-size:15">[建议使用IE8]</font>
+        href="https://github.com/nmyphp/tbschedule">Github开源项目</a></font>
 <iframe name="content" FRAMEBORDER="0" height="85%" width="100%"
         src="scheduleStrategyList.jsp?manager=<%=isManager%>"></iframe>
 </body>

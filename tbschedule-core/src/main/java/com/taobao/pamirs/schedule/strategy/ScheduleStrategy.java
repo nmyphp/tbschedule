@@ -38,6 +38,7 @@ public class ScheduleStrategy {
     public static String STS_PAUSE = "pause";
     public static String STS_RESUME = "resume";
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

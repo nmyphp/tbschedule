@@ -23,7 +23,7 @@ public class ZKManager {
 
     private static transient Logger log = LoggerFactory.getLogger(ZKManager.class);
     private ZooKeeper zk;
-    private List<ACL> acl = new ArrayList<ACL>();
+    private List<ACL> acl = new ArrayList<>();
     private Properties properties;
     private boolean isCheckParentPath = true;
 
@@ -57,6 +57,7 @@ public class ZKManager {
         zk = new ZooKeeper(this.properties.getProperty(keys.zkConnectString.toString()),
             Integer.parseInt(this.properties.getProperty(keys.zkSessionTimeout.toString())),
             new Watcher() {
+                @Override
                 public void process(WatchedEvent event) {
                     sessionEvent(connectionLatch, event);
                 }
@@ -84,14 +85,7 @@ public class ZKManager {
             }
         } // Disconnected：Zookeeper会自动处理Disconnected状态重连
         else if (event.getState() == KeeperState.Disconnected) {
-            log.info("tb_hj_schedule Disconnected，等待重新建立ZK连接...");
-            try {
-                reConnection();
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        } else if (event.getState() == KeeperState.NoSyncConnected) {
-            log.info("tb_hj_schedule NoSyncConnected，等待重新建立ZK连接...");
+            log.info("与ZK断开连接，等待重新建立ZK连接...");
             try {
                 reConnection();
             } catch (Exception e) {
@@ -132,7 +126,7 @@ public class ZKManager {
         return this.properties.getProperty(keys.zkConnectString.toString());
     }
 
-    public boolean checkZookeeperState() throws Exception {
+    public boolean checkZookeeperState() {
         return zk != null && zk.getState() == States.CONNECTED;
     }
 

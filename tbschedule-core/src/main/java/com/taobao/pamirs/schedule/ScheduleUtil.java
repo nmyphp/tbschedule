@@ -87,7 +87,6 @@ public class ScheduleUtil {
      * @param serverNum 总的服务器数量
      * @param taskItemNum 任务项数量
      * @param maxNumOfOneServer 每个server最大任务项数目
-     * @param maxNum 总的任务数量
      */
     public static int[] assignTaskNumber(int serverNum, int taskItemNum, int maxNumOfOneServer) {
         int[] taskNums = new int[serverNum];
@@ -107,43 +106,5 @@ public class ScheduleUtil {
             }
         }
         return taskNums;
-    }
-
-    private static String printArray(int[] items) {
-        String s = "";
-        for (int i = 0; i < items.length; i++) {
-            if (i > 0) {
-                s = s + ",";
-            }
-            s = s + items[i];
-        }
-        return s;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(printArray(assignTaskNumber(1, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(2, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(3, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(4, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(5, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(6, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(7, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(8, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(9, 10, 0)));
-        System.out.println(printArray(assignTaskNumber(10, 10, 0)));
-
-        System.out.println("-----------------");
-
-        System.out.println(printArray(assignTaskNumber(1, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(2, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(3, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(4, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(5, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(6, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(7, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(8, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(9, 10, 3)));
-        System.out.println(printArray(assignTaskNumber(10, 10, 3)));
-
     }
 }

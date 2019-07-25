@@ -7,7 +7,7 @@ CREATE TABLE SCHEDULE_TEST (
 );
 
 
---动态的造几十万数据
+--鍔ㄦ�佺殑閫犲嚑鍗佷竾鏁版嵁
 CREATE  PROCEDURE CREATE_TEST_DATA(IN ownSign varchar(50),IN datanum INTEGER(11))
 BEGIN
  declare i int DEFAULT 1;

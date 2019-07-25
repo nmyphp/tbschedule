@@ -42,7 +42,9 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     public boolean start = true;
     private int timerInterval = 2000;
     /**
-     * ManagerFactoryTimerTask上次执行的时间戳。<br/> zk环境不稳定，可能导致所有task自循环丢失，调度停止。<br/> 外层应用，通过jmx暴露心跳时间，监控这个tbschedule最重要的大循环。<br/>
+     * ManagerFactoryTimerTask上次执行的时间戳。<br/>
+     * zk环境不稳定，可能导致所有task自循环丢失，调度停止。<br/>
+     * 外层应用，通过jmx暴露心跳时间，监控这个tbschedule最重要的大循环。<br/>
      */
     public volatile long timerTaskHeartBeatTS = System.currentTimeMillis();
 
@@ -52,7 +54,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     private IScheduleDataManager scheduleDataManager;
     private ScheduleStrategyDataManager4ZK scheduleStrategyManager;
 
-    private Map<String, List<IStrategyTask>> managerMap = new ConcurrentHashMap<String, List<IStrategyTask>>();
+    private Map<String, List<IStrategyTask>> managerMap = new ConcurrentHashMap<>();
 
     private ApplicationContext applicationcontext;
     private String uuid;
@@ -131,7 +133,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     /**
      * 创建调度服务器
      */
-    public IStrategyTask createStrategyTask(ScheduleStrategy strategy) throws Exception {
+    public IStrategyTask createStrategyTask(ScheduleStrategy strategy) {
         IStrategyTask result = null;
         try {
             if (ScheduleStrategy.Kind.Schedule == strategy.getKind()) {
@@ -165,13 +167,15 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
             }
             if (isException == true) {
                 try {
-                    stopServer(null); // 停止所有的调度任务
+                    // 停止所有的调度任务
+                    stopServer(null);
                     this.getScheduleStrategyManager().unRregisterManagerFactory(this);
                 } finally {
                     reRegisterManagerFactory();
                 }
             } else if (stsInfo.isStart() == false) {
-                stopServer(null); // 停止所有的调度任务
+                // 停止所有的调度任务
+                stopServer(null);
                 this.getScheduleStrategyManager().unRregisterManagerFactory(this);
             } else {
                 reRegisterManagerFactory();
@@ -235,7 +239,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
             .loadAllScheduleStrategyRunntimeByUUID(this.uuid)) {
             List<IStrategyTask> list = this.managerMap.get(run.getStrategyName());
             if (list == null) {
-                list = new ArrayList<IStrategyTask>();
+                list = new ArrayList<>();
                 this.managerMap.put(run.getStrategyName(), list);
             }
             while (list.size() > run.getRequestNum() && list.size() > 0) {
@@ -261,9 +265,9 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     /**
      * 终止一类任务
      */
-    public void stopServer(String strategyName) throws Exception {
+    public void stopServer(String strategyName) {
         if (strategyName == null) {
-            String[] nameList = (String[]) this.managerMap.keySet().toArray(new String[0]);
+            String[] nameList = this.managerMap.keySet().toArray(new String[0]);
             for (String name : nameList) {
                 for (IStrategyTask task : this.managerMap.get(name)) {
                     try {
@@ -293,7 +297,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     /**
      * 停止所有调度资源
      */
-    public void stopAll() throws Exception {
+    public void stopAll() {
         try {
             lock.lock();
             this.start = false;
@@ -334,7 +338,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
     /**
      * 重启所有的服务
      */
-    public void reStart() throws Exception {
+    public void reStart() {
         try {
             if (this.timer != null) {
                 if (this.timerTask != null) {
@@ -354,7 +358,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
         }
     }
 
-    public boolean isZookeeperInitialSucess() throws Exception {
+    public boolean isZookeeperInitialSucess() {
         return this.zkManager.checkZookeeperState();
     }
 
@@ -377,6 +381,7 @@ public class TBScheduleManagerFactory implements ApplicationContextAware {
         return scheduleStrategyManager;
     }
 
+    @Override
     public void setApplicationContext(ApplicationContext aApplicationcontext) throws BeansException {
         applicationcontext = aApplicationcontext;
     }
@@ -432,6 +437,7 @@ class ManagerFactoryTimerTask extends java.util.TimerTask {
         this.factory = aFactory;
     }
 
+    @Override
     public void run() {
         try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);

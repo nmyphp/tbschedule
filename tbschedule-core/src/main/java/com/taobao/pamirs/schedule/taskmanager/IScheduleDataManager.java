@@ -83,7 +83,7 @@ public interface IScheduleDataManager {
     /**
      * 清除已经过期的OWN_SIGN的自动生成的数据
      *
-     * @param taskType 任务类型
+     * @param baseTaskType 任务类型
      * @param serverUUID 服务器
      * @param expireDateInternal 过期时间，以天为单位
      */
