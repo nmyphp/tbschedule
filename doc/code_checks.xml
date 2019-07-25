@@ -79,16 +79,16 @@
     <module name="CyclomaticComplexity"/>
     <module name="JavaNCSS"/>
     <module name="NPathComplexity"/>
-    <module name="JavadocStyle"/>
+    <!--<module name="JavadocStyle"/>-->
     <module name="AnnotationLocation"/>
     <module name="SingleLineJavadoc"/>
-    <module name="JavadocParagraph"/>
+    <!--<module name="JavadocParagraph"/>-->
     <module name="InterfaceTypeParameterName"/>
     <module name="AbbreviationAsWordInName">
       <property name="allowedAbbreviationLength" value="4"/>
     </module>
     <module name="CustomImportOrder"/>
-    <module name="EmptyLineSeparator"/>
+    <!--<module name="EmptyLineSeparator"/>-->
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>
     <module name="DeclarationOrder"/>
