@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tbschedule</artifactId>
         <groupId>com.taobao.pamirs.schedule</groupId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.taobao.pamirs.schedule</groupId>
             <artifactId>tbschedule-core</artifactId>
-            <version>3.4.0</version>
+            <version>3.4.1</version>
         </dependency>
     </dependencies>
 </project>
