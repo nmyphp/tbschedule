@@ -1,3 +1,14 @@
+* [tbschedule主要概念](#tbschedule%E4%B8%BB%E8%A6%81%E6%A6%82%E5%BF%B5)
+  * [TaskType任务类型:](#tasktype%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B)
+  * [ScheduleServer任务处理器](#scheduleserver%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86%E5%99%A8)
+  * [TaskItem任务项](#taskitem%E4%BB%BB%E5%8A%A1%E9%A1%B9)
+  * [TaskDealBean任务处理类](#taskdealbean%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86%E7%B1%BB)
+  * [OwnSign环境区域](#ownsign%E7%8E%AF%E5%A2%83%E5%8C%BA%E5%9F%9F)
+  * [单次调度执行次数](#%E5%8D%95%E6%AC%A1%E8%B0%83%E5%BA%A6%E6%89%A7%E8%A1%8C%E6%AC%A1%E6%95%B0)
+  * [调度策略](#%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5)
+  * [接口说明](#%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E)
+  * [Sleep模式和NotSleep模式的区别](#sleep%E6%A8%A1%E5%BC%8F%E5%92%8Cnotsleep%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB)
+
 ## tbschedule主要概念
 
 ### TaskType任务类型: 
@@ -45,11 +56,11 @@
 运行时间：
 
 1、可以指定任务处理的时间间隔，例如每天的1：00－3：00执行，或者每个月的第一天执行、每一个小时的第一分钟执行等等。
-间格式与crontab相同。如果不指定就表示一致运行。PERMIT_RUN_START_TIME,PERMIT_RUN_END_TIME
+间格式与crontab相同。如果不指定就表示一致运行。【执行开始时间】、【执行结束时间】
 
-2、可以指定如果没有数据了，休眠的时间间隔。SLEEP_TIME_NODATA 单位秒
+2、可以指定如果没有数据了，休眠的时间间隔。【没有数据时休眠时长(秒)】
 
-3、可以指定每处理完一批数据后休眠的时间间隔.SLEEP_TIME_INTERVAL 单位 
+3、可以指定每处理完一批数据后休眠的时间间隔。【每次处理完数据后休眠时间(秒)】 
 
 ### OwnSign环境区域
 
@@ -57,10 +68,17 @@
 
 不同的开发人员需要进行数据隔离也可以用OwnSign来实现，避免不同人员的数据冲突，缺省配置的环境区域OwnSign='BASE'。
 
-例如：TaskType='DataDeal',配置的队列是0、1、2、3、4、5、6、7、8、9。缺省的OwnSign='BASE'。
+例如：TaskType='DataDeal'，配置的队列是0、1、2、3、4、5、6、7、8、9。缺省的OwnSign='BASE'。
 此时如果再启动一个测试环境，则Schedule会动态生成一个TaskType='DataDeal-Test'的任务类型，环境会作为一个变量传递给业务接口，
 由业务接口的实现类，在读取数据和处理数据的时候进行确定。业务系统一种典型的做法就是在数据表中增加一个OWN_SIGN字段。
 在创建数据的时候根据运行环境填入对应的环境名称，在Schedule中就可以环境的区分了。
+
+### 单次调度执行次数
+
+如果没有设置【执行结束时间】，一旦开始执行，中间不会停止，直到selectTasks取不到数据为止。所以默认状态下，
+Tbschedule处理的任务要求具有状态字段，每一个数据的处理成功后，必须更新状态为其它状态，否则会重复处理同一批数据。
+
+如果单个调度周期，只想让作业执行一次，可以通过控制台页面上点击【任务管理】-【编辑】-【单次调度执行次数】进行设置
 
 ### 调度策略
 
