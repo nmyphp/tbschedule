@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/nmyphp/tbschedule.svg?branch=master)](https://travis-ci.org/nmyphp/tbschedule)
 [![GitHub release](https://img.shields.io/github/release/nmyphp/tbschedule.svg)](https://github.com/nmyphp/tbschedule/releases)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 tbschedule是一个支持分布式的调度框架，让批量任务或者不断变化的任务能够被动态的分配到多个主机的JVM中，
