@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration debug="false">
+<configuration>
     <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} %level %logger{36} - %msg%n"/>
     <property name="logdir" value="log"/>
     <property name="layoutClass" value="ch.qos.logback.classic.PatternLayout"/>
@@ -99,6 +99,9 @@
     <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG"/>
     <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
     <logger name="org.springframework.jdbc.core" level="DEBUG" />
+
+    <!--Don't print logback status info-->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
