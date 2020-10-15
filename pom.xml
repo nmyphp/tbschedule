@@ -44,7 +44,7 @@
                     <groupId>junit</groupId>
                 </exclusion>
             </exclusions>
-            <version>3.4.6</version>
+            <version>3.4.14</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
