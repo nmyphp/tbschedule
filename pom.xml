@@ -43,6 +43,10 @@
                     <artifactId>junit</artifactId>
                     <groupId>junit</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
             </exclusions>
             <version>3.4.14</version>
         </dependency>
@@ -94,7 +98,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
+            <version>1.18.2</version>
         </dependency>
     </dependencies>
     <build>
