@@ -48,7 +48,7 @@
                     <groupId>log4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>3.4.14</version>
+            <version>3.7.2</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
